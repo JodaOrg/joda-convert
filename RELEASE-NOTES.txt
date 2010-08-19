@@ -1,0 +1,21 @@
+Joda-Convert version 0.5
+------------------------
+
+Joda-Convert is a small library providing conversion to and from String.
+
+This is the first release of Joda-Convert.
+
+JDK 1.5 or later is required.
+
+Joda-Convert is licensed under the business-friendly Apache License Version 2.
+This is the same license as all of Apache, plus other open source projects such as Spring.
+The intent is to make the code available to the Java community with the minimum
+of restrictions. If the license causes you problems please contact the mailing list.
+
+
+Feedback
+--------
+All feedback is welcomed via the joda-convert-interest mailing list.
+
+The Joda team
+http://joda-convert.sourceforge.net
