@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Joda-Convert">
+  <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
+  <bannerLeft>
+    <name>Joda.org</name>
+    <!--src>http://joda-convert.sourceforge.net/images/joda.png</src-->
+    <href>http://joda.sourceforge.net/</href>
+  </bannerLeft>
+  <bannerRight>
+    <name>Joda-Convert</name>
+    <!--src>http://joda-convert.sourceforge.net/images/jodaconvert.png</src-->
+    <href>http://joda-convert.sourceforge.net/</href>
+  </bannerRight>
+
+  <body>
+    <menu name="Joda Convert">
+      <item name="Overview" href="/index.html"/>
+      <!--item name="Users guide" href="/userguide.html"/-->
+      <!--item name="FAQ" href="/faq.html"/-->
+      <!--item name="Javadoc (Release)" href="/api-0.1/index.html"/-->
+      <item name="License" href="/license.html"/>
+    </menu>
+
+    <menu name="Development">
+      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"/>
+      <!--item name="Test results" href="/junit-report.html"/-->
+      <!--item name="Test coverage" href="/cobertura/index.html"/-->
+      <item name="Mailing lists" href="mail-lists.html"/>
+      <item name="Tasks" href="tasks.html"/>
+      <item name="Subversion" href="http://joda-convert.svn.sourceforge.net/viewvc/joda-convert/trunk/"/>
+      <item name="Javadoc (Development)" href="apidocs/index.html"/>
+    </menu>
+
+    <menu name="Joda">
+      <item name="Joda home" href="http://joda.sourceforge.net"/>
+      <item name="Beans" href="http://joda-beans.sourceforge.net/index.html"/>
+      <item name="Money" href="http://joda-money.sourceforge.net/index.html"/>
+      <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
+      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
+    </menu>
+
+    <menu ref="reports"/>
+
+    <menu name="Website">
+      <item name="Privacy" href="privacy.html"/>
+    </menu>
+  </body>
+
+  <poweredBy>
+    <logo name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"
+        img="http://sflogo.sourceforge.net/sflogo.php?group_id=344317&amp;type=13" width="120" height="30" />
+  </poweredBy>
+</project>
