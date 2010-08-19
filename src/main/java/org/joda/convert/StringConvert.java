@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Converter to and from a {@code String}.
+ * Manager for conversion to and from a {@code String}, acting as the main client interface.
  * <p>
  * Support is provided for conversions based on the {@link StringConverter} interface
  * or the {@link ToString} and {@link FromString} annotations.
@@ -30,16 +30,21 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class StringConvert {
 
-    /** Cache of toString methods. */
+    /**
+     * A shared global instance.
+     * It is also possible to create an instance to permit multiple conversion configurations.
+     */
     public static final StringConvert INSTANCE = new StringConvert();
 
-    /** Cache of converters. */
+    /**
+     * The cache of converters.
+     */
     private final ConcurrentMap<Class<?>, StringConverter<?>> registered = new ConcurrentHashMap<Class<?>, StringConverter<?>>();
 
     /**
-     * Restricted constructor.
+     * Creates a new conversion manager.
      */
-    private StringConvert() {
+    public StringConvert() {
         for (JDKStringConverter conv : JDKStringConverter.values()) {
             registered.put(conv.getType(), conv);
         }
