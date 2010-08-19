@@ -26,12 +26,12 @@ import java.util.concurrent.ConcurrentMap;
  * Support is provided for conversions based on the {@link StringConverter} interface
  * or the {@link ToString} and {@link FromString} annotations.
  * <p>
- * StringConvertor is thread-safe with concurrent caches.
+ * StringConvert is thread-safe with concurrent caches.
  */
 public final class StringConvert {
 
     /**
-     * A shared global instance.
+     * An immutable global instance.
      * It is also possible to create an instance to permit multiple conversion configurations.
      */
     public static final StringConvert INSTANCE = new StringConvert();
@@ -42,17 +42,31 @@ public final class StringConvert {
     private final ConcurrentMap<Class<?>, StringConverter<?>> registered = new ConcurrentHashMap<Class<?>, StringConverter<?>>();
 
     /**
-     * Creates a new conversion manager.
+     * Creates a new conversion manager including the JDK converters.
      */
     public StringConvert() {
-        for (JDKStringConverter conv : JDKStringConverter.values()) {
-            registered.put(conv.getType(), conv);
+        this(true);
+    }
+
+    /**
+     * Creates a new conversion manager.
+     * 
+     * @param includeJdkConverters  true to include the JDK converters
+     */
+    public StringConvert(boolean includeJdkConverters) {
+        if (includeJdkConverters) {
+            for (JDKStringConverter conv : JDKStringConverter.values()) {
+                registered.put(conv.getType(), conv);
+            }
         }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Converts the specified object to a {@code String}.
+     * <p>
+     * This uses {@link #findConverter} to provide the converter.
+     * 
      * @param object  the object to convert, null returns null
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
@@ -69,6 +83,9 @@ public final class StringConvert {
 
     /**
      * Converts the specified object from a {@code String}.
+     * <p>
+     * This uses {@link #findConverter} to provide the converter.
+     * 
      * @param object  the object to convert, null returns null
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
@@ -83,12 +100,19 @@ public final class StringConvert {
 
     /**
      * Finds a suitable converter for the type.
-     * @param cls  the class to convert, not null
+     * <p>
+     * This returns an instance of {@code StringConverter} for the specified class.
+     * This could be useful in other frameworks.
+     * <p>
+     * The search algorithm first searches the registered converters.
+     * It then searches for {@code ToString} and {@code FromString} annotations on the specified class.
+     * 
+     * @param cls  the class to find a converter for, not null
      * @return the converter, not null
      * @throws RuntimeException (or subclass) if no converter found
      */
     @SuppressWarnings("unchecked")
-    private <T> StringConverter<T> findConverter(final Class<T> cls) {
+    public <T> StringConverter<T> findConverter(final Class<T> cls) {
         StringConverter<T> conv = (StringConverter<T>) registered.get(cls);
         if (conv == null) {
             conv = findAnnotationConverter(cls);
@@ -102,6 +126,7 @@ public final class StringConvert {
 
     /**
      * Finds the conversion method.
+     * 
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
@@ -126,6 +151,7 @@ public final class StringConvert {
 
     /**
      * Finds the conversion method.
+     * 
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
@@ -147,6 +173,7 @@ public final class StringConvert {
 
     /**
      * Finds the conversion method.
+     * 
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
@@ -162,6 +189,7 @@ public final class StringConvert {
 
     /**
      * Finds the conversion method.
+     * 
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
@@ -184,7 +212,11 @@ public final class StringConvert {
     //-----------------------------------------------------------------------
     /**
      * Registers a converter for a specific type.
+     * <p>
      * The converter will be used for subclasses unless overidden.
+     * <p>
+     * No new converters may be registered for the global singleton.
+     * 
      * @param cls  the class to register a converter for, not null
      * @param converter  the String converter, not null
      */
@@ -194,6 +226,9 @@ public final class StringConvert {
         }
         if (converter == null) {
             throw new IllegalArgumentException("StringConverter must not be null");
+        }
+        if (this == INSTANCE) {
+            throw new IllegalStateException("Global singleton cannot be extended");
         }
         StringConverter<?> old = registered.putIfAbsent(cls, converter);
         if (old != null) {

@@ -313,6 +313,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         return type;
     }
 
+    //-----------------------------------------------------------------------
     public String convertToString(Object object) {
         return object.toString();
     }
