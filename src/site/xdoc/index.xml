@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Joda Convert</title>
+  <author>Stephen Colebourne</author>
+ </properties>
+
+ <body>
+
+<section name="Joda Convert">
+
+<p>
+Joda-Convert provides a small set of classes to aid conversion between Objects and Strings.
+It is not intended to tackle the wider problem of Object to Object transformation.
+</p>
+
+<p>
+Joda-Convert is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
+</p>
+
+</section>
+
+<section name="Documentation">
+<p>
+Various documentation is available:
+<ul>
+<!--li>Two user guides - <a href="quickstart.html">quick</a> and <a href="userguide.html">full</a></li-->
+<!--li>The javadoc for the <a href="api-release/index.html">current release</a></li-->
+<li>The javadoc for the <a href="apidocs/index.html">latest SVN</a></li>
+<!--li>A <a href="faq.html">FAQ</a> list</li-->
+<!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Time</li-->
+<li>The <a href="http://joda-convert.svn.sourceforge.net/viewvc/joda-convert/trunk/">SVN repository</a></li>
+</ul>
+</p>
+</section>
+
+<section name="Releases">
+<p>
+None yet...
+</p>
+</section>
+
+<section name="Contact">
+<p>
+If you have any questions, or want to volunteer to help, just email Stephen Colebourne
+via scolebourne.at.users.sourceforge.net.
+</p>
+<p>
+<br />
+<br />
+<br />
+<br />
+<br />
+</p>
+</section>
+</body>
+</document>
