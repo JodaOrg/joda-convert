@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<document>
+
+ <properties>
+  <title>Joda Convert</title>
+  <author>Stephen Colebourne</author>
+ </properties>
+
+ <body>
+
+<section name="User guide">
+
+<p>
+Joda-Convert is intended for one simple task.
+Converting objects to and from strings.
+This is a common problem, particularly when communicating over textual protocols like XML or JSON.
+</p>
+
+<subsection name="Basic usage">
+<p>
+Using Joda-Convert is easy at the simplest level.
+The main access is via the class <code>StringConvert</code>.
+</p>
+<p>
+The easiest way to use the conversion is via the global constant:
+</p>
+<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+// conversion to a String
+TimeZone zone = ...
+String str = StringConvert.INSTANCE.convertToString(zone);
+
+// conversion from a String
+TimeZone zone = StringConvert.INSTANCE.convertFromString(TimeZone.class, str);
+</pre></div>
+<p>
+In both cases, if the input is <code>null</code> then the output will also be <code>null</code>.
+</p>
+<p>
+The global constant is quick and easy to use, but is shared between all users in the <code>ClassLoader</code>.
+It also cannot be extended.
+</p>
+<p>
+The alternative approach is to instantiate your own instance of <code>StringConvert</code>.
+This would normally be stored in your own static variable, or made available as needed by dependency injection.
+This may be updated by registering your own converters.
+</p>
+</subsection>
+
+<subsection name="Registering new converters">
+<p>
+Each instance of <code>StringConvert</code>, other than the global singleton, may have additional converters registered.
+Each converter implements the <code>StringConverter</code> interface, which is self explanatory.
+</p>
+<p>
+A converter can only be registered if one is not already registered for that type.
+</p>
+</subsection>
+
+<subsection name="Annotation based conversion">
+<p>
+If there is no registered converter for a type, then the a search by annotation is performed.
+This will search for the <code>ToString</code> and <code>FromString</code> annotation on the type.
+These annotations will indicate which method should be called to perform the conversion.
+</p>
+<p>
+The concept is that other open source libraries, as well as your application code, will implement these two annotations.
+For open source projects, a key point is that adding the annotations is a compile-time only event.
+The Joda-Convert jar file is not needed by your users unless they want to.
+If they don't want to use Joda-Convert then the annotations are effectively ignored.
+</p>
+<p>
+Joda-Time v2.0 and Joda-Money will both contain the annotations.
+However, in both cases, the dependency is compile-time only, and not at runtime.
+</p>
+</subsection>
+
+</section>
+</body>
+</document>

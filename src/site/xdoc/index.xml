@@ -15,7 +15,13 @@
 Joda-Convert provides a small set of classes to aid conversion between Objects and Strings.
 It is not intended to tackle the wider problem of Object to Object transformation.
 </p>
+<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+// conversion to String
+String str = StringConvert.INSTANCE.convertToString(foo);
 
+// conversion from String
+Foo bar = StringConvert.INSTANCE.convertFromString(Foo.class, str);
+</pre></div>
 <p>
 Joda-Convert is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
@@ -26,7 +32,7 @@ Joda-Convert is licensed under the business-friendly <a href="license.html">Apac
 <p>
 Various documentation is available:
 <ul>
-<!--li>Two user guides - <a href="quickstart.html">quick</a> and <a href="userguide.html">full</a></li-->
+<li>The helpful <a href="userguide.html">user guide</a></li>
 <!--li>The javadoc for the <a href="api-release/index.html">current release</a></li-->
 <li>The javadoc for the <a href="apidocs/index.html">latest SVN</a></li>
 <!--li>A <a href="faq.html">FAQ</a> list</li-->

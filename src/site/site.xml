@@ -15,7 +15,7 @@
   <body>
     <menu name="Joda Convert">
       <item name="Overview" href="/index.html"/>
-      <!--item name="Users guide" href="/userguide.html"/-->
+      <item name="User guide" href="/userguide.html"/>
       <!--item name="FAQ" href="/faq.html"/-->
       <!--item name="Javadoc (Release)" href="/api-0.1/index.html"/-->
       <item name="License" href="/license.html"/>
