@@ -28,6 +28,6 @@ public interface ToStringConverter<T> {
      * @param object  the object to convert, not null
      * @return the converted string, may be null but generally not
      */
-    public String convertToString(T object);
+    String convertToString(T object);
 
 }

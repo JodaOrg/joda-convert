@@ -67,6 +67,7 @@ public final class StringConvert {
      * <p>
      * This uses {@link #findConverter} to provide the converter.
      * 
+     * @param <T>  the type to convert from
      * @param object  the object to convert, null returns null
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
@@ -86,6 +87,7 @@ public final class StringConvert {
      * <p>
      * This uses {@link #findConverter} to provide the converter.
      * 
+     * @param <T>  the type to convert to
      * @param object  the object to convert, null returns null
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
@@ -107,6 +109,7 @@ public final class StringConvert {
      * The search algorithm first searches the registered converters.
      * It then searches for {@code ToString} and {@code FromString} annotations on the specified class.
      * 
+     * @param <T>  the type of the converter
      * @param cls  the class to find a converter for, not null
      * @return the converter, not null
      * @throws RuntimeException (or subclass) if no converter found
@@ -217,6 +220,7 @@ public final class StringConvert {
      * <p>
      * No new converters may be registered for the global singleton.
      * 
+     * @param <T>  the type of the converter
      * @param cls  the class to register a converter for, not null
      * @param converter  the String converter, not null
      */
