@@ -25,6 +25,7 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -81,7 +82,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
-     * Byte converter.
+     * Boolean converter.
      */
     BOOLEAN(Boolean.class) {
         public Object convertFromString(String str) {
@@ -119,7 +120,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
-     * Double converter.
+     * BigDecimal converter.
      */
     BIG_DECIMAL(BigDecimal.class) {
         public Object convertFromString(String str) {
@@ -145,6 +146,20 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
+     * AtomicBoolean converter.
+     */
+    ATOMIC_BOOLEAN(AtomicBoolean.class) {
+        public Object convertFromString(String str) {
+            if ("true".equalsIgnoreCase(str)) {
+                return new AtomicBoolean(true);
+            }
+            if ("false".equalsIgnoreCase(str)) {
+                return new AtomicBoolean(false);
+            }
+            throw new IllegalArgumentException("Boolean value must be 'true' or 'false', case insensitive");
+        }
+    },
+    /**
      * Locale converter.
      */
     LOCALE(Locale.class) {
@@ -162,17 +177,17 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
-     * CharSequence converter.
+     * String converter.
      */
-    CHAR_SEQUENCE(CharSequence.class) {
+    STRING(String.class) {
         public Object convertFromString(String str) {
             return str;
         }
     },
     /**
-     * String converter.
+     * CharSequence converter.
      */
-    STRING(String.class) {
+    CHAR_SEQUENCE(CharSequence.class) {
         public Object convertFromString(String str) {
             return str;
         }
@@ -197,6 +212,10 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Class converter.
      */
     CLASS(Class.class) {
+        @Override
+        public String convertToString(Object object) {
+            return ((Class<?>) object).getName();
+        }
         public Object convertFromString(String str) {
             try {
                 return Thread.currentThread().getContextClassLoader().loadClass(str);
