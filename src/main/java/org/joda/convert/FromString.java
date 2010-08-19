@@ -21,13 +21,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to mark a method as being suitable for converting an
- * object from a {@code String}.
+ * Annotation used to mark a method or constructor as being suitable for converting
+ * an object from a {@code String}.
  * <p>
- * This annotation should be applied to one method on a class.
+ * When applying to a method, this annotation should be applied once per class.
  * The method must be static and have one {@code String} parameter with a
  * return type of the type that the method is implemented on.
  * For example, {@link Integer#parseInt(String)}.
+ * <p>
+ * When applying to a constructor, this annotation should be applied to the constructor
+ * that takes one {@code String} parameter.
  */
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 @Retention(RetentionPolicy.RUNTIME)
