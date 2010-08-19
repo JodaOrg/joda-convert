@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <title>Java convert - Changes</title>
+    <author>Stephen Colebourne</author>
+  </properties>
+
+  <body>
+    <release version="0.5" date="unreleased">
+      <action dev="scolebourne" type="fix" >
+        Initial checkin
+      </action>
+    </release>
+  </body>
+</document>
