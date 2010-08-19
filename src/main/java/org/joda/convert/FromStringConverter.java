@@ -28,6 +28,6 @@ public interface FromStringConverter<T> {
      * @param str  the string to convert, not null
      * @return the converted object, may be null but generally not
      */
-    public T convertFromString(String object);
+    public T convertFromString(String str);
 
 }
