@@ -27,6 +27,10 @@ import java.lang.reflect.Modifier;
  * {@code String anyName()} on Class T.
  * <p>
  * The fromString constructor must take a single {@code String} parameter.
+ * <p>
+ * MethodConstructorStringConverter is thread-safe and immutable.
+ * 
+ * @param <T>  the type of the converter
  */
 final class MethodConstructorStringConverter<T> extends ReflectionStringConverter<T> {
 

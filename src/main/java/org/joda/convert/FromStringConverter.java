@@ -20,6 +20,8 @@ package org.joda.convert;
  * <p>
  * FromStringConverter is an interface and must be implemented with care.
  * Implementations must be immutable and thread-safe.
+ * 
+ * @param <T>  the type of the converter
  */
 public interface FromStringConverter<T> {
 

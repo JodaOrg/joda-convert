@@ -26,6 +26,10 @@ import java.lang.reflect.Method;
  * <p>
  * The fromString method must meet the following signature:<br />
  * {@code static T anyName(String)} on any class.
+ * <p>
+ * MethodsStringConverter is thread-safe and immutable.
+ * 
+ * @param <T>  the type of the converter
  */
 final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
 

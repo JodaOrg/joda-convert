@@ -23,6 +23,10 @@ import java.lang.reflect.Method;
  * <p>
  * The toString method must meet the following signature:<br />
  * {@code String anyName()} on Class T.
+ * <p>
+ * ReflectionStringConverter is abstract, but all known implementations are thread-safe and immutable.
+ * 
+ * @param <T>  the type of the converter
  */
 abstract class ReflectionStringConverter<T> implements StringConverter<T> {
 
@@ -35,7 +39,6 @@ abstract class ReflectionStringConverter<T> implements StringConverter<T> {
      * Creates an instance using two methods.
      * @param cls  the class this converts for, not null
      * @param toString  the toString method, not null
-     * @param fromString  the fromString method, not null
      * @throws RuntimeException (or subclass) if the method signatures are invalid
      */
     ReflectionStringConverter(Class<T> cls, Method toString) {

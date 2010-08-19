@@ -88,8 +88,9 @@ public final class StringConvert {
      * This uses {@link #findConverter} to provide the converter.
      * 
      * @param <T>  the type to convert to
-     * @param object  the object to convert, null returns null
-     * @return the converted string, may be null
+     * @param cls  the class to convert to, not null
+     * @param str  the string to convert, null returns null
+     * @return the converted object, may be null
      * @throws RuntimeException (or subclass) if unable to convert
      */
     public <T> T convertFromString(Class<T> cls, String str) {
@@ -116,6 +117,9 @@ public final class StringConvert {
      */
     @SuppressWarnings("unchecked")
     public <T> StringConverter<T> findConverter(final Class<T> cls) {
+        if (cls == null) {
+            throw new IllegalArgumentException("Class must not be null");
+        }
         StringConverter<T> conv = (StringConverter<T>) registered.get(cls);
         if (conv == null) {
             conv = findAnnotationConverter(cls);
@@ -130,6 +134,7 @@ public final class StringConvert {
     /**
      * Finds the conversion method.
      * 
+     * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
@@ -177,6 +182,7 @@ public final class StringConvert {
     /**
      * Finds the conversion method.
      * 
+     * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
