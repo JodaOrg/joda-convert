@@ -197,7 +197,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      */
     STRING_BUFFER(StringBuffer.class) {
         public Object convertFromString(String str) {
-            return str;
+            return new StringBuffer(str);
         }
     },
     /**
@@ -205,7 +205,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      */
     STRING_BUILDER(StringBuilder.class) {
         public Object convertFromString(String str) {
-            return str;
+            return new StringBuilder(str);
         }
     },
     /**
@@ -292,6 +292,17 @@ enum JDKStringConverter implements StringConverter<Object> {
             return new File(str);
         }
     },
+//    /**
+//     * Enum converter.
+//     */
+//    ENUM(Enum.class) {
+//        public String convertToString(Object object) {
+//            return ((Enum) object).name();  // avoid toString() as that can be overridden
+//        }
+//        public Object convertFromString(String str) {
+//            return Enum.valueOf(null, str);
+//        }
+//    },
     ;
 
     /** The type. */
