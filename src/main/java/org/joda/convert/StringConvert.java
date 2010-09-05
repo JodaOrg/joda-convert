@@ -32,7 +32,9 @@ public final class StringConvert {
 
     /**
      * An immutable global instance.
-     * It is also possible to create an instance to permit multiple conversion configurations.
+     * <p>
+     * This instance cannot be added to using {@link #register}, however annotated classes
+     * are picked up. To register your own converters, simply create an instance of this class.
      */
     public static final StringConvert INSTANCE = new StringConvert();
 
