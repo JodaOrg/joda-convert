@@ -18,10 +18,17 @@ package org.joda.convert;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Currency;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -33,8 +40,39 @@ import java.util.concurrent.atomic.AtomicLong;
  * Conversion between JDK classes and a {@code String}.
  */
 enum JDKStringConverter implements StringConverter<Object> {
-    // TODO BitSet, Enum, 
 
+    /**
+     * String converter.
+     */
+    STRING(String.class) {
+        public Object convertFromString(String str) {
+            return str;
+        }
+    },
+    /**
+     * CharSequence converter.
+     */
+    CHAR_SEQUENCE(CharSequence.class) {
+        public Object convertFromString(String str) {
+            return str;
+        }
+    },
+    /**
+     * StringBuffer converter.
+     */
+    STRING_BUFFER(StringBuffer.class) {
+        public Object convertFromString(String str) {
+            return new StringBuffer(str);
+        }
+    },
+    /**
+     * StringBuilder converter.
+     */
+    STRING_BUILDER(StringBuilder.class) {
+        public Object convertFromString(String str) {
+            return new StringBuilder(str);
+        }
+    },
     /**
      * Long converter.
      */
@@ -177,38 +215,6 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
-     * String converter.
-     */
-    STRING(String.class) {
-        public Object convertFromString(String str) {
-            return str;
-        }
-    },
-    /**
-     * CharSequence converter.
-     */
-    CHAR_SEQUENCE(CharSequence.class) {
-        public Object convertFromString(String str) {
-            return str;
-        }
-    },
-    /**
-     * StringBuffer converter.
-     */
-    STRING_BUFFER(StringBuffer.class) {
-        public Object convertFromString(String str) {
-            return new StringBuffer(str);
-        }
-    },
-    /**
-     * StringBuilder converter.
-     */
-    STRING_BUILDER(StringBuilder.class) {
-        public Object convertFromString(String str) {
-            return new StringBuilder(str);
-        }
-    },
-    /**
      * Class converter.
      */
     CLASS(Class.class) {
@@ -218,7 +224,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
         public Object convertFromString(String str) {
             try {
-                return Thread.currentThread().getContextClassLoader().loadClass(str);
+                return getClass().getClassLoader().loadClass(str);
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException("Unable to create class: " + str, ex);
             }
@@ -285,11 +291,84 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
+     * InetAddress converter.
+     */
+    INET_ADDRESS(InetAddress.class) {
+        @Override
+        public String convertToString(Object object) {
+            return ((InetAddress) object).getHostAddress();
+        }
+        public Object convertFromString(String str) {
+            try {
+                return InetAddress.getByName(str);
+            } catch (UnknownHostException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    },
+    /**
      * File converter.
      */
     FILE(File.class) {
         public Object convertFromString(String str) {
             return new File(str);
+        }
+    },
+    /**
+     * Date converter.
+     */
+    DATE(Date.class) {
+        @Override
+        public String convertToString(Object object) {
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            String str = f.format(object);
+            return str.substring(0, 26) + ":" + str.substring(26);
+        }
+        public Object convertFromString(String str) {
+            if (str.length() != 29) {
+                throw new IllegalArgumentException("Unable to parse date: " + str);
+            }
+            str = str.substring(0, 26) + str.substring(27);
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            try {
+                return f.parseObject(str);
+            } catch (ParseException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    },
+    /**
+     * Calendar converter.
+     */
+    CALENDAR(Calendar.class) {
+        @Override
+        public String convertToString(Object object) {
+            if (object instanceof GregorianCalendar == false) {
+                throw new RuntimeException("Unable to convert calendar as it is not a GregorianCalendar");
+            }
+            GregorianCalendar cal = (GregorianCalendar) object;
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            f.setCalendar(cal);
+            String str = f.format(cal.getTime());
+            return str.substring(0, 26) + ":" + str.substring(26) + "[" + cal.getTimeZone().getID() + "]";
+        }
+        public Object convertFromString(String str) {
+            if (str.length() < 31 || str.charAt(26) != ':'
+                    || str.charAt(29) != '[' || str.charAt(str.length() - 1) != ']') {
+                throw new IllegalArgumentException("Unable to parse date: " + str);
+            }
+            TimeZone zone = TimeZone.getTimeZone(str.substring(30, str.length() - 1));
+            str = str.substring(0, 26) + str.substring(27, 29);
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            GregorianCalendar cal = new GregorianCalendar(zone);
+            cal.setTimeInMillis(0);
+            f.setCalendar(cal);
+            try {
+                f.parseObject(str);
+                return f.getCalendar();
+            } catch (ParseException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     },
 //    /**
