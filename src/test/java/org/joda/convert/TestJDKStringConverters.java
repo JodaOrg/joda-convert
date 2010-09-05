@@ -101,6 +101,11 @@ public class TestJDKStringConverters {
         doTest(test, Character.class, Character.valueOf('z'), "z");
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void test_Character_fail() {
+        JDKStringConverter.CHARACTER.convertFromString(Character.class, "RUBBISH");
+    }
+
     @Test
     public void test_Byte() {
         JDKStringConverter test = JDKStringConverter.BYTE;
@@ -112,6 +117,11 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BOOLEAN;
         doTest(test, Boolean.class, Boolean.TRUE, "true");
         doTest(test, Boolean.class, Boolean.FALSE, "false");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_Boolean_fail() {
+        JDKStringConverter.BOOLEAN.convertFromString(Boolean.class, "RUBBISH");
     }
 
     @Test
@@ -159,7 +169,7 @@ public class TestJDKStringConverters {
     }
 
     @Test
-    public void test_AtomicBoolean() {
+    public void test_AtomicBoolean_true() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
         AtomicBoolean obj = new AtomicBoolean(true);
         assertEquals(AtomicBoolean.class, test.getType());
@@ -169,10 +179,26 @@ public class TestJDKStringConverters {
     }
 
     @Test
+    public void test_AtomicBoolean_false() {
+        JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
+        AtomicBoolean obj = new AtomicBoolean(false);
+        assertEquals(AtomicBoolean.class, test.getType());
+        assertEquals("false", test.convertToString(obj));
+        AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "false");
+        assertEquals(false, back.get());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_AtomicBoolean_fail() {
+        JDKStringConverter.ATOMIC_BOOLEAN.convertFromString(AtomicBoolean.class, "RUBBISH");
+    }
+
+    @Test
     public void test_Locale() {
         JDKStringConverter test = JDKStringConverter.LOCALE;
         doTest(test, Locale.class, new Locale("en"), "en");
         doTest(test, Locale.class, new Locale("en", "GB"), "en_GB");
+        doTest(test, Locale.class, new Locale("en", "GB", "VARIANT_B"), "en_GB_VARIANT_B");
     }
 
     @Test
@@ -180,6 +206,11 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.CLASS;
         doTest(test, Class.class, Locale.class, "java.util.Locale");
         doTest(test, Class.class, FromString.class, "org.joda.convert.FromString");
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_Class_fail() {
+        JDKStringConverter.CLASS.convertFromString(Class.class, "RUBBISH");
     }
 
     @Test
@@ -217,6 +248,11 @@ public class TestJDKStringConverters {
         doTest(test, URL.class, new URL(null, "ftp:world"), "ftp:world");
     }
 
+    @Test(expected=RuntimeException.class)
+    public void test_URL_invalidFormat() {
+        JDKStringConverter.URL.convertFromString(URL.class, "RUBBISH:RUBBISH");
+    }
+
     @Test
     public void test_URI() {
         JDKStringConverter test = JDKStringConverter.URI;
@@ -232,6 +268,11 @@ public class TestJDKStringConverters {
         doTest(test, InetAddress.class, InetAddress.getByName("1.2.3.4"), "1.2.3.4");
         doTest(test, InetAddress.class, InetAddress.getByName("2001:0db8:85a3:0000:0000:8a2e:0370:7334"), "2001:db8:85a3:0:0:8a2e:370:7334");
     }
+
+//    @Test(expected=RuntimeException.class)
+//    public void test_InetAddress_invalidFormat() {
+//        JDKStringConverter.INET_ADDRESS.convertFromString(InetAddress.class, "RUBBISH");
+//    }
 
     @Test
     public void test_File() {
@@ -254,6 +295,16 @@ public class TestJDKStringConverters {
         }
     }
 
+    @Test(expected=RuntimeException.class)
+    public void test_Date_invalidLength() {
+        JDKStringConverter.DATE.convertFromString(Date.class, "2010-09-03");
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_Date_invalidFormat() {
+        JDKStringConverter.DATE.convertFromString(Date.class, "2010-09-03XXX:34:05.000+02:00");
+    }
+
     @Test
     public void test_Calendar() {
         JDKStringConverter test = JDKStringConverter.CALENDAR;
@@ -268,12 +319,61 @@ public class TestJDKStringConverters {
         doTest(test, Calendar.class, cal2, "2011-01-04T12:34:05.000+01:00[Europe/Paris]");
     }
 
+    @Test(expected=RuntimeException.class)
+    public void test_Calendar_invalidLength() {
+        JDKStringConverter.CALENDAR.convertFromString(GregorianCalendar.class, "2010-09-03");
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_Calendar_invalidFormat() {
+        JDKStringConverter.CALENDAR.convertFromString(GregorianCalendar.class, "2010-09-03XXX:34:05.000+02:00[Europe/London]");
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_Calendar_notGregorian() {
+        JDKStringConverter.CALENDAR.convertToString(new Calendar() {
+            @Override
+            public void roll(int field, boolean up) {
+            }
+            @Override
+            public int getMinimum(int field) {
+                return 0;
+            }
+            @Override
+            public int getMaximum(int field) {
+                return 0;
+            }
+            @Override
+            public int getLeastMaximum(int field) {
+                return 0;
+            }
+            @Override
+            public int getGreatestMinimum(int field) {
+                return 0;
+            }
+            @Override
+            protected void computeTime() {
+            }
+            @Override
+            protected void computeFields() {
+            }
+            @Override
+            public void add(int field, int amount) {
+            }
+        });
+    }
+
     @Test
     public void test_Enum() {
         JDKStringConverter test = JDKStringConverter.ENUM;
         assertEquals(Enum.class, test.getType());
         assertEquals("CEILING", test.convertToString(RoundingMode.CEILING));
         assertEquals(RoundingMode.CEILING, test.convertFromString(RoundingMode.class, "CEILING"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_Enum_invalidConstant() {
+        JDKStringConverter.ENUM.convertFromString(RoundingMode.class, "RUBBISH");
     }
 
     //-----------------------------------------------------------------------

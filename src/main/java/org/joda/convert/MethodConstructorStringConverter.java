@@ -49,17 +49,8 @@ final class MethodConstructorStringConverter<T> extends ReflectionStringConverte
         if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()) || cls.isLocalClass() || cls.isMemberClass()) {
             throw new IllegalArgumentException("FromString constructor must be on an instantiable class");
         }
-        if (fromString == null) {
-            throw new IllegalArgumentException("FromString constructor must not be null");
-        }
         if (fromString.getDeclaringClass() != cls) {
             throw new IllegalStateException("FromString constructor must be defined on specified class");
-        }
-        if (fromString.getParameterTypes().length != 1) {
-            throw new IllegalStateException("FromString constructor must have one parameter");
-        }
-        if (fromString.getParameterTypes()[0] != String.class) {
-            throw new IllegalStateException("FromString constructor must take a String");
         }
         this.fromString = fromString;
     }
@@ -82,7 +73,7 @@ final class MethodConstructorStringConverter<T> extends ReflectionStringConverte
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();
             }
-            throw new RuntimeException(ex.getMessage(), ex);
+            throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
     }
 

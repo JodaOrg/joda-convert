@@ -45,9 +45,6 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
      */
     MethodsStringConverter(Class<T> cls, Method toString, Method fromString) {
         super(cls, toString);
-        if (fromString == null) {
-            throw new IllegalArgumentException("FromString method must not be null");
-        }
         if (fromString.getParameterTypes().length != 1) {
             throw new IllegalStateException("FromString method must have one parameter");
         }
@@ -76,7 +73,7 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();
             }
-            throw new RuntimeException(ex.getMessage(), ex);
+            throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
     }
 

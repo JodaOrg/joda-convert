@@ -16,19 +16,19 @@
 package org.joda.convert;
 
 /**
- * Conversion between an {@code Integer} and a {@code String}.
+ * Example class with no annotations.
  */
-public class Distance {
+public class DistanceTwoToStringAnnotations {
 
     /** Amount. */
-    private final int amount;
+    final int amount;
 
-    public Distance(int amount) {
+    public DistanceTwoToStringAnnotations(int amount) {
         this.amount = amount;
     }
 
     @FromString
-    public Distance(String amount) {
+    public DistanceTwoToStringAnnotations(String amount) {
         amount = amount.substring(0, amount.length() - 1);
         this.amount = Integer.parseInt(amount);
     }
@@ -38,6 +38,7 @@ public class Distance {
         return amount + "m";
     }
 
+    @ToString
     @Override
     public String toString() {
         return "Distance[" + amount + "m]";

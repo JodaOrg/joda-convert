@@ -16,21 +16,30 @@
 package org.joda.convert;
 
 /**
- * Conversion between an {@code Integer} and a {@code String}.
+ * Example class with no annotations.
  */
-public class Test {
+public class DistanceFromStringNoToString {
 
-    public static void main(String[] args) {
-//        MockIntegerStringConverter mock = MockIntegerStringConverter.INSTANCE;
-//        StringConvert.INSTANCE.register(Integer.class, mock);
-        String str = StringConvert.INSTANCE.convertToString(new Integer(876));
-        System.out.println(str);
-        
-        String str2 = StringConvert.INSTANCE.convertToString(new Float(12.6f));
-        System.out.println(str2);
-        
-        Distance d = StringConvert.INSTANCE.convertFromString(Distance.class, "23m");
-        System.out.println(d);
+    /** Amount. */
+    final int amount;
+
+    public DistanceFromStringNoToString(int amount) {
+        this.amount = amount;
+    }
+
+    @FromString
+    public DistanceFromStringNoToString(String amount) {
+        amount = amount.substring(0, amount.length() - 1);
+        this.amount = Integer.parseInt(amount);
+    }
+
+    public String print() {
+        return amount + "m";
+    }
+
+    @Override
+    public String toString() {
+        return "Distance[" + amount + "m]";
     }
 
 }

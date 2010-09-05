@@ -42,15 +42,6 @@ abstract class ReflectionStringConverter<T> implements StringConverter<T> {
      * @throws RuntimeException (or subclass) if the method signatures are invalid
      */
     ReflectionStringConverter(Class<T> cls, Method toString) {
-        if (cls == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
-        if (toString == null) {
-            throw new IllegalArgumentException("ToString method must not be null");
-        }
-        if (toString.getDeclaringClass() != cls) {
-            throw new IllegalStateException("ToString method must be defined on specified class");
-        }
         if (toString.getParameterTypes().length != 0) {
             throw new IllegalStateException("ToString method must have no parameters");
         }
@@ -76,7 +67,7 @@ abstract class ReflectionStringConverter<T> implements StringConverter<T> {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();
             }
-            throw new RuntimeException(ex.getMessage(), ex);
+            throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
     }
 
