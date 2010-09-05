@@ -17,9 +17,19 @@ package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Currency;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -66,10 +76,21 @@ public class TestJDKStringConverters {
     }
 
     @Test
-    public void test_Boolean() {
-        JDKStringConverter test = JDKStringConverter.BOOLEAN;
-        doTest(test, Boolean.class, Boolean.TRUE, "true");
-        doTest(test, Boolean.class, Boolean.FALSE, "false");
+    public void test_Long() {
+        JDKStringConverter test = JDKStringConverter.LONG;
+        doTest(test, Long.class, Long.valueOf(12L), "12");
+    }
+
+    @Test
+    public void test_Int() {
+        JDKStringConverter test = JDKStringConverter.INTEGER;
+        doTest(test, Integer.class, Integer.valueOf(12), "12");
+    }
+
+    @Test
+    public void test_Short() {
+        JDKStringConverter test = JDKStringConverter.SHORT;
+        doTest(test, Short.class, Short.valueOf((byte) 12), "12");
     }
 
     @Test
@@ -86,33 +107,22 @@ public class TestJDKStringConverters {
     }
 
     @Test
-    public void test_Short() {
-        JDKStringConverter test = JDKStringConverter.SHORT;
-        doTest(test, Short.class, Short.valueOf((byte) 12), "12");
-    }
-
-    @Test
-    public void test_Int() {
-        JDKStringConverter test = JDKStringConverter.INTEGER;
-        doTest(test, Integer.class, Integer.valueOf(12), "12");
-    }
-
-    @Test
-    public void test_Long() {
-        JDKStringConverter test = JDKStringConverter.LONG;
-        doTest(test, Long.class, Long.valueOf(12L), "12");
-    }
-
-    @Test
-    public void test_Float() {
-        JDKStringConverter test = JDKStringConverter.FLOAT;
-        doTest(test, Float.class, Float.valueOf(12.2f), "12.2");
+    public void test_Boolean() {
+        JDKStringConverter test = JDKStringConverter.BOOLEAN;
+        doTest(test, Boolean.class, Boolean.TRUE, "true");
+        doTest(test, Boolean.class, Boolean.FALSE, "false");
     }
 
     @Test
     public void test_Double() {
         JDKStringConverter test = JDKStringConverter.DOUBLE;
         doTest(test, Double.class, Double.valueOf(12.4d), "12.4");
+    }
+
+    @Test
+    public void test_Float() {
+        JDKStringConverter test = JDKStringConverter.FLOAT;
+        doTest(test, Float.class, Float.valueOf(12.2f), "12.2");
     }
 
     @Test
@@ -128,26 +138,6 @@ public class TestJDKStringConverters {
     }
 
     @Test
-    public void test_AtomicBoolean() {
-        JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
-        AtomicBoolean obj = new AtomicBoolean(true);
-        assertEquals(AtomicBoolean.class, test.getType());
-        assertEquals("true", test.convertToString(obj));
-        AtomicBoolean back = (AtomicBoolean) test.convertFromString("true");
-        assertEquals(true, back.get());
-    }
-
-    @Test
-    public void test_AtomicInt() {
-        JDKStringConverter test = JDKStringConverter.ATOMIC_INTEGER;
-        AtomicInteger obj = new AtomicInteger(12);
-        assertEquals(AtomicInteger.class, test.getType());
-        assertEquals("12", test.convertToString(obj));
-        AtomicInteger back = (AtomicInteger) test.convertFromString("12");
-        assertEquals(12, back.get());
-    }
-
-    @Test
     public void test_AtomicLong() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_LONG;
         AtomicLong obj = new AtomicLong(12);
@@ -158,10 +148,123 @@ public class TestJDKStringConverters {
     }
 
     @Test
+    public void test_AtomicInteger() {
+        JDKStringConverter test = JDKStringConverter.ATOMIC_INTEGER;
+        AtomicInteger obj = new AtomicInteger(12);
+        assertEquals(AtomicInteger.class, test.getType());
+        assertEquals("12", test.convertToString(obj));
+        AtomicInteger back = (AtomicInteger) test.convertFromString("12");
+        assertEquals(12, back.get());
+    }
+
+    @Test
+    public void test_AtomicBoolean() {
+        JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
+        AtomicBoolean obj = new AtomicBoolean(true);
+        assertEquals(AtomicBoolean.class, test.getType());
+        assertEquals("true", test.convertToString(obj));
+        AtomicBoolean back = (AtomicBoolean) test.convertFromString("true");
+        assertEquals(true, back.get());
+    }
+
+    @Test
     public void test_Locale() {
         JDKStringConverter test = JDKStringConverter.LOCALE;
         doTest(test, Locale.class, new Locale("en"), "en");
         doTest(test, Locale.class, new Locale("en", "GB"), "en_GB");
+    }
+
+    @Test
+    public void test_Class() {
+        JDKStringConverter test = JDKStringConverter.CLASS;
+        doTest(test, Class.class, Locale.class, "java.util.Locale");
+        doTest(test, Class.class, FromString.class, "org.joda.convert.FromString");
+    }
+
+    @Test
+    public void test_Package() {
+        JDKStringConverter test = JDKStringConverter.PACKAGE;
+        doTest(test, Package.class, Locale.class.getPackage(), "java.util");
+        doTest(test, Package.class, FromString.class.getPackage(), "org.joda.convert");
+    }
+
+    @Test
+    public void test_Currency() {
+        JDKStringConverter test = JDKStringConverter.CURRENCY;
+        doTest(test, Currency.class, Currency.getInstance("GBP"), "GBP");
+        doTest(test, Currency.class, Currency.getInstance("USD"), "USD");
+    }
+
+    @Test
+    public void test_TimeZone() {
+        JDKStringConverter test = JDKStringConverter.TIME_ZONE;
+        doTest(test, TimeZone.class, TimeZone.getTimeZone("Europe/London"), "Europe/London");
+        doTest(test, TimeZone.class, TimeZone.getTimeZone("America/New_York"), "America/New_York");
+    }
+
+    @Test
+    public void test_UUID() {
+        JDKStringConverter test = JDKStringConverter.UUID;
+        UUID uuid = UUID.randomUUID();
+        doTest(test, UUID.class, uuid, uuid.toString());
+    }
+
+    @Test
+    public void test_URL() throws Exception {
+        JDKStringConverter test = JDKStringConverter.URL;
+        doTest(test, URL.class, new URL("http://localhost:8080/my/test"), "http://localhost:8080/my/test");
+        doTest(test, URL.class, new URL(null, "ftp:world"), "ftp:world");
+    }
+
+    @Test
+    public void test_URI() {
+        JDKStringConverter test = JDKStringConverter.URI;
+        doTest(test, URI.class, URI.create("http://localhost:8080/my/test"), "http://localhost:8080/my/test");
+        doTest(test, URI.class, URI.create("/my/test"), "/my/test");
+        doTest(test, URI.class, URI.create("/my/../test"), "/my/../test");
+        doTest(test, URI.class, URI.create("urn:hello"), "urn:hello");
+    }
+
+    @Test
+    public void test_InetAddress() throws Exception {
+        JDKStringConverter test = JDKStringConverter.INET_ADDRESS;
+        doTest(test, InetAddress.class, InetAddress.getByName("1.2.3.4"), "1.2.3.4");
+        doTest(test, InetAddress.class, InetAddress.getByName("2001:0db8:85a3:0000:0000:8a2e:0370:7334"), "2001:db8:85a3:0:0:8a2e:370:7334");
+    }
+
+    @Test
+    public void test_File() {
+        JDKStringConverter test = JDKStringConverter.FILE;
+        File file = new File("/path/to/file");
+        doTest(test, File.class, file, file.toString());
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void test_Date() {
+        TimeZone zone = TimeZone.getDefault();
+        try {
+            TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"));
+            JDKStringConverter test = JDKStringConverter.DATE;
+            doTest(test, Date.class, new Date(2010 - 1900, 9 - 1, 3, 12, 34, 5), "2010-09-03T12:34:05.000+02:00");
+            doTest(test, Date.class, new Date(2011 - 1900, 1 - 1, 4, 12, 34, 5), "2011-01-04T12:34:05.000+01:00");
+        } finally {
+            TimeZone.setDefault(zone);
+        }
+    }
+
+    @Test
+    public void test_Calendar() {
+        JDKStringConverter test = JDKStringConverter.CALENDAR;
+        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("Europe/Paris"));
+        cal.set(2010, 9 - 1, 3, 12, 34, 5);
+        cal.set(Calendar.MILLISECOND, 0);
+        doTest(test, Calendar.class, cal, "2010-09-03T12:34:05.000+02:00[Europe/Paris]");
+        
+        GregorianCalendar cal2 = new GregorianCalendar(TimeZone.getTimeZone("Europe/Paris"));
+        cal2.set(2011, 1 - 1, 4, 12, 34, 5);
+        cal2.set(Calendar.MILLISECOND, 0);
+        doTest(test, Calendar.class, cal2, "2011-01-04T12:34:05.000+01:00[Europe/Paris]");
     }
 
     //-----------------------------------------------------------------------
