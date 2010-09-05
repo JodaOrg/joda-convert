@@ -27,9 +27,10 @@ public interface FromStringConverter<T> {
 
     /**
      * Converts the specified object from a {@code String}.
+     * @param cls  the class to convert to, not null
      * @param str  the string to convert, not null
      * @return the converted object, may be null but generally not
      */
-    T convertFromString(String str);
+    T convertFromString(Class<? extends T> cls, String str);
 
 }

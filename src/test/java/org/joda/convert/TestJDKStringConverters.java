@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class TestJDKStringConverters {
         Object obj = new StringBuffer("Hello");
         assertEquals(StringBuffer.class, test.getType());
         assertEquals("Hello", test.convertToString(obj));
-        StringBuffer back = (StringBuffer) test.convertFromString("Hello");
+        StringBuffer back = (StringBuffer) test.convertFromString(StringBuffer.class, "Hello");
         assertEquals("Hello", back.toString());
     }
 
@@ -63,7 +64,7 @@ public class TestJDKStringConverters {
         Object obj = new StringBuilder("Hello");
         assertEquals(StringBuilder.class, test.getType());
         assertEquals("Hello", test.convertToString(obj));
-        StringBuilder back = (StringBuilder) test.convertFromString("Hello");
+        StringBuilder back = (StringBuilder) test.convertFromString(StringBuilder.class, "Hello");
         assertEquals("Hello", back.toString());
     }
 
@@ -143,7 +144,7 @@ public class TestJDKStringConverters {
         AtomicLong obj = new AtomicLong(12);
         assertEquals(AtomicLong.class, test.getType());
         assertEquals("12", test.convertToString(obj));
-        AtomicLong back = (AtomicLong) test.convertFromString("12");
+        AtomicLong back = (AtomicLong) test.convertFromString(AtomicLong.class, "12");
         assertEquals(12, back.get());
     }
 
@@ -153,7 +154,7 @@ public class TestJDKStringConverters {
         AtomicInteger obj = new AtomicInteger(12);
         assertEquals(AtomicInteger.class, test.getType());
         assertEquals("12", test.convertToString(obj));
-        AtomicInteger back = (AtomicInteger) test.convertFromString("12");
+        AtomicInteger back = (AtomicInteger) test.convertFromString(AtomicInteger.class, "12");
         assertEquals(12, back.get());
     }
 
@@ -163,7 +164,7 @@ public class TestJDKStringConverters {
         AtomicBoolean obj = new AtomicBoolean(true);
         assertEquals(AtomicBoolean.class, test.getType());
         assertEquals("true", test.convertToString(obj));
-        AtomicBoolean back = (AtomicBoolean) test.convertFromString("true");
+        AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "true");
         assertEquals(true, back.get());
     }
 
@@ -267,6 +268,14 @@ public class TestJDKStringConverters {
         doTest(test, Calendar.class, cal2, "2011-01-04T12:34:05.000+01:00[Europe/Paris]");
     }
 
+    @Test
+    public void test_Enum() {
+        JDKStringConverter test = JDKStringConverter.ENUM;
+        assertEquals(Enum.class, test.getType());
+        assertEquals("CEILING", test.convertToString(RoundingMode.CEILING));
+        assertEquals(RoundingMode.CEILING, test.convertFromString(RoundingMode.class, "CEILING"));
+    }
+
     //-----------------------------------------------------------------------
     public void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str) {
         doTest(test, cls, obj, str, obj);
@@ -275,7 +284,7 @@ public class TestJDKStringConverters {
     public void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str, Object objFromStr) {
         assertEquals(cls, test.getType());
         assertEquals(str, test.convertToString(obj));
-        assertEquals(objFromStr, test.convertFromString(str));
+        assertEquals(objFromStr, test.convertFromString(cls, str));
     }
 
 }

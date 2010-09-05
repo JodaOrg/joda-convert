@@ -63,10 +63,11 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
     //-----------------------------------------------------------------------
     /**
      * Converts the {@code String} to an object.
+     * @param cls  the class to convert to, not null
      * @param str  the string to convert, not null
      * @return the converted object, may be null but generally not
      */
-    public T convertFromString(String str) {
+    public T convertFromString(Class<? extends T> cls, String str) {
         try {
             return cls.cast(fromString.invoke(null, str));
         } catch (IllegalAccessException ex) {

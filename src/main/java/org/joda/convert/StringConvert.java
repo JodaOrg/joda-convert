@@ -98,7 +98,7 @@ public final class StringConvert {
             return null;
         }
         StringConverter<T> conv = findConverter(cls);
-        return conv.convertFromString(str);
+        return conv.convertFromString(cls, str);
     }
 
     /**

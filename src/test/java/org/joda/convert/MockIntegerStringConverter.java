@@ -34,10 +34,11 @@ public enum MockIntegerStringConverter implements StringConverter<Integer> {
 
     /**
      * Converts the {@code String} to an {@code Integer}.
+     * @param cls  the class to convert to, not null
      * @param str  the string to convert, not null
      * @return the converted integer, may be null but generally not
      */
-    public Integer convertFromString(String str) {
+    public Integer convertFromString(Class<? extends Integer> cls, String str) {
         return new Integer(str);
     }
 
