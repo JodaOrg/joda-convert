@@ -59,7 +59,7 @@ A converter can only be registered if one is not already registered for that typ
 
 <subsection name="Annotation based conversion">
 <p>
-If there is no registered converter for a type, then the a search by annotation is performed.
+If there is no registered converter for a type, then a search by annotation is performed.
 This will search for the <code>ToString</code> and <code>FromString</code> annotation on the type.
 These annotations will indicate which method should be called to perform the conversion.
 </p>

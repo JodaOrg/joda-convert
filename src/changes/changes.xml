@@ -6,6 +6,11 @@
   </properties>
 
   <body>
+    <release version="1.0" date="2010-09-05">
+      <action dev="scolebourne" type="fix" >
+        Lots of tests and fixes
+      </action>
+    </release>
     <release version="0.5" date="unreleased">
       <action dev="scolebourne" type="fix" >
         Initial checkin

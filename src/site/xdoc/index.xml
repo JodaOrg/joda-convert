@@ -33,7 +33,7 @@ Joda-Convert is licensed under the business-friendly <a href="license.html">Apac
 Various documentation is available:
 <ul>
 <li>The helpful <a href="userguide.html">user guide</a></li>
-<!--li>The javadoc for the <a href="api-release/index.html">current release</a></li-->
+<li>The javadoc for the <a href="api-release/index.html">current release</a></li>
 <li>The javadoc for the <a href="apidocs/index.html">latest SVN</a></li>
 <!--li>A <a href="faq.html">FAQ</a> list</li-->
 <!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Time</li-->
@@ -44,7 +44,10 @@ Various documentation is available:
 
 <section name="Releases">
 <p>
-None yet...
+<a href="http://sourceforge.net/projects/joda-convert/files/joda-convert/">Release 1.0</a>
+is the current latest release.
+This release is considered stable and worthy of the 1.x tag.
+It depends on JDK 1.5 or later.
 </p>
 </section>
 
