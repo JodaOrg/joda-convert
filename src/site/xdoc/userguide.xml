@@ -63,6 +63,24 @@ If there is no registered converter for a type, then a search by annotation is p
 This will search for the <code>ToString</code> and <code>FromString</code> annotation on the type.
 These annotations will indicate which method should be called to perform the conversion.
 </p>
+<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+public class Distance {
+
+  @FromString
+  public static Distance parse(String str) { ... }
+
+  @ToString
+  public String getStandardOutput() { ... }
+
+}
+</pre></div>
+<p>
+To be valid, the class must contain one <code>ToString</code> annotation and one <code>FromString</code> annotation.
+The <code>ToString</code> annotation must be an instance method taking no parameters and returning a String.
+The <code>FromString</code> annotation must be either a static method or a constructor taking a String parameter and
+returning the correct type.
+If the annotations are not found on the target class, then superclasses are searched.
+</p>
 <p>
 The concept is that other open source libraries, as well as your application code, will implement these two annotations.
 For open source projects, a key point is that adding the annotations is a compile-time only event.

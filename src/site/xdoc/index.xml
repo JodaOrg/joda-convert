@@ -23,6 +23,36 @@ String str = StringConvert.INSTANCE.convertToString(foo);
 Foo bar = StringConvert.INSTANCE.convertFromString(Foo.class, str);
 </pre></div>
 <p>
+Joda-Convert supports two mechanisms of extending the list of supported conversions.
+The first is to write your own converter implementing an interface.
+The second is to use annotations.
+</p>
+<p>
+The ability of Joda-Convert to use annotations to define the conversion methods is a key difference from other projects.
+For example, most value classes, like <code>Currency</code> or <code>TimeZone</code>, already have methods
+to convert to and from a standard format String.
+Consider a <code>Distance</code> class:
+</p>
+<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+public class Distance {
+
+  @FromString
+  public static Distance parse(String str) { ... }
+
+  @ToString
+  public String getStandardOutput() { ... }
+
+}
+</pre></div>
+<p>
+As shown, the two methods may have any name. They must simply fulfil the required method signatures for conversion.
+The <code>FromString</code> annotation may also be applied to a constructor.
+</p>
+<p>
+When Joda-Convert is asked to convert between an object and a String, if there is no registered converter
+then the annotations are checked. If they are found, then the methods are called by reflection.
+</p>
+<p>
 Joda-Convert is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
 
