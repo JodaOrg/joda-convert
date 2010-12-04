@@ -51,8 +51,8 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
         if (fromString.getParameterTypes()[0] != String.class) {
             throw new IllegalStateException("FromString method must take a String");
         }
-        if (fromString.getReturnType() != cls) {
-            throw new IllegalStateException("FromString method must return specified class");
+        if (fromString.getReturnType().isAssignableFrom(cls) == false) {
+            throw new IllegalStateException("FromString method must return specified class or a superclass");
         }
         this.fromString = fromString;
     }
