@@ -111,7 +111,7 @@ public final class StringConvert {
      * <p>
      * The search algorithm first searches the registered converters.
      * It then searches for {@code ToString} and {@code FromString} annotations on the specified class.
-     * Both searches considers superclasses.
+     * Both searches consider superclasses.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a converter for, not null
