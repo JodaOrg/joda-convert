@@ -142,6 +142,44 @@ public class TestStringConvert {
     }
 
     @Test
+    public void test_convert_annotationSuperFactorySuper() {
+        StringConvert test = new StringConvert();
+        SuperFactorySuper d = new SuperFactorySuper(25);
+        assertEquals("25m", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(SuperFactorySuper.class, "25m").amount);
+        StringConverter<SuperFactorySuper> conv = test.findConverter(SuperFactorySuper.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(SuperFactorySuper.class));
+    }
+
+    @Test
+    public void test_convert_annotationSuperFactorySubViaSuper() {
+        StringConvert test = new StringConvert();
+        SuperFactorySub d = new SuperFactorySub(8);
+        assertEquals("8m", test.convertToString(d));
+        SuperFactorySuper fromStr = test.convertFromString(SuperFactorySuper.class, "8m");
+        assertEquals(d.amount, fromStr.amount);
+        assertEquals(true, fromStr instanceof SuperFactorySub);
+        StringConverter<SuperFactorySuper> conv = test.findConverter(SuperFactorySuper.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(SuperFactorySuper.class));
+    }
+
+    @Test
+    public void test_convert_annotationSuperFactorySubViaSub1() {
+        StringConvert test = new StringConvert();
+        SuperFactorySub d = new SuperFactorySub(25);
+        assertEquals("25m", test.convertToString(d));
+    }
+
+    // TODO problem is fwks, that just request a converter baed on the type of the object
+    @Test(expected = ClassCastException.class)
+    public void test_convert_annotationSuperFactorySubViaSub2() {
+        StringConvert test = new StringConvert();
+        test.convertFromString(SuperFactorySub.class, "25m");
+    }
+
+    @Test
     public void test_convert_annotationToStringInvokeException() {
         StringConvert test = new StringConvert();
         DistanceToStringException d = new DistanceToStringException(25);
@@ -243,12 +281,6 @@ public class TestStringConvert {
     public void test_convert_annotatedTwoFromStringMethod() {
         StringConvert test = new StringConvert();
         test.findConverter(DistanceTwoFromStringMethodAnnotations.class);
-    }
-
-    @Test(expected=IllegalStateException.class)
-    public void test_convert_annotatedSubNoAnnotations() {
-        StringConvert test = new StringConvert();
-        test.findConverter(SubNoAnnotations.class);
     }
 
     //-----------------------------------------------------------------------
