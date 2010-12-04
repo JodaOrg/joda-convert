@@ -12,7 +12,7 @@
 <section name="User guide">
 
 <p>
-Joda-Convert is intended for one simple task.
+Joda-Convert is intended for one simple task -
 Converting objects to and from strings.
 This is a common problem, particularly when communicating over textual protocols like XML or JSON.
 </p>

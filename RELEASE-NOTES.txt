@@ -1,9 +1,9 @@
-Joda-Convert version 0.5
+Joda-Convert version 1.1
 ------------------------
 
 Joda-Convert is a small library providing conversion to and from String.
 
-This is the first release of Joda-Convert.
+This is the second release of Joda-Convert.
 
 JDK 1.5 or later is required.
 

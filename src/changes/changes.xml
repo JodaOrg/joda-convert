@@ -6,6 +6,12 @@
   </properties>
 
   <body>
+    <!-- types are add, fix, remove, update -->
+    <release version="1.1" date="2010-12-04">
+      <action dev="scolebourne" type="fix" >
+        Enable superclass factories
+      </action>
+    </release>
     <release version="1.0" date="2010-09-05">
       <action dev="scolebourne" type="fix" >
         Lots of tests and fixes

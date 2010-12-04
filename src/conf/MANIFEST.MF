@@ -2,16 +2,16 @@ Package: org.joda.convert
 Extension-Name: joda-convert
 Specification-Title: Joda-Convert
 Specification-Vendor: Joda.org
-Specification-Version: 1.0
+Specification-Version: 1.1
 Implementation-Vendor: Joda.org
 Implementation-Title: org.joda.convert
-Implementation-Version: 1.0
+Implementation-Version: 1.1
 Implementation-Vendor-Id: org.joda
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Joda.org
 Bundle-Name: Joda-Convert
 Bundle-SymbolicName: joda-convert
-Bundle-Version: 1.0
+Bundle-Version: 1.1
 Bundle-License: Apache 2.0
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-DocURL: http://joda-convert.sourceforge.net/
