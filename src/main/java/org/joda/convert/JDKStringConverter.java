@@ -375,11 +375,11 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Enum converter.
      */
     ENUM(Enum.class) {
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         public String convertToString(Object object) {
             return ((Enum) object).name();  // avoid toString() as that can be overridden
         }
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         public Object convertFromString(Class cls, String str) {
             return Enum.valueOf(cls, str);
         }
