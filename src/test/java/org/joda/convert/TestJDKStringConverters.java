@@ -332,6 +332,7 @@ public class TestJDKStringConverters {
     @Test(expected=RuntimeException.class)
     public void test_Calendar_notGregorian() {
         JDKStringConverter.CALENDAR.convertToString(new Calendar() {
+            private static final long serialVersionUID = 1L;
             @Override
             public void roll(int field, boolean up) {
             }
