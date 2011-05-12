@@ -43,9 +43,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://joda-convert.svn.sourceforge.net/svnroot/joda-convert/trunk/JodaConvert/</connection>
-    <developerConnection>scm:svn:https://joda-convert.svn.sourceforge.net/svnroot/joda-convert/trunk/JodaConvert/</developerConnection>
-    <url>http://joda-convert.svn.sourceforge.net/viewvc/joda-convert/trunk/JodaConvert/</url>
+    <connection>scm:git:git@github.com:JodaOrg/joda-convert.git</connection>
+    <developerConnection>scm:git:git@github.com:JodaOrg/joda-convert.git</developerConnection>
+    <url>https://github.com/JodaOrg/joda-convert</url>
   </scm>
   <organization>
     <name>Joda.org</name>
