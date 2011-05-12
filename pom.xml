@@ -262,7 +262,7 @@
     <site>
       <id>sf-web-joda-convert</id>
       <name>Sourceforge Site</name>
-      <url>scp://shell.sourceforge.net/home/groups/j/jo/joda-convert/htdocs</url>
+      <url>scpexe://shell.sourceforge.net/home/project-web/joda-convert/htdocs</url>
     </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
