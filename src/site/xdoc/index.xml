@@ -64,10 +64,10 @@ Various documentation is available:
 <ul>
 <li>The helpful <a href="userguide.html">user guide</a></li>
 <li>The javadoc for the <a href="api-release/index.html">current release</a></li>
-<li>The javadoc for the <a href="apidocs/index.html">latest SVN</a></li>
+<li>The javadoc for the <a href="apidocs/index.html">latest source code</a></li>
 <!--li>A <a href="faq.html">FAQ</a> list</li-->
 <!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Convert</li-->
-<li>The <a href="http://joda-convert.svn.sourceforge.net/viewvc/joda-convert/trunk/">SVN repository</a></li>
+<li>The <a href="https://github.com/JodaOrg/joda-convert">GitHub</a> source repository</li>
 </ul>
 </p>
 </section>
