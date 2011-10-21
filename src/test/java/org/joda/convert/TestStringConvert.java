@@ -58,6 +58,12 @@ public class TestStringConvert {
     }
 
     @Test
+    public void test_convertToString_primitive() {
+        int i = 6;
+        assertEquals("6", StringConvert.INSTANCE.convertToString(i));
+    }
+
+    @Test
     public void test_convertToString_inherit() {
         assertEquals("CEILING", StringConvert.INSTANCE.convertToString(RoundingMode.CEILING));
     }
@@ -71,6 +77,16 @@ public class TestStringConvert {
     @Test
     public void test_convertFromString() {
         assertEquals(Integer.valueOf(6), StringConvert.INSTANCE.convertFromString(Integer.class, "6"));
+    }
+
+    @Test
+    public void test_convertFromString_primitiveInt() {
+      assertEquals(Integer.valueOf(6), StringConvert.INSTANCE.convertFromString(Integer.TYPE, "6"));
+    }
+
+    @Test
+    public void test_convertFromString_primitiveBoolean() {
+      assertEquals(Boolean.TRUE, StringConvert.INSTANCE.convertFromString(Boolean.TYPE, "true"));
     }
 
     @Test

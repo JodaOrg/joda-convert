@@ -60,6 +60,14 @@ public final class StringConvert {
             for (JDKStringConverter conv : JDKStringConverter.values()) {
                 registered.put(conv.getType(), conv);
             }
+            registered.put(Boolean.TYPE, JDKStringConverter.BOOLEAN);
+            registered.put(Byte.TYPE, JDKStringConverter.BYTE);
+            registered.put(Short.TYPE, JDKStringConverter.SHORT);
+            registered.put(Integer.TYPE, JDKStringConverter.INTEGER);
+            registered.put(Long.TYPE, JDKStringConverter.LONG);
+            registered.put(Float.TYPE, JDKStringConverter.FLOAT);
+            registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
+            registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
         }
     }
 
@@ -129,7 +137,7 @@ public final class StringConvert {
                 throw new IllegalStateException("No registered converter found: " + cls);
             }
             Class<?> loopCls = cls.getSuperclass();
-            while (loopCls != Object.class && conv == null) {
+            while (loopCls != null && conv == null) {
                 conv = (StringConverter<T>) registered.get(loopCls);
                 loopCls = loopCls.getSuperclass();
             }
@@ -180,7 +188,7 @@ public final class StringConvert {
     private Method findToStringMethod(Class<?> cls) {
         Method matched = null;
         Class<?> loopCls = cls;
-        while (loopCls != Object.class && matched == null) {
+        while (loopCls != null && matched == null) {
             Method[] methods = loopCls.getDeclaredMethods();
             for (Method method : methods) {
                 ToString toString = method.getAnnotation(ToString.class);
@@ -222,7 +230,7 @@ public final class StringConvert {
     private Method findFromStringMethod(Class<?> cls, boolean searchSuperclasses) {
         Method matched = null;
         Class<?> loopCls = cls;
-        while (loopCls != Object.class && matched == null) {
+        while (loopCls != null && matched == null) {
             Method[] methods = loopCls.getDeclaredMethods();
             for (Method method : methods) {
                 FromString fromString = method.getAnnotation(FromString.class);
