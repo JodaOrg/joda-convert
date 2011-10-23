@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.1.1" date="2011-10-21">
+    <release version="1.1.1" date="2011-10-24">
       <action dev="scolebourne" type="fix" >
         Allow conversion of primitive types
       </action>

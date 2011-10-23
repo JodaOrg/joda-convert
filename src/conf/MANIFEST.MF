@@ -5,13 +5,13 @@ Specification-Vendor: Joda.org
 Specification-Version: 1.1
 Implementation-Vendor: Joda.org
 Implementation-Title: org.joda.convert
-Implementation-Version: 1.1
+Implementation-Version: 1.1.1
 Implementation-Vendor-Id: org.joda
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Joda.org
 Bundle-Name: Joda-Convert
 Bundle-SymbolicName: joda-convert
-Bundle-Version: 1.1
-Export-Package: org.joda.time.convert;version=1.1
+Bundle-Version: 1.1.1
+Export-Package: org.joda.time.convert;version=1.1.1
 Bundle-License: Apache 2.0
 Bundle-DocURL: http://joda-convert.sourceforge.net/
