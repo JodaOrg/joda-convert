@@ -75,6 +75,45 @@ public class TestStringConvert {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_convertToString_withType() {
+        Integer i = 6;
+        assertEquals("6", StringConvert.INSTANCE.convertToString(Integer.class, i));
+    }
+
+    @Test
+    public void test_convertToString_withType_primitive1() {
+        int i = 6;
+        assertEquals("6", StringConvert.INSTANCE.convertToString(Integer.class, i));
+    }
+
+    @Test
+    public void test_convertToString_withType_primitive2() {
+        int i = 6;
+        assertEquals("6", StringConvert.INSTANCE.convertToString(Integer.TYPE, i));
+    }
+
+    @Test
+    public void test_convertToString_withType_inherit1() {
+        assertEquals("CEILING", StringConvert.INSTANCE.convertToString(RoundingMode.class, RoundingMode.CEILING));
+    }
+
+    @Test
+    public void test_convertToString_withType_inherit2() {
+        assertEquals("CEILING", StringConvert.INSTANCE.convertToString(Enum.class, RoundingMode.CEILING));
+    }
+
+    @Test
+    public void test_convertToString_withType_null() {
+        assertEquals(null, StringConvert.INSTANCE.convertToString(Integer.class, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_convertToString_withType_nullClass() {
+        assertEquals(null, StringConvert.INSTANCE.convertToString(null, "6"));
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     public void test_convertFromString() {
         assertEquals(Integer.valueOf(6), StringConvert.INSTANCE.convertFromString(Integer.class, "6"));
     }
@@ -97,6 +136,11 @@ public class TestStringConvert {
     @Test
     public void test_convertFromString_null() {
         assertEquals(null, StringConvert.INSTANCE.convertFromString(Integer.class, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_convertFromString_nullClass() {
+        assertEquals(null, StringConvert.INSTANCE.convertFromString(null, "6"));
     }
 
     //-----------------------------------------------------------------------

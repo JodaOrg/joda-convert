@@ -93,6 +93,26 @@ public final class StringConvert {
     }
 
     /**
+     * Converts the specified object to a {@code String}.
+     * <p>
+     * This uses {@link #findConverter} to provide the converter.
+     * The class can be provided to select a more specific converter.
+     * 
+     * @param <T>  the type to convert from
+     * @param cls  the class to convert from, not null
+     * @param object  the object to convert, null returns null
+     * @return the converted string, may be null
+     * @throws RuntimeException (or subclass) if unable to convert
+     */
+    public <T> String convertToString(Class<T> cls, T object) {
+        if (object == null) {
+            return null;
+        }
+        StringConverter<T> conv = findConverter(cls);
+        return conv.convertToString(object);
+    }
+
+    /**
      * Converts the specified object from a {@code String}.
      * <p>
      * This uses {@link #findConverter} to provide the converter.
