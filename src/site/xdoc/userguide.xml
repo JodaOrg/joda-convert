@@ -53,6 +53,11 @@ Each instance of <code>StringConvert</code>, other than the global singleton, ma
 Each converter implements the <code>StringConverter</code> interface, which is self explanatory.
 </p>
 <p>
+From version 1.2, converters may be added by method name.
+This is equivalent to using annotations, but suitable when you don't own the code to add them.
+See <code>StringConvert.registerMethods</code> and <code>StringConvert.registerMethodConstructor</code>.
+</p>
+<p>
 A converter can only be registered if one is not already registered for that type.
 </p>
 </subsection>
