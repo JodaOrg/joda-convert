@@ -168,6 +168,18 @@ public class TestStringConvert {
     }
 
     @Test
+    public void test_convert_annotationMethodMethodCharSequence() {
+        StringConvert test = new StringConvert();
+        DistanceMethodMethodCharSequence d = new DistanceMethodMethodCharSequence(25);
+        assertEquals("25m", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceMethodMethodCharSequence.class, "25m").amount);
+        StringConverter<DistanceMethodMethodCharSequence> conv = test.findConverter(DistanceMethodMethodCharSequence.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceMethodMethodCharSequence.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
     public void test_convert_annotationMethodConstructor() {
         StringConvert test = new StringConvert();
         DistanceMethodConstructor d = new DistanceMethodConstructor(25);
@@ -176,6 +188,18 @@ public class TestStringConvert {
         StringConverter<DistanceMethodConstructor> conv = test.findConverter(DistanceMethodConstructor.class);
         assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
         assertSame(conv, test.findConverter(DistanceMethodConstructor.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
+    public void test_convert_annotationMethodConstructorCharSequence() {
+        StringConvert test = new StringConvert();
+        DistanceMethodConstructorCharSequence d = new DistanceMethodConstructorCharSequence(25);
+        assertEquals("25m", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceMethodConstructorCharSequence.class, "25m").amount);
+        StringConverter<DistanceMethodConstructorCharSequence> conv = test.findConverter(DistanceMethodConstructorCharSequence.class);
+        assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceMethodConstructorCharSequence.class));
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
 
@@ -383,6 +407,18 @@ public class TestStringConvert {
         assertSame(conv, test.findConverter(DistanceNoAnnotations.class));
     }
 
+    @Test
+    public void test_registerMethodsCharSequence() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(DistanceNoAnnotationsCharSequence.class, "toString", "parse");
+        DistanceNoAnnotationsCharSequence d = new DistanceNoAnnotationsCharSequence(25);
+        assertEquals("Distance[25m]", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceNoAnnotationsCharSequence.class, "25m").amount);
+        StringConverter<DistanceNoAnnotationsCharSequence> conv = test.findConverter(DistanceNoAnnotationsCharSequence.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceNoAnnotationsCharSequence.class));
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void test_registerMethods_nullClass() {
         StringConvert test = new StringConvert();
@@ -406,6 +442,19 @@ public class TestStringConvert {
       StringConvert test = new StringConvert();
       test.registerMethods(DistanceNoAnnotations.class, "toString", "parse");
       test.registerMethods(DistanceNoAnnotations.class, "toString", "parse");
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_registerMethodConstructorCharSequence() {
+        StringConvert test = new StringConvert();
+        test.registerMethodConstructor(DistanceNoAnnotationsCharSequence.class, "toString");
+        DistanceNoAnnotationsCharSequence d = new DistanceNoAnnotationsCharSequence(25);
+        assertEquals("Distance[25m]", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceNoAnnotationsCharSequence.class, "25m").amount);
+        StringConverter<DistanceNoAnnotationsCharSequence> conv = test.findConverter(DistanceNoAnnotationsCharSequence.class);
+        assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceNoAnnotationsCharSequence.class));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Stephen Colebourne
+ *  Copyright 2010-2011 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,8 +48,9 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
         if (fromString.getParameterTypes().length != 1) {
             throw new IllegalStateException("FromString method must have one parameter");
         }
-        if (fromString.getParameterTypes()[0] != String.class) {
-            throw new IllegalStateException("FromString method must take a String");
+        Class<?> param = fromString.getParameterTypes()[0];
+        if (param != String.class && param != CharSequence.class) {
+            throw new IllegalStateException("FromString method must take a String or CharSequence");
         }
         if (fromString.getReturnType().isAssignableFrom(cls) == false) {
             throw new IllegalStateException("FromString method must return specified class or a superclass");

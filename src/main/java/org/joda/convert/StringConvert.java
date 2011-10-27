@@ -264,13 +264,18 @@ public final class StringConvert {
      * @return the method to call, null means use {@code toString}
      */
     private <T> Constructor<T> findFromStringConstructor(Class<T> cls) {
+        Constructor<T> con;
         try {
-            Constructor<T> con = cls.getDeclaredConstructor(String.class);
-            FromString fromString = con.getAnnotation(FromString.class);
-            return fromString != null ? con : null;
+            con = cls.getDeclaredConstructor(String.class);
         } catch (NoSuchMethodException ex) {
-            return null;
+            try {
+                con = cls.getDeclaredConstructor(CharSequence.class);
+            } catch (NoSuchMethodException ex2) {
+                return null;
+            }
         }
+        FromString fromString = con.getAnnotation(FromString.class);
+        return fromString != null ? con : null;
     }
 
     /**
@@ -438,7 +443,11 @@ public final class StringConvert {
         try {
             m = cls.getMethod(methodName, String.class);
         } catch (NoSuchMethodException ex) {
-          throw new IllegalArgumentException(ex);
+            try {
+                m = cls.getMethod(methodName, CharSequence.class);
+            } catch (NoSuchMethodException ex2) {
+                throw new IllegalArgumentException("Method not found", ex2);
+            }
         }
         if (Modifier.isStatic(m.getModifiers()) == false) {
           throw new IllegalArgumentException("Method must be static: " + methodName);
@@ -457,7 +466,11 @@ public final class StringConvert {
         try {
             return cls.getDeclaredConstructor(String.class);
         } catch (NoSuchMethodException ex) {
-            return null;
+            try {
+                return cls.getDeclaredConstructor(CharSequence.class);
+            } catch (NoSuchMethodException ex2) {
+              throw new IllegalArgumentException("Constructor not found", ex2);
+            }
         }
     }
 
