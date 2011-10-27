@@ -69,6 +69,37 @@ public final class StringConvert {
             registered.put(Float.TYPE, JDKStringConverter.FLOAT);
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
+            // JSR-310 classes
+            tryRegister("javax.time.Instant", "parse");
+            tryRegister("javax.time.Duration", "parse");
+            tryRegister("javax.time.calendar.LocalDate", "parse");
+            tryRegister("javax.time.calendar.LocalTime", "parse");
+            tryRegister("javax.time.calendar.LocalDateTime", "parse");
+            tryRegister("javax.time.calendar.OffsetDate", "parse");
+            tryRegister("javax.time.calendar.OffsetTime", "parse");
+            tryRegister("javax.time.calendar.OffsetDateTime", "parse");
+            tryRegister("javax.time.calendar.ZonedDateTime", "parse");
+            tryRegister("javax.time.calendar.Year", "parse");
+            tryRegister("javax.time.calendar.YearMonth", "parse");
+            tryRegister("javax.time.calendar.MonthDay", "parse");
+            tryRegister("javax.time.calendar.Period", "parse");
+            tryRegister("javax.time.calendar.ZoneOffset", "of");
+            tryRegister("javax.time.calendar.ZoneId", "of");
+            tryRegister("javax.time.calendar.TimeZone", "of");
+        }
+    }
+
+    /**
+     * Tries to register a class using the standard toString/parse pattern.
+     * 
+     * @param className  the class name, not null
+     */
+    private void tryRegister(String className, String fromStringMethodName) {
+        try {
+            Class<?> cls = getClass().getClassLoader().loadClass(className);
+            registerMethods(cls, "toString", fromStringMethodName);
+        } catch (Exception ex) {
+            // ignore
         }
     }
 
