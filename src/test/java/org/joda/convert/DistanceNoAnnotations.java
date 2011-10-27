@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Stephen Colebourne
+ *  Copyright 2010-2011 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ public class DistanceNoAnnotations {
 
     /** Amount. */
     final int amount;
+
+    public static DistanceNoAnnotations parse(String amount) {
+        return new DistanceNoAnnotations(amount);
+    }
 
     public DistanceNoAnnotations(int amount) {
         this.amount = amount;

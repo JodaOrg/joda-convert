@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Stephen Colebourne
+ *  Copyright 2010-2011 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -368,6 +368,75 @@ public class TestStringConvert {
         StringConvert test = new StringConvert();
         test.register(DistanceMethodMethod.class, MockDistanceStringConverter.INSTANCE);
         assertSame(MockDistanceStringConverter.INSTANCE, test.findConverter(DistanceMethodMethod.class));
+    }
+
+    //-------------------------------------------------------------------------
+    @Test
+    public void test_registerMethods() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(DistanceNoAnnotations.class, "toString", "parse");
+        DistanceNoAnnotations d = new DistanceNoAnnotations(25);
+        assertEquals("Distance[25m]", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceNoAnnotations.class, "25m").amount);
+        StringConverter<DistanceNoAnnotations> conv = test.findConverter(DistanceNoAnnotations.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceNoAnnotations.class));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethods_nullClass() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(null, "toString", "parse");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethods_nullToString() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(DistanceNoAnnotations.class, null, "parse");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethods_nullFromString() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(DistanceNoAnnotations.class, "toString", null);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void test_registerMethods_classAlreadyRegistered() {
+      StringConvert test = new StringConvert();
+      test.registerMethods(DistanceNoAnnotations.class, "toString", "parse");
+      test.registerMethods(DistanceNoAnnotations.class, "toString", "parse");
+    }
+
+    @Test
+    public void test_registerMethodConstructor() {
+        StringConvert test = new StringConvert();
+        test.registerMethodConstructor(DistanceNoAnnotations.class, "toString");
+        DistanceNoAnnotations d = new DistanceNoAnnotations(25);
+        assertEquals("Distance[25m]", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceNoAnnotations.class, "25m").amount);
+        StringConverter<DistanceNoAnnotations> conv = test.findConverter(DistanceNoAnnotations.class);
+        assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceNoAnnotations.class));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethodConstructor_nullClass() {
+        StringConvert test = new StringConvert();
+        test.registerMethodConstructor(null, "toString");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethodConstructor_nullToString() {
+        StringConvert test = new StringConvert();
+        test.registerMethodConstructor(DistanceNoAnnotations.class, null);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void test_registerMethodConstructor_classAlreadyRegistered() {
+      StringConvert test = new StringConvert();
+      test.registerMethodConstructor(DistanceNoAnnotations.class, "toString");
+      test.registerMethodConstructor(DistanceNoAnnotations.class, "toString");
     }
 
     //-----------------------------------------------------------------------

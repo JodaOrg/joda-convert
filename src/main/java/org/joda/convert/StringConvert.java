@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010 Stephen Colebourne
+ *  Copyright 2010-2011 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.joda.convert;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -280,6 +281,8 @@ public final class StringConvert {
      * @param <T>  the type of the converter
      * @param cls  the class to register a converter for, not null
      * @param converter  the String converter, not null
+     * @throws IllegalArgumentException if unable to register
+     * @throws IllegalStateException if class already registered
      */
     public <T> void register(final Class<T> cls, StringConverter<T> converter) {
         if (cls == null ) {
@@ -294,6 +297,136 @@ public final class StringConvert {
         StringConverter<?> old = registered.putIfAbsent(cls, converter);
         if (old != null) {
             throw new IllegalStateException("Converter already registered for class: " + cls);
+        }
+    }
+
+    /**
+     * Registers a converter for a specific type by method names.
+     * <p>
+     * This method allows the converter to be used when the target class cannot have annotations added.
+     * The two method names must obey the same rules as defined by the annotations
+     * {@link ToString} and {@link FromString}.
+     * The converter will be used for subclasses unless overidden.
+     * <p>
+     * No new converters may be registered for the global singleton.
+     * <p>
+     * For example, {@code convert.registerMethods(Distance.class, "toString", "parse");}
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to register a converter for, not null
+     * @param toStringMethodName  the name of the method converting to a string, not null
+     * @param fromStringMethodName  the name of the method converting from a string, not null
+     * @throws IllegalArgumentException if unable to register
+     * @throws IllegalStateException if class already registered
+     */
+    public <T> void registerMethods(final Class<T> cls, String toStringMethodName, String fromStringMethodName) {
+        if (cls == null ) {
+            throw new IllegalArgumentException("Class must not be null");
+        }
+        if (toStringMethodName == null || fromStringMethodName == null) {
+            throw new IllegalArgumentException("Method names must not be null");
+        }
+        if (this == INSTANCE) {
+            throw new IllegalStateException("Global singleton cannot be extended");
+        }
+        Method toString = findToStringMethod(cls, toStringMethodName);
+        Method fromString = findFromStringMethod(cls, fromStringMethodName);
+        MethodsStringConverter<T> converter = new MethodsStringConverter<T>(cls, toString, fromString);
+        StringConverter<?> old = registered.putIfAbsent(cls, converter);
+        if (old != null) {
+            throw new IllegalStateException("Converter already registered for class: " + cls);
+        }
+    }
+
+    /**
+     * Registers a converter for a specific type by method and constructor.
+     * <p>
+     * This method allows the converter to be used when the target class cannot have annotations added.
+     * The two method name and constructor must obey the same rules as defined by the annotations
+     * {@link ToString} and {@link FromString}.
+     * The converter will be used for subclasses unless overidden.
+     * <p>
+     * No new converters may be registered for the global singleton.
+     * <p>
+     * For example, {@code convert.registerMethodConstructor(Distance.class, "toString");}
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to register a converter for, not null
+     * @param toStringMethodName  the name of the method converting to a string, not null
+     * @throws IllegalArgumentException if unable to register
+     * @throws IllegalStateException if class already registered
+     */
+    public <T> void registerMethodConstructor(final Class<T> cls, String toStringMethodName) {
+        if (cls == null ) {
+            throw new IllegalArgumentException("Class must not be null");
+        }
+        if (toStringMethodName == null) {
+            throw new IllegalArgumentException("Method name must not be null");
+        }
+        if (this == INSTANCE) {
+            throw new IllegalStateException("Global singleton cannot be extended");
+        }
+        Method toString = findToStringMethod(cls, toStringMethodName);
+        Constructor<T> fromString = findFromStringConstructorByType(cls);
+        MethodConstructorStringConverter<T> converter = new MethodConstructorStringConverter<T>(cls, toString, fromString);
+        StringConverter<?> old = registered.putIfAbsent(cls, converter);
+        if (old != null) {
+            throw new IllegalStateException("Converter already registered for class: " + cls);
+        }
+    }
+
+    /**
+     * Finds the conversion method.
+     * 
+     * @param cls  the class to find a method for, not null
+     * @param methodName  the name of the method to find, not null
+     * @return the method to call, null means use {@code toString}
+     */
+    private Method findToStringMethod(Class<?> cls, String methodName) {
+        Method m;
+        try {
+            m = cls.getMethod(methodName);
+        } catch (NoSuchMethodException ex) {
+          throw new IllegalArgumentException(ex);
+        }
+        if (Modifier.isStatic(m.getModifiers())) {
+          throw new IllegalArgumentException("Method must not be static: " + methodName);
+        }
+        return m;
+    }
+
+    /**
+     * Finds the conversion method.
+     * 
+     * @param cls  the class to find a method for, not null
+     * @param methodName  the name of the method to find, not null
+     * @return the method to call, null means use {@code toString}
+     */
+    private Method findFromStringMethod(Class<?> cls, String methodName) {
+        Method m;
+        try {
+            m = cls.getMethod(methodName, String.class);
+        } catch (NoSuchMethodException ex) {
+          throw new IllegalArgumentException(ex);
+        }
+        if (Modifier.isStatic(m.getModifiers()) == false) {
+          throw new IllegalArgumentException("Method must be static: " + methodName);
+        }
+        return m;
+    }
+
+    /**
+     * Finds the conversion method.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a method for, not null
+     * @return the method to call, null means use {@code toString}
+     */
+    private <T> Constructor<T> findFromStringConstructorByType(Class<T> cls) {
+        try {
+            return cls.getDeclaredConstructor(String.class);
+        } catch (NoSuchMethodException ex) {
+            return null;
         }
     }
 
