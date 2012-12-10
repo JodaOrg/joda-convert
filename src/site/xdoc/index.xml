@@ -80,6 +80,9 @@ is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on JDK 1.5 or later.
 </p>
+<p>
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.2|jar">Maven Central</a>.
+</p>
 </section>
 
 <section name="Contact">

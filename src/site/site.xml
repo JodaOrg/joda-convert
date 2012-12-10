@@ -19,17 +19,15 @@
       <!--item name="FAQ" href="faq.html"/-->
       <item name="Javadoc (Release)" href="api-release/index.html"/>
       <item name="License" href="license.html"/>
+      <item name="Release notes" href="changes-report.html"/>
       <item name="Download" href="http://sourceforge.net/projects/joda-convert/files/joda-convert/"/>
     </menu>
 
     <menu name="Development">
       <item name="GitHub (Source code)" href="https://github.com/JodaOrg/joda-convert"/>
       <item name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"/>
-      <!--item name="Test results" href="/junit-report.html"/-->
-      <!--item name="Test coverage" href="/cobertura/index.html"/-->
+      <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-convert/issues"/>
       <item name="Mailing lists" href="mail-lists.html"/>
-      <!--item name="Tasks" href="tasks.html"/-->
-      <!--item name="Subversion" href="http://joda-convert.svn.sourceforge.net/viewvc/joda-convert/trunk/"/-->
       <item name="Javadoc (Development)" href="apidocs/index.html"/>
     </menu>
 
