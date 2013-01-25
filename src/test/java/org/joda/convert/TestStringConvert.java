@@ -437,7 +437,7 @@ public class TestStringConvert {
         test.registerMethods(DistanceNoAnnotations.class, "toString", null);
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test
     public void test_registerMethods_classAlreadyRegistered() {
       StringConvert test = new StringConvert();
       test.registerMethods(DistanceNoAnnotations.class, "toString", "parse");
@@ -481,7 +481,7 @@ public class TestStringConvert {
         test.registerMethodConstructor(DistanceNoAnnotations.class, null);
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test
     public void test_registerMethodConstructor_classAlreadyRegistered() {
       StringConvert test = new StringConvert();
       test.registerMethodConstructor(DistanceNoAnnotations.class, "toString");

@@ -46,6 +46,11 @@ public final class StringConvert {
 
     /**
      * Creates a new conversion manager including the JDK converters.
+     * <p>
+     * The convert instance is mutable in a thread-safe manner.
+     * Converters may be altered at any time, including the JDK converters.
+     * It is strongly recommended to only alter the converters before performing
+     * actual conversions.
      */
     public StringConvert() {
         this(true);
@@ -53,6 +58,11 @@ public final class StringConvert {
 
     /**
      * Creates a new conversion manager.
+     * <p>
+     * The convert instance is mutable in a thread-safe manner.
+     * Converters may be altered at any time, including the JDK converters.
+     * It is strongly recommended to only alter the converters before performing
+     * actual conversions.
      * 
      * @param includeJdkConverters  true to include the JDK converters
      */
@@ -347,8 +357,8 @@ public final class StringConvert {
      * @param <T>  the type of the converter
      * @param cls  the class to register a converter for, not null
      * @param converter  the String converter, not null
-     * @throws IllegalArgumentException if unable to register
-     * @throws IllegalStateException if class already registered
+     * @throws IllegalArgumentException if the class or converter are null
+     * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void register(final Class<T> cls, StringConverter<T> converter) {
         if (cls == null ) {
@@ -379,8 +389,8 @@ public final class StringConvert {
      * @param cls  the class to register a converter for, not null
      * @param toStringMethodName  the name of the method converting to a string, not null
      * @param fromStringMethodName  the name of the method converting from a string, not null
-     * @throws IllegalArgumentException if unable to register
-     * @throws IllegalStateException if class already registered
+     * @throws IllegalArgumentException if the class or method name are null
+     * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethods(final Class<T> cls, String toStringMethodName, String fromStringMethodName) {
         if (cls == null ) {
@@ -395,10 +405,7 @@ public final class StringConvert {
         Method toString = findToStringMethod(cls, toStringMethodName);
         Method fromString = findFromStringMethod(cls, fromStringMethodName);
         MethodsStringConverter<T> converter = new MethodsStringConverter<T>(cls, toString, fromString);
-        StringConverter<?> old = registered.putIfAbsent(cls, converter);
-        if (old != null) {
-            throw new IllegalStateException("Converter already registered for class: " + cls);
-        }
+        registered.putIfAbsent(cls, converter);
     }
 
     /**
@@ -416,8 +423,8 @@ public final class StringConvert {
      * @param <T>  the type of the converter
      * @param cls  the class to register a converter for, not null
      * @param toStringMethodName  the name of the method converting to a string, not null
-     * @throws IllegalArgumentException if unable to register
-     * @throws IllegalStateException if class already registered
+     * @throws IllegalArgumentException if the class or method name are null
+     * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethodConstructor(final Class<T> cls, String toStringMethodName) {
         if (cls == null ) {
@@ -432,10 +439,7 @@ public final class StringConvert {
         Method toString = findToStringMethod(cls, toStringMethodName);
         Constructor<T> fromString = findFromStringConstructorByType(cls);
         MethodConstructorStringConverter<T> converter = new MethodConstructorStringConverter<T>(cls, toString, fromString);
-        StringConverter<?> old = registered.putIfAbsent(cls, converter);
-        if (old != null) {
-            throw new IllegalStateException("Converter already registered for class: " + cls);
-        }
+        registered.putIfAbsent(cls, converter);
     }
 
     /**

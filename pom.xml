@@ -35,6 +35,13 @@
       <timezone>0</timezone>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <email>cjkent</email>
+      <name>Chris Kent</name>
+      <timezone>0</timezone>
+    </contributor>
+  </contributors>
   <licenses>
     <license>
       <name>Apache 2</name>
