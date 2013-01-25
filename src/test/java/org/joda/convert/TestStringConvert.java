@@ -395,6 +395,48 @@ public class TestStringConvert {
     }
 
     //-------------------------------------------------------------------------
+    ToStringConverter<DistanceNoAnnotations> DISTANCE_TO_STRING_CONVERTER = new ToStringConverter<DistanceNoAnnotations>() {
+        public String convertToString(DistanceNoAnnotations object) {
+            return object.toString();
+        }
+    };
+    FromStringConverter<DistanceNoAnnotations> DISTANCE_FROM_STRING_CONVERTER = new FromStringConverter<DistanceNoAnnotations>() {
+        public DistanceNoAnnotations convertFromString(Class<? extends DistanceNoAnnotations> cls, String str) {
+            return DistanceNoAnnotations.parse(str);
+        }
+    };
+
+    @Test
+    public void test_register_FunctionalInterfaces() {
+        StringConvert test = new StringConvert();
+        test.register(DistanceNoAnnotations.class, DISTANCE_TO_STRING_CONVERTER, DISTANCE_FROM_STRING_CONVERTER);
+        DistanceNoAnnotations d = new DistanceNoAnnotations(25);
+        assertEquals("Distance[25m]", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceNoAnnotations.class, "25m").amount);
+        StringConverter<DistanceNoAnnotations> conv = test.findConverter(DistanceNoAnnotations.class);
+        assertEquals(true, conv.getClass().getName().contains("$"));
+        assertSame(conv, test.findConverter(DistanceNoAnnotations.class));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_register_FunctionalInterfaces_nullClass() {
+        StringConvert test = new StringConvert();
+        test.register(null, DISTANCE_TO_STRING_CONVERTER, DISTANCE_FROM_STRING_CONVERTER);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_register_FunctionalInterfaces_nullToString() {
+        StringConvert test = new StringConvert();
+        test.register(DistanceNoAnnotations.class, null, DISTANCE_FROM_STRING_CONVERTER);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_register_FunctionalInterfaces_nullFromString() {
+        StringConvert test = new StringConvert();
+        test.register(DistanceNoAnnotations.class, DISTANCE_TO_STRING_CONVERTER, null);
+    }
+
+    //-------------------------------------------------------------------------
     @Test
     public void test_registerMethods() {
         StringConvert test = new StringConvert();

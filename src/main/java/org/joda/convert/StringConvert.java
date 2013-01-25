@@ -374,6 +374,40 @@ public final class StringConvert {
     }
 
     /**
+     * Registers a converter for a specific type using two separate converters.
+     * <p>
+     * This method registers a converter for the specified class.
+     * It is primarily intended for use with JDK 1.8 method references or lambdas:
+     * <pre>
+     *  sc.register(Distance.class, Distance::toString, Distance::parse);
+     * </pre>
+     * The converter will be used for subclasses unless overidden.
+     * <p>
+     * No new converters may be registered for the global singleton.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to register a converter for, not null
+     * @param toString  the to String converter, typically a method reference, not null
+     * @param fromString  the from String converter, typically a method reference, not null
+     * @throws IllegalArgumentException if the class or converter are null
+     * @throws IllegalStateException if trying to alter the global singleton
+     * @since 1.3
+     */
+    public <T> void register(final Class<T> cls, final ToStringConverter<T> toString, final FromStringConverter<T> fromString) {
+        if (fromString == null || toString == null) {
+            throw new IllegalArgumentException("Converters must not be null");
+        }
+        register(cls, new StringConverter<T>() {
+            public String convertToString(T object) {
+                return toString.convertToString(object);
+            }
+            public T convertFromString(Class<? extends T> cls, String str) {
+                return fromString.convertFromString(cls, str);
+            }
+        });
+    }
+
+    /**
      * Registers a converter for a specific type by method names.
      * <p>
      * This method allows the converter to be used when the target class cannot have annotations added.
@@ -389,7 +423,7 @@ public final class StringConvert {
      * @param cls  the class to register a converter for, not null
      * @param toStringMethodName  the name of the method converting to a string, not null
      * @param fromStringMethodName  the name of the method converting from a string, not null
-     * @throws IllegalArgumentException if the class or method name are null
+     * @throws IllegalArgumentException if the class or method name are null or invalid
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethods(final Class<T> cls, String toStringMethodName, String fromStringMethodName) {
@@ -423,7 +457,7 @@ public final class StringConvert {
      * @param <T>  the type of the converter
      * @param cls  the class to register a converter for, not null
      * @param toStringMethodName  the name of the method converting to a string, not null
-     * @throws IllegalArgumentException if the class or method name are null
+     * @throws IllegalArgumentException if the class or method name are null or invalid
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethodConstructor(final Class<T> cls, String toStringMethodName) {
