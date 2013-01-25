@@ -62,8 +62,7 @@ Joda-Convert is licensed under the business-friendly <a href="license.html">Apac
 Various documentation is available:
 <ul>
 <li>The helpful <a href="userguide.html">user guide</a></li>
-<li>The javadoc for the <a href="api-release/index.html">current release</a></li>
-<li>The javadoc for the <a href="apidocs/index.html">latest source code</a></li>
+<li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
 <li>The change notes <a href="changes-report.html">for the releases</a></li>
 <!--li>A <a href="faq.html">FAQ</a> list</li-->
 <!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Convert</li-->
