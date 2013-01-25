@@ -43,7 +43,7 @@ then the annotations are checked. If they are found, then the methods are called
 Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](https://github.com/JodaOrg/joda-convert/blob/master/LICENSE.txt).
 
 
-#### Documentation
+### Documentation
 Various documentation is available:
 
 * The helpful [user guide](http://joda-convert.sourceforge.net/userguide.html)
@@ -51,19 +51,19 @@ Various documentation is available:
 * The change notes for the [releases](http://joda-convert.sourceforge.net/changes-report.html)
 
 
-#### Releases
-[Release 1.2](http://sourceforge.net/projects/joda-convert/files/joda-convert/1.2/) is the current latest release.
+### Releases
+[Release 1.3](http://sourceforge.net/projects/joda-convert/files/joda-convert/1.3/) is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on JDK 1.5 or later.
 
-Available in the [Maven Central repository](http://search.maven.org/#search|gav|1|g%3A%22org.joda%22%20AND%20a%3A%22joda-convert%22)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.3|jar)
 
 
 ### Support
 Please use GitHub issues and Pull Requests for support.
 
 
-#### History
+### History
 Issue tracking and active development is at GitHub.
 Historically, the project was at [Sourceforge](https://sourceforge.net/projects/joda-convert/).
 The [home page](http://joda-convert.sourceforge.net/) is still at Sourceforge.
