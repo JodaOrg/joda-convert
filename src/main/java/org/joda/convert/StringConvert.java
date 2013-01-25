@@ -360,10 +360,7 @@ public final class StringConvert {
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
-        StringConverter<?> old = registered.putIfAbsent(cls, converter);
-        if (old != null) {
-            throw new IllegalStateException("Converter already registered for class: " + cls);
-        }
+        registered.put(cls, converter);
     }
 
     /**

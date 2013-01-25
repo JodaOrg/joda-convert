@@ -383,7 +383,7 @@ public class TestStringConvert {
         StringConvert.INSTANCE.register(Integer.class, MockIntegerStringConverter.INSTANCE);
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test
     public void test_register_classAlreadyRegistered() {
         new StringConvert().register(Integer.class, MockIntegerStringConverter.INSTANCE);
     }
