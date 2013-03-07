@@ -12,6 +12,6 @@ Bundle-Vendor: Joda.org
 Bundle-Name: Joda-Convert
 Bundle-SymbolicName: joda-convert
 Bundle-Version: 1.3
-Export-Package: org.joda.time.convert;version=1.3
+Export-Package: org.joda.convert;version=1.3
 Bundle-License: Apache 2.0
 Bundle-DocURL: http://joda-convert.sourceforge.net/
