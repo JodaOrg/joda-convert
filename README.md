@@ -1,4 +1,3 @@
-
 Joda-Convert
 ------------
 
@@ -52,11 +51,11 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.3](http://sourceforge.net/projects/joda-convert/files/joda-convert/1.3/) is the current latest release.
+[Release 1.3.1](http://sourceforge.net/projects/joda-convert/files/joda-convert/1.3.1/) is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on JDK 1.6 or later.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.3|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.3.1|jar)
 
 
 ### Support

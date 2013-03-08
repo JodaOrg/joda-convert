@@ -3,7 +3,7 @@ Joda-Convert
 ================================================
 Joda-Convert is a small library providing conversion to and from String.
 
-This is release 1.3 of Joda-Convert.
+This is release 1.3.1 of Joda-Convert.
 
 The release runs on Java SE 6 or later.
 

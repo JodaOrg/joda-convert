@@ -64,8 +64,6 @@ Various documentation is available:
 <li>The helpful <a href="userguide.html">user guide</a></li>
 <li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
 <li>The change notes <a href="changes-report.html">for the releases</a></li>
-<!--li>A <a href="faq.html">FAQ</a> list</li-->
-<!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Convert</li-->
 <li>The <a href="https://github.com/JodaOrg/joda-convert">GitHub</a> source repository</li>
 </ul>
 </p>
@@ -74,13 +72,13 @@ Various documentation is available:
 
 <section name="Releases">
 <p>
-<a href="http://sourceforge.net/projects/joda-convert/files/joda-convert/1.3/">Release 1.3</a>
+<a href="http://sourceforge.net/projects/joda-convert/files/joda-convert/1.3.1/">Release 1.3.1</a>
 is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on JDK 1.6 or later.
 </p>
 <p>
-Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.3|jar">Maven Central repository</a>.
+Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.3.1|jar">Maven Central repository</a>.
 </p>
 </section>
 
