@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.3.1" date="2013-03-08">
+      <action dev="rocketraman" type="fix" >
+        Fix OSGI manifest.
+      </action>
+    </release>
     <release version="1.3" date="2013-01-25">
       <action dev="scolebourne" type="add" >
         Add register method designed for JDK 1.8 method references or lambdas.
