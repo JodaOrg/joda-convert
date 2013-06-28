@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * When applying to a constructor, this annotation should be applied to the constructor
  * that takes one {@code String} parameter.
  */
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FromString {
 

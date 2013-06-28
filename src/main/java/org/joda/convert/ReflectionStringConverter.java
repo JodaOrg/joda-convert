@@ -31,9 +31,9 @@ import java.lang.reflect.Method;
 abstract class ReflectionStringConverter<T> implements StringConverter<T> {
 
     /** The converted class. */
-    final Class<T> cls;
+    private final Class<T> cls;
     /** Conversion to a string. */
-    final Method toString;
+    private final Method toString;
 
     /**
      * Creates an instance using two methods.

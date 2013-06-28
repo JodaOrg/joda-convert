@@ -361,7 +361,7 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void register(final Class<T> cls, StringConverter<T> converter) {
-        if (cls == null ) {
+        if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
         if (converter == null) {
@@ -427,7 +427,7 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethods(final Class<T> cls, String toStringMethodName, String fromStringMethodName) {
-        if (cls == null ) {
+        if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
         if (toStringMethodName == null || fromStringMethodName == null) {
@@ -461,7 +461,7 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethodConstructor(final Class<T> cls, String toStringMethodName) {
-        if (cls == null ) {
+        if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
         if (toStringMethodName == null) {
@@ -488,10 +488,10 @@ public final class StringConvert {
         try {
             m = cls.getMethod(methodName);
         } catch (NoSuchMethodException ex) {
-          throw new IllegalArgumentException(ex);
+            throw new IllegalArgumentException(ex);
         }
         if (Modifier.isStatic(m.getModifiers())) {
-          throw new IllegalArgumentException("Method must not be static: " + methodName);
+            throw new IllegalArgumentException("Method must not be static: " + methodName);
         }
         return m;
     }
@@ -515,7 +515,7 @@ public final class StringConvert {
             }
         }
         if (Modifier.isStatic(m.getModifiers()) == false) {
-          throw new IllegalArgumentException("Method must be static: " + methodName);
+            throw new IllegalArgumentException("Method must be static: " + methodName);
         }
         return m;
     }
@@ -534,7 +534,7 @@ public final class StringConvert {
             try {
                 return cls.getDeclaredConstructor(CharSequence.class);
             } catch (NoSuchMethodException ex2) {
-              throw new IllegalArgumentException("Constructor not found", ex2);
+                throw new IllegalArgumentException("Constructor not found", ex2);
             }
         }
     }
