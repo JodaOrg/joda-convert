@@ -7,12 +7,17 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.3.1" date="2013-03-08">
+    <release version="1.4" date="xxxx-xx-xx" description="Version 1.4">
+      <action dev="scolebourne" type="update" >
+        Change to use m2e Maven Eclipse.
+      </action>
+    </release>
+    <release version="1.3.1" date="2013-03-08" description="Version 1.3.1">
       <action dev="rocketraman" type="fix" >
         Fix OSGI manifest.
       </action>
     </release>
-    <release version="1.3" date="2013-01-25">
+    <release version="1.3" date="2013-01-25" description="Version 1.3">
       <action dev="scolebourne" type="add" >
         Add register method designed for JDK 1.8 method references or lambdas.
       </action>
@@ -23,7 +28,7 @@
         Add alternate package locations for JSR-310 classes.
       </action>
     </release>
-    <release version="1.2" date="2011-10-27">
+    <release version="1.2" date="2011-10-27" description="Version 1.2">
       <action dev="scolebourne" type="add" >
         Add support for CharSequence based fromString methods.
       </action>
@@ -37,27 +42,27 @@
         Allow toString conversion to specify the desired type.
       </action>
     </release>
-    <release version="1.1.1" date="2011-10-21">
+    <release version="1.1.2" date="2011-10-21" description="Version 1.1.2">
       <action dev="scolebourne" type="fix" >
         Allow conversion of primitive types.
       </action>
     </release>
-    <release version="1.1.1" date="2011-10-24">
+    <release version="1.1.1" date="2011-10-24" description="Version 1.1.1">
       <action dev="scolebourne" type="fix" >
         Allow conversion of primitive types
       </action>
     </release>
-    <release version="1.1" date="2010-12-04">
+    <release version="1.1" date="2010-12-04" description="Version 1.1">
       <action dev="scolebourne" type="fix" >
         Enable superclass factories.
       </action>
     </release>
-    <release version="1.0" date="2010-09-05">
+    <release version="1.0" date="2010-09-05" description="Version 1.0">
       <action dev="scolebourne" type="fix" >
         Lots of tests and fixes.
       </action>
     </release>
-    <release version="0.5" date="unreleased">
+    <release version="0.5" date="unreleased" description="Version 0.5">
       <action dev="scolebourne" type="fix" >
         Initial checkin.
       </action>
