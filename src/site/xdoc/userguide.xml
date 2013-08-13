@@ -89,17 +89,53 @@ To be valid, the class must contain one <code>ToString</code> annotation and one
 The <code>ToString</code> annotation must be an instance method taking no parameters and returning a String.
 The <code>FromString</code> annotation must be either a static method or a constructor taking a String parameter and
 returning the correct type.
-If the annotations are not found on the target class, then superclasses are searched.
+If the annotations are not found on the target class, then superclasses are searched, followed by immediate parent interfaces.
 </p>
+<p>
+Sometimes, you want to provide to/from string conversions for interfaces.
+In JDK 8 this can be done using static methods on interfaces.
+However in earlier versions, a separate "factory" class is necessary.
+This can also be annotated:
+</p>
+<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+@FromStringFactory(factory = DistanceFactory.class)
+public interface Distance {
+
+  @ToString
+  String standardFormat();
+
+}
+
+public class Metres {
+
+  public String standardFormat() { ... }
+
+}
+
+public class DistanceFactory {
+
+  @FromString
+  public static Distance parseDistance(String str) { ... }
+
+}
+</pre></div>
+<p>
+The <code>FromStringFactory</code> annotation points at the factory class that will provide the factory method.
+Although intended for use with interfaces, it can also be used on the target class or any superclass.
+Note that only the immediate parent interfaces of a class will be searched.
+</p>
+</subsection>
+
+<subsection name="Rationale">
 <p>
 The concept is that other open source libraries, as well as your application code, will implement these two annotations.
 For open source projects, a key point is that adding the annotations is a compile-time only event.
-The Joda-Convert jar file is not needed by your users unless they want to.
+The Joda-Convert jar file is not needed by your users unless they want to use conversion.
 If they don't want to use Joda-Convert then the annotations are effectively ignored.
 </p>
 <p>
 Joda-Time v2.0 and Joda-Money will both contain the annotations.
-However, in both cases, the dependency is compile-time only, and not at runtime.
+In both cases, the dependency is not a runtime for users of the projects.
 </p>
 </subsection>
 

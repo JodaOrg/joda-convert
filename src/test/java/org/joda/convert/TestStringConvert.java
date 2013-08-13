@@ -22,6 +22,12 @@ import static org.junit.Assert.fail;
 import java.math.RoundingMode;
 import java.text.ParseException;
 
+import org.joda.convert.test1.Test1Class;
+import org.joda.convert.test2.Test2Class;
+import org.joda.convert.test2.Test2Interface;
+import org.joda.convert.test3.Test3Class;
+import org.joda.convert.test4.Test4Class;
+import org.joda.convert.test4.Test4Interface;
 import org.junit.Test;
 
 /**
@@ -256,7 +262,7 @@ public class TestStringConvert {
         assertEquals("25m", test.convertToString(d));
     }
 
-    // TODO problem is fwks, that just request a converter baed on the type of the object
+    // TODO problem is fwks, that just request a converter based on the type of the object
     @Test(expected = ClassCastException.class)
     public void test_convert_annotationSuperFactorySubViaSub2() {
         StringConvert test = new StringConvert();
@@ -286,6 +292,79 @@ public class TestStringConvert {
         } catch (RuntimeException ex) {
             assertEquals(ParseException.class, ex.getCause().getClass());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_convert_annotationFactoryMethod() {
+        StringConvert test = new StringConvert();
+        DistanceWithFactory d = new DistanceWithFactory(25);
+        assertEquals("25m", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(DistanceWithFactory.class, "25m").amount);
+        StringConverter<DistanceWithFactory> conv = test.findConverter(DistanceWithFactory.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(DistanceWithFactory.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
+    public void test_convert_annotation_ToStringOnInterface() {
+        StringConvert test = new StringConvert();
+        Test1Class d = new Test1Class(25);
+        assertEquals("25g", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(Test1Class.class, "25g").amount);
+        StringConverter<Test1Class> conv = test.findConverter(Test1Class.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(Test1Class.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
+    public void test_convert_annotation_FactoryAndToStringOnInterface() {
+        StringConvert test = new StringConvert();
+        Test2Class d = new Test2Class(25);
+        assertEquals("25g", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(Test2Class.class, "25g").amount);
+        StringConverter<Test2Class> conv = test.findConverter(Test2Class.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(Test2Class.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
+    public void test_convert_annotation_FactoryAndToStringOnInterface_usingInterface() {
+        StringConvert test = new StringConvert();
+        Test2Class d = new Test2Class(25);
+        assertEquals("25g", test.convertToString(d));
+        assertEquals("25g", test.convertFromString(Test2Interface.class, "25g").print());
+        StringConverter<Test2Interface> conv = test.findConverter(Test2Interface.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(Test2Interface.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
+    public void test_convert_annotation_ToStringFromStringOnSuperClassBeatsInterface() {
+        StringConvert test = new StringConvert();
+        Test3Class d = new Test3Class(25);
+        assertEquals("25g", test.convertToString(d));
+        assertEquals(d.amount, test.convertFromString(Test3Class.class, "25g").amount);
+        StringConverter<Test3Class> conv = test.findConverter(Test3Class.class);
+        assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertSame(conv, test.findConverter(Test3Class.class));
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void test_convert_annotation_FromStringFactoryClashingMethods_fromClass() {
+        StringConvert test = new StringConvert();
+        test.findConverter(Test4Class.class);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void test_convert_annotation_FromStringFactoryClashingMethods_fromInterface() {
+        StringConvert test = new StringConvert();
+        test.findConverter(Test4Interface.class);
     }
 
     //-----------------------------------------------------------------------

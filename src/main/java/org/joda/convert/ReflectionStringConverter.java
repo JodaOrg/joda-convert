@@ -43,10 +43,10 @@ abstract class ReflectionStringConverter<T> implements StringConverter<T> {
      */
     ReflectionStringConverter(Class<T> cls, Method toString) {
         if (toString.getParameterTypes().length != 0) {
-            throw new IllegalStateException("ToString method must have no parameters");
+            throw new IllegalStateException("ToString method must have no parameters: " + toString);
         }
         if (toString.getReturnType() != String.class) {
-            throw new IllegalStateException("ToString method must return a String");
+            throw new IllegalStateException("ToString method must return a String: " + toString);
         }
         this.cls = cls;
         this.toString = toString;
@@ -62,7 +62,7 @@ abstract class ReflectionStringConverter<T> implements StringConverter<T> {
         try {
             return (String) toString.invoke(object);
         } catch (IllegalAccessException ex) {
-            throw new IllegalStateException("Method is not accessible");
+            throw new IllegalStateException("Method is not accessible: " + toString);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();

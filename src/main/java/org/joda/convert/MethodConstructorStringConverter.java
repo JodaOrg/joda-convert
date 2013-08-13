@@ -47,10 +47,10 @@ final class MethodConstructorStringConverter<T> extends ReflectionStringConverte
     MethodConstructorStringConverter(Class<T> cls, Method toString, Constructor<T> fromString) {
         super(cls, toString);
         if (cls.isInterface() || Modifier.isAbstract(cls.getModifiers()) || cls.isLocalClass() || cls.isMemberClass()) {
-            throw new IllegalArgumentException("FromString constructor must be on an instantiable class");
+            throw new IllegalArgumentException("FromString constructor must be on an instantiable class: " + fromString);
         }
         if (fromString.getDeclaringClass() != cls) {
-            throw new IllegalStateException("FromString constructor must be defined on specified class");
+            throw new IllegalStateException("FromString constructor must be defined on specified class: " + fromString);
         }
         this.fromString = fromString;
     }
@@ -66,9 +66,9 @@ final class MethodConstructorStringConverter<T> extends ReflectionStringConverte
         try {
             return fromString.newInstance(str);
         } catch (IllegalAccessException ex) {
-            throw new IllegalStateException("Constructor is not accessible");
+            throw new IllegalStateException("Constructor is not accessible: " + fromString);
         } catch (InstantiationException ex) {
-            throw new IllegalStateException("Constructor is not valid");
+            throw new IllegalStateException("Constructor is not valid: " + fromString);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();

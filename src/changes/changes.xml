@@ -8,6 +8,9 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.4" date="xxxx-xx-xx" description="Version 1.4">
+      <action dev="scolebourne" type="add" >
+        Add support for FromString using a factory. Issue #5.
+      </action>
       <action dev="scolebourne" type="update" >
         Change to use m2e Maven Eclipse.
       </action>

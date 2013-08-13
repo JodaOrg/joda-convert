@@ -46,14 +46,14 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
     MethodsStringConverter(Class<T> cls, Method toString, Method fromString) {
         super(cls, toString);
         if (fromString.getParameterTypes().length != 1) {
-            throw new IllegalStateException("FromString method must have one parameter");
+            throw new IllegalStateException("FromString method must have one parameter: " + fromString);
         }
         Class<?> param = fromString.getParameterTypes()[0];
         if (param != String.class && param != CharSequence.class) {
-            throw new IllegalStateException("FromString method must take a String or CharSequence");
+            throw new IllegalStateException("FromString method must take a String or CharSequence: " + fromString);
         }
-        if (fromString.getReturnType().isAssignableFrom(cls) == false) {
-            throw new IllegalStateException("FromString method must return specified class or a superclass");
+        if (fromString.getReturnType().isAssignableFrom(cls) == false && cls.isAssignableFrom(fromString.getReturnType()) == false) {
+            throw new IllegalStateException("FromString method must return specified class or a supertype: " + fromString);
         }
         this.fromString = fromString;
     }
@@ -69,7 +69,7 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
         try {
             return cls.cast(fromString.invoke(null, str));
         } catch (IllegalAccessException ex) {
-            throw new IllegalStateException("Method is not accessible");
+            throw new IllegalStateException("Method is not accessible: " + fromString);
         } catch (InvocationTargetException ex) {
             if (ex.getCause() instanceof RuntimeException) {
                 throw (RuntimeException) ex.getCause();

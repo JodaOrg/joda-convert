@@ -38,6 +38,19 @@ public final class StringConvert {
      * are picked up. To register your own converters, simply create an instance of this class.
      */
     public static final StringConvert INSTANCE = new StringConvert();
+    /**
+     * The cached null object.
+     */
+    private static final StringConverter<?> CACHED_NULL = new StringConverter<Object>() {
+        @Override
+        public String convertToString(Object object) {
+            return null;
+        }
+        @Override
+        public Object convertFromString(Class<? extends Object> cls, String str) {
+            return null;
+        }
+    };
 
     /**
      * The cache of converters.
@@ -209,9 +222,10 @@ public final class StringConvert {
      * This returns an instance of {@code StringConverter} for the specified class.
      * This could be useful in other frameworks.
      * <p>
-     * The search algorithm first searches the registered converters.
-     * It then searches for {@code ToString} and {@code FromString} annotations on the specified class.
-     * Both searches consider superclasses, but not interfaces.
+     * The search algorithm first searches the registered converters in the
+     * class hierarchy and immediate parent interfaces.
+     * It then searches for {@code ToString} and {@code FromString} annotations on the
+     * specified class, class hierarchy or immediate parent interfaces.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a converter for, not null
@@ -224,24 +238,45 @@ public final class StringConvert {
             throw new IllegalArgumentException("Class must not be null");
         }
         StringConverter<T> conv = (StringConverter<T>) registered.get(cls);
+        if (conv == CACHED_NULL) {
+            throw new IllegalStateException("No registered converter found: " + cls);
+        }
         if (conv == null) {
-            if (cls == Object.class) {
-                throw new IllegalStateException("No registered converter found: " + cls);
-            }
-            Class<?> loopCls = cls.getSuperclass();
-            while (loopCls != null && conv == null) {
-                conv = (StringConverter<T>) registered.get(loopCls);
-                loopCls = loopCls.getSuperclass();
-            }
+            conv = findAnnotationConverter(cls);
             if (conv == null) {
-                conv = findAnnotationConverter(cls);
-                if (conv == null) {
-                    throw new IllegalStateException("No registered converter found: " + cls);
-                }
+                registered.putIfAbsent(cls, CACHED_NULL);
+                throw new IllegalStateException("No registered converter found: " + cls);
             }
             registered.putIfAbsent(cls, conv);
         }
         return conv;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> StringConverter<T> findAnnotationConverter(final Class<T> cls) {
+        StringConverter<T> conv = null;
+        // check for registered on superclass
+        Class<?> loopCls = cls.getSuperclass();
+        while (loopCls != null && conv == null) {
+            conv = (StringConverter<T>) registered.get(loopCls);
+            if (conv != null && conv != CACHED_NULL) {
+                return conv;
+            }
+            loopCls = loopCls.getSuperclass();
+        }
+        // check for registered on interfaces
+        for (Class<?> loopIfc : cls.getInterfaces()) {
+            conv = (StringConverter<T>) registered.get(loopIfc);
+            if (conv != null && conv != CACHED_NULL) {
+                return conv;
+            }
+        }
+        // check for annotations
+        conv = findAnnotatedConverter(cls);
+        if (conv != null) {
+            return conv;
+        }
+        return null;
     }
 
     /**
@@ -251,18 +286,18 @@ public final class StringConvert {
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
      */
-    private <T> StringConverter<T> findAnnotationConverter(final Class<T> cls) {
-        Method toString = findToStringMethod(cls);
+    private <T> StringConverter<T> findAnnotatedConverter(final Class<T> cls) {
+        Method toString = findToStringMethod(cls);  // checks superclasses
         if (toString == null) {
             return null;
         }
         Constructor<T> con = findFromStringConstructor(cls);
-        Method fromString = findFromStringMethod(cls, con == null);
+        Method fromString = findFromStringMethod(cls, con == null);  // optionally checks superclasses
         if (con == null && fromString == null) {
-            throw new IllegalStateException("Class annotated with @ToString but not with @FromString");
+            throw new IllegalStateException("Class annotated with @ToString but not with @FromString: " + cls.getName());
         }
         if (con != null && fromString != null) {
-            throw new IllegalStateException("Both method and constructor are annotated with @FromString");
+            throw new IllegalStateException("Both method and constructor are annotated with @FromString: " + cls.getName());
         }
         if (con != null) {
             return new MethodConstructorStringConverter<T>(cls, toString, con);
@@ -279,6 +314,7 @@ public final class StringConvert {
      */
     private Method findToStringMethod(Class<?> cls) {
         Method matched = null;
+        // find in superclass hierarchy
         Class<?> loopCls = cls;
         while (loopCls != null && matched == null) {
             Method[] methods = loopCls.getDeclaredMethods();
@@ -286,12 +322,27 @@ public final class StringConvert {
                 ToString toString = method.getAnnotation(ToString.class);
                 if (toString != null) {
                     if (matched != null) {
-                        throw new IllegalStateException("Two methods are annotated with @ToString");
+                        throw new IllegalStateException("Two methods are annotated with @ToString: " + cls.getName());
                     }
                     matched = method;
                 }
             }
             loopCls = loopCls.getSuperclass();
+        }
+        // find in immediate parent interfaces
+        if (matched == null) {
+            for (Class<?> loopIfc : cls.getInterfaces()) {
+                Method[] methods = loopIfc.getDeclaredMethods();
+                for (Method method : methods) {
+                    ToString toString = method.getAnnotation(ToString.class);
+                    if (toString != null) {
+                        if (matched != null) {
+                            throw new IllegalStateException("Two methods are annotated with @ToString on interfaces: " + cls.getName());
+                        }
+                        matched = method;
+                    }
+                }
+            }
         }
         return matched;
     }
@@ -322,26 +373,66 @@ public final class StringConvert {
      * Finds the conversion method.
      * 
      * @param cls  the class to find a method for, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the method to call, null means not found
      */
     private Method findFromStringMethod(Class<?> cls, boolean searchSuperclasses) {
         Method matched = null;
+        // find in superclass hierarchy
         Class<?> loopCls = cls;
         while (loopCls != null && matched == null) {
-            Method[] methods = loopCls.getDeclaredMethods();
-            for (Method method : methods) {
-                FromString fromString = method.getAnnotation(FromString.class);
-                if (fromString != null) {
-                    if (matched != null) {
-                        throw new IllegalStateException("Two methods are annotated with @ToString");
-                    }
-                    matched = method;
-                }
-            }
+            matched = findFromString(loopCls, matched);
             if (searchSuperclasses == false) {
                 break;
             }
             loopCls = loopCls.getSuperclass();
+        }
+        // find in immediate parent interfaces
+        if (searchSuperclasses && matched == null) {
+            for (Class<?> loopIfc : cls.getInterfaces()) {
+                matched = findFromString(loopIfc, matched);
+            }
+        }
+        return matched;
+    }
+
+    /**
+     * Finds the conversion method.
+     * 
+     * @param cls  the class to find a method for, not null
+     * @param matched  the matched method, may be null
+     * @return the method to call, null means not found
+     */
+    private Method findFromString(Class<?> cls, Method matched) {
+        // find in declared methods
+        Method[] methods = cls.getDeclaredMethods();
+        for (Method method : methods) {
+            FromString fromString = method.getAnnotation(FromString.class);
+            if (fromString != null) {
+                if (matched != null) {
+                    throw new IllegalStateException("Two methods are annotated with @FromString: " + cls.getName());
+                }
+                matched = method;
+            }
+        }
+        // check for factory
+        FromStringFactory factory = cls.getAnnotation(FromStringFactory.class);
+        if (factory != null) {
+            if (matched != null) {
+                throw new IllegalStateException("Class annotated with @FromString and @FromStringFactory: " + cls.getName());
+            }
+            Method[] factoryMethods = factory.factory().getDeclaredMethods();
+            for (Method method : factoryMethods) {
+                // handle factory containing multiple FromString for different types
+                if (cls.isAssignableFrom(method.getReturnType())) {
+                    FromString fromString = method.getAnnotation(FromString.class);
+                    if (fromString != null) {
+                        if (matched != null) {
+                            throw new IllegalStateException("Two methods are annotated with @FromString on the factory: " + factory.factory().getName());
+                        }
+                        matched = method;
+                    }
+                }
+            }
         }
         return matched;
     }
