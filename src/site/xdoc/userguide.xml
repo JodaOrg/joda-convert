@@ -106,8 +106,9 @@ public interface Distance {
 
 }
 
-public class Metres {
+public class Metres implements Distance {
 
+  @Override
   public String standardFormat() { ... }
 
 }
