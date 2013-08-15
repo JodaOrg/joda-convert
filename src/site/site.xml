@@ -24,10 +24,9 @@
     </menu>
 
     <menu name="Development">
-      <item name="GitHub (Source code)" href="https://github.com/JodaOrg/joda-convert"/>
-      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"/>
+      <item name="GitHub" href="https://github.com/JodaOrg/joda-convert"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-convert/issues"/>
-      <item name="Mailing lists" href="mail-lists.html"/>
+      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"/>
     </menu>
 
     <menu name="Joda">
@@ -46,7 +45,9 @@
   </body>
 
   <poweredBy>
-    <logo name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"
-        img="http://sflogo.sourceforge.net/sflogo.php?group_id=344317&amp;type=13" width="120" height="30" />
+    <logo name="Maven" href="http://maven.apache.org/"
+          img="http://maven.apache.org/images/logos/maven-feather.png"/>
+    <logo name="GitHub" href="https://github.com/JodaOrg/joda-convert"
+          img="http://jodaorg.github.io/images/github.png"/>
   </poweredBy>
 </project>
