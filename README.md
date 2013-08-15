@@ -49,7 +49,6 @@ Various documentation is available:
 * The helpful [user guide](http://jodaorg.github.io/joda-convert/userguide.html)
 * The [Javadoc](http://jodaorg.github.io/joda-convert/apidocs/index.html)
 * The change notes for the [releases](http://jodaorg.github.io/joda-convert/changes-report.html)
-* The [GitHub](https://github.com/JodaOrg/joda-convert/) source repository
 
 
 ### Releases
