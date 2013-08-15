@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.4.1" date="xxxx-xx-xx" description="Version 1.4.1">
+      <action dev="scolebourne" type="update" >
+        Validate the @FromString is a static method.
+      </action>
+    </release>
     <release version="1.4" date="2013-08-15" description="Version 1.4">
       <action dev="scolebourne" type="update" >
         Change to use Maven plugin for OSGi, changing some published info.

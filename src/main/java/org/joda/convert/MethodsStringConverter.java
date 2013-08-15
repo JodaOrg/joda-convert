@@ -17,6 +17,7 @@ package org.joda.convert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * Conversion to and from a string using two methods.
@@ -45,6 +46,9 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
      */
     MethodsStringConverter(Class<T> cls, Method toString, Method fromString) {
         super(cls, toString);
+        if (Modifier.isStatic(fromString.getModifiers()) == false) {
+            throw new IllegalStateException("FromString method must be static: " + fromString);
+        }
         if (fromString.getParameterTypes().length != 1) {
             throw new IllegalStateException("FromString method must have one parameter: " + fromString);
         }
