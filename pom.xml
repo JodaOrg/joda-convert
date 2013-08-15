@@ -9,7 +9,7 @@
   <artifactId>joda-convert</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Convert</name>
-  <version>1.4</version>
+  <version>1.4.1-SNAPSHOT</version>
   <description>Library to convert Objects to and from String</description>
   <url>http://www.joda.org/joda-convert/</url>
 
