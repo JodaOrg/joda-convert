@@ -11,7 +11,7 @@
   <name>Joda-Convert</name>
   <version>1.4-SNAPSHOT</version>
   <description>Library to convert Objects to and from String</description>
-  <url>http://jodaorg.github.io/joda-convert/</url>
+  <url>http://www.joda.org/joda-convert/</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
@@ -191,7 +191,7 @@
           </execution>
         </executions>
         <configuration>
-          <message>Create website for v${project.version}</message>
+          <message>Create website for ${project.artifactId} v${project.version}</message>
           <path>joda-convert</path>
           <merge>true</merge>
           <server>github</server>
