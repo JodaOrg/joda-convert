@@ -156,6 +156,36 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>0.8</version>
+        <executions>
+          <execution>
+            <id>github-site</id>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <phase>site-deploy</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <message>Create website for v${project.version}</message>
+          <path>joda-convert</path>
+          <merge>true</merge>
+          <server>github</server>
+          <repositoryOwner>JodaOrg</repositoryOwner>
+          <repositoryName>jodaorg.github.io</repositoryName>
+          <branch>refs/heads/master</branch>
+        </configuration>
+      </plugin>
     </plugins>
     <!-- Manage plugin versions -->
     <pluginManagement>
@@ -273,13 +303,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
-        <version>2.4</version>
-      </extension>
-    </extensions>
   </build>
 
   <!-- ==================================================================== -->
@@ -305,7 +328,6 @@
         <reportSets>
           <reportSet>
             <reports>
-              <report>index</report>
               <report>dependencies</report>
               <report>dependency-info</report>
               <report>issue-tracking</report>
@@ -374,15 +396,6 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>${maven-pmd-plugin.version}</version>
-        <configuration>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>1.6</targetJdk>
-        </configuration>
-      </plugin>
     </plugins>
   </reporting>
 
@@ -401,11 +414,6 @@
       <url>http://oss.sonatype.org/content/repositories/joda-snapshots</url>
       <layout>default</layout>
     </snapshotRepository>
-    <site>
-      <id>sf-web-joda-convert</id>
-      <name>Sourceforge Site</name>
-      <url>scpexe://shell.sourceforge.net/home/project-web/joda-convert/htdocs</url>
-    </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
 
