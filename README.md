@@ -45,7 +45,7 @@ Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](http:/
 ### Documentation
 Various documentation is available:
 
-* The [home page](http://jodaorg.github.io/joda-convert/index.html)
+* The [home page](http://jodaorg.github.io/joda-convert/)
 * The helpful [user guide](http://jodaorg.github.io/joda-convert/userguide.html)
 * The [Javadoc](http://jodaorg.github.io/joda-convert/apidocs/index.html)
 * The change notes for the [releases](http://jodaorg.github.io/joda-convert/changes-report.html)
