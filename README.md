@@ -39,15 +39,16 @@ The <code>FromString</code> annotation may also be applied to a constructor.
 When Joda-Convert is asked to convert between an object and a String, if there is no registered converter
 then the annotations are checked. If they are found, then the methods are called by reflection.
 
-Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](https://github.com/JodaOrg/joda-convert/blob/master/LICENSE.txt).
+Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](http://jodaorg.github.io/joda-convert/license.html).
 
 
 ### Documentation
 Various documentation is available:
 
-* The helpful [user guide](http://joda-convert.sourceforge.net/userguide.html)
-* The javadoc for the [current release](http://joda-convert.sourceforge.net/apidocs/index.html)
-* The change notes for the [releases](http://joda-convert.sourceforge.net/changes-report.html)
+* The [home page](http://jodaorg.github.io/joda-convert/index.html)
+* The helpful [user guide](http://jodaorg.github.io/joda-convert/userguide.html)
+* The javadoc for the [current release](http://jodaorg.github.io/joda-convert/apidocs/index.html)
+* The change notes for the [releases](http://jodaorg.github.io/joda-convert/changes-report.html)
 
 
 ### Releases
@@ -65,4 +66,3 @@ Please use GitHub issues and Pull Requests for support.
 ### History
 Issue tracking and active development is at GitHub.
 Historically, the project was at [Sourceforge](https://sourceforge.net/projects/joda-convert/).
-The [home page](http://joda-convert.sourceforge.net/) is still at Sourceforge.

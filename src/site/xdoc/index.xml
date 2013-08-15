@@ -86,8 +86,6 @@ Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda
 <section name="Support">
 <p>
 Support on bugs, library usage or enhancement requests is available on a best efforts basis.
-If you have any questions, or want to volunteer to help, just email Stephen Colebourne
-via scolebourne.at.users.sourceforge.net.
 </p>
 <p>
 To suggest enhancements or contribute, please <a href="https://github.com/JodaOrg/joda-convert">fork the source code</a> on GitHub.
