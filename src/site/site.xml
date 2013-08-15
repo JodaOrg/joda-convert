@@ -3,13 +3,11 @@
   <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
   <bannerLeft>
     <name>Joda.org</name>
-    <!--src>http://joda-convert.sourceforge.net/images/joda.png</src-->
-    <href>http://joda.sourceforge.net/</href>
+    <href>http://jodaorg.github.io/</href>
   </bannerLeft>
   <bannerRight>
     <name>Joda-Convert</name>
-    <!--src>http://joda-convert.sourceforge.net/images/jodaconvert.png</src-->
-    <href>http://joda-convert.sourceforge.net/</href>
+    <href>http://jodaorg.github.io/joda-convert/</href>
   </bannerRight>
 
   <body>
@@ -30,10 +28,10 @@
     </menu>
 
     <menu name="Joda">
-      <item name="Joda home" href="http://joda.sourceforge.net"/>
+      <item name="Joda home" href="http://jodaorg.github.io"/>
       <item name="Beans" href="http://joda-beans.sourceforge.net/index.html"/>
       <item name="Money" href="http://joda-money.sourceforge.net/index.html"/>
-      <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
+      <item name="Primitives" href="http://jodaorg.github.io/joda-primitives/"/>
       <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
     </menu>
 
