@@ -62,8 +62,13 @@ Converters may also be manually added by method name.
 This is equivalent to using annotations, but suitable when you don't own the code to add them.
 See <code>StringConvert.registerMethods</code> and <code>StringConvert.registerMethodConstructor</code>.
 </p>
+</subsection>
+
+<subsection name="Factories">
 <p>
-A converter can only be registered if one is not already registered for that type.
+In addition to manual registration of individual converters, each instance of <code>StringConvert</code>
+has a list of factories to use. The <code>StringConverterFactory</code> interface defines the factory.
+This allows either bulk registration or dynamic lookup of converters.
 </p>
 </subsection>
 
