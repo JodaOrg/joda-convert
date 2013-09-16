@@ -54,6 +54,10 @@ These cover all the standard JDK types for which conversion to and from a string
 The set also includes JSR-310 types, but these are optional and loaded by reflection. The system will run without any dependency.
 </p>
 <p>
+Arrays of <code>byte</code> are handled as a standard JDK type using Base64.
+Arrays of <code>char</code> are handled by a standard JDK type by conversion to a string.
+</p>
+<p>
 Each <code>StringConvert</code> instance, other than the global singleton, may have additional converters registered manually.
 Each converter implements the <code>StringConverter</code> interface, which is self explanatory.
 </p>
@@ -72,8 +76,11 @@ This allows either bulk registration or dynamic lookup of converters.
 </p>
 <p>
 A factory is provided to allow numeric arrays to be converted to/from a comma separated list.
-Arrays of <code>byte</code> are handled by default using Base64.
-Arrays of <code>char</code> are handled by default by conversion to a string.
+This must be manually registered.
+</p>
+<p>
+A factory is provided to allow boolean arrays to be converted to/from a string such as 'TTFFT'.
+Again, this must be manually registered.
 </p>
 </subsection>
 

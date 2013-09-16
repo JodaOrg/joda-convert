@@ -9,6 +9,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.4.1" date="xxxx-xx-xx" description="Version 1.4.1">
       <action dev="scolebourne" type="add" >
+        Add support for boolean[].
+      </action>
+      <action dev="scolebourne" type="add" >
         Add support for numeric primitive arrays.
       </action>
       <action dev="scolebourne" type="add" >
