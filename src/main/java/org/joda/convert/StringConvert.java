@@ -245,6 +245,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a converter for, null returns false
      * @return true if convertible
+     * @since 1.5
      */
     public boolean isConvertible(final Class<?> cls) {
         try {
@@ -294,6 +295,7 @@ public final class StringConvert {
      * @param cls  the class to find a converter for, not null
      * @return the converter, using {@code Object} to avoid generics, not null
      * @throws RuntimeException (or subclass) if no converter found
+     * @since 1.5
      */
     @SuppressWarnings("unchecked")
     public StringConverter<Object> findConverterNoGenerics(final Class<?> cls) {
@@ -384,6 +386,7 @@ public final class StringConvert {
      * 
      * @param factory  the converter factory, not null
      * @throws IllegalStateException if trying to alter the global singleton
+     * @since 1.5
      */
     public void registerFactory(final StringConverterFactory factory) {
         if (factory == null) {

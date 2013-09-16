@@ -20,6 +20,8 @@ package org.joda.convert;
  * created dynamically or easily initialised.
  * <p>
  * Implementations must be immutable and thread-safe.
+ * 
+ * @since 1.5
  */
 public interface StringConverterFactory {
 

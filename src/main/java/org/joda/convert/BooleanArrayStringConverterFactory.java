@@ -24,6 +24,8 @@ package org.joda.convert;
  * To use, simply register the instance with a {@code StringConvert} instance.
  * <p>
  * This class is immutable and thread-safe.
+ * 
+ * @since 1.5
  */
 public final class BooleanArrayStringConverterFactory implements StringConverterFactory {
 

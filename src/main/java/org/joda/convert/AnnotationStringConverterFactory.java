@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
  * Factory for {@code StringConverter} looking up annotations.
  * <p>
  * This class is immutable and thread-safe.
+ * 
+ * @since 1.5
  */
 final class AnnotationStringConverterFactory implements StringConverterFactory {
 
