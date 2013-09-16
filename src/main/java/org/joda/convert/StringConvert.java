@@ -162,18 +162,16 @@ public final class StringConvert {
      * <p>
      * This uses {@link #findConverter} to provide the converter.
      * 
-     * @param <T>  the type to convert from
      * @param object  the object to convert, null returns null
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
      */
-    @SuppressWarnings("unchecked")
-    public <T> String convertToString(T object) {
+    public String convertToString(Object object) {
         if (object == null) {
             return null;
         }
-        Class<T> cls = (Class<T>) object.getClass();
-        StringConverter<T> conv = findConverter(cls);
+        Class<?> cls = object.getClass();
+        StringConverter<Object> conv = findConverterNoGenerics(cls);
         return conv.convertToString(object);
     }
 
@@ -183,17 +181,16 @@ public final class StringConvert {
      * This uses {@link #findConverter} to provide the converter.
      * The class can be provided to select a more specific converter.
      * 
-     * @param <T>  the type to convert from
      * @param cls  the class to convert from, not null
      * @param object  the object to convert, null returns null
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
      */
-    public <T> String convertToString(Class<T> cls, T object) {
+    public String convertToString(Class<?> cls, Object object) {
         if (object == null) {
             return null;
         }
-        StringConverter<T> conv = findConverter(cls);
+        StringConverter<Object> conv = findConverterNoGenerics(cls);
         return conv.convertToString(object);
     }
 
@@ -240,7 +237,7 @@ public final class StringConvert {
      * Finds a suitable converter for the type.
      * <p>
      * This returns an instance of {@code StringConverter} for the specified class.
-     * This could be useful in other frameworks.
+     * This is designed for user code where the {@code Class} object generics is known.
      * <p>
      * The search algorithm first searches the registered converters in the
      * class hierarchy and immediate parent interfaces.
@@ -254,6 +251,32 @@ public final class StringConvert {
      */
     public <T> StringConverter<T> findConverter(final Class<T> cls) {
         StringConverter<T> conv = findConverterQuiet(cls);
+        if (conv == null) {
+            throw new IllegalStateException("No registered converter found: " + cls);
+        }
+        return conv;
+    }
+
+    /**
+     * Finds a suitable converter for the type with open generics.
+     * <p>
+     * This returns an instance of {@code StringConverter} for the specified class.
+     * This is designed for framework usage where the {@code Class} object generics are unknown'?'.
+     * The returned type is declared with {@code Object} instead of '?' to
+     * allow the {@link ToStringConverter} to be invoked.
+     * <p>
+     * The search algorithm first searches the registered converters in the
+     * class hierarchy and immediate parent interfaces.
+     * It then searches for {@code ToString} and {@code FromString} annotations on the
+     * specified class, class hierarchy or immediate parent interfaces.
+     * 
+     * @param cls  the class to find a converter for, not null
+     * @return the converter, using {@code Object} to avoid generics, not null
+     * @throws RuntimeException (or subclass) if no converter found
+     */
+    @SuppressWarnings("unchecked")
+    public StringConverter<Object> findConverterNoGenerics(final Class<?> cls) {
+        StringConverter<Object> conv = (StringConverter<Object>) findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
         }

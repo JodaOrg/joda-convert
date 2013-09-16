@@ -97,6 +97,13 @@ public class TestStringConvert {
     }
 
     @Test
+    public void test_convertToString_withType_noGenerics() {
+        Integer i = 6;
+        Class<?> cls = Integer.class;
+        assertEquals("6", StringConvert.INSTANCE.convertToString(cls, i));
+    }
+
+    @Test
     public void test_convertToString_withType_primitive1() {
         int i = 6;
         assertEquals("6", StringConvert.INSTANCE.convertToString(Integer.class, i));
@@ -160,6 +167,14 @@ public class TestStringConvert {
     }
 
     //-----------------------------------------------------------------------
+    @Test
+    public void test_findConverter() {
+        Class<Integer> cls = Integer.class;
+        StringConverter<Integer> conv = StringConvert.INSTANCE.findConverter(cls);
+        assertEquals(Integer.valueOf(12), conv.convertFromString(cls, "12"));
+        assertEquals("12", conv.convertToString(12));
+    }
+
     @Test(expected=IllegalArgumentException.class)
     public void test_findConverter_null() {
         StringConvert.INSTANCE.findConverter(null);
@@ -168,6 +183,25 @@ public class TestStringConvert {
     @Test(expected=IllegalStateException.class)
     public void test_findConverter_Object() {
         StringConvert.INSTANCE.findConverter(Object.class);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_findConverterNoGenerics() {
+        Class<?> cls = Integer.class;
+        StringConverter<Object> conv = StringConvert.INSTANCE.findConverterNoGenerics(cls);
+        assertEquals(Integer.valueOf(12), conv.convertFromString(cls, "12"));
+        assertEquals("12", conv.convertToString(12));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_findConverterNoGenerics_null() {
+        StringConvert.INSTANCE.findConverterNoGenerics(null);
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void test_findConverterNoGenerics_Object() {
+        StringConvert.INSTANCE.findConverterNoGenerics(Object.class);
     }
 
     //-----------------------------------------------------------------------

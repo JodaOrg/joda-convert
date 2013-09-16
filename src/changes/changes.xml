@@ -9,6 +9,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.4.1" date="xxxx-xx-xx" description="Version 1.4.1">
       <action dev="scolebourne" type="add" >
+        Weaken generics to better support framework-level access.
+      </action>
+      <action dev="scolebourne" type="add" >
         Add isConvertible() method.
       </action>
       <action dev="scolebourne" type="update" >
