@@ -71,6 +71,7 @@ has a list of factories to use. The <code>StringConverterFactory</code> interfac
 This allows either bulk registration or dynamic lookup of converters.
 </p>
 <p>
+A factory is provided to allow numeric arrays to be converted to/from a comma separated list.
 Arrays of <code>byte</code> are handled by default using Base64.
 Arrays of <code>char</code> are handled by default by conversion to a string.
 </p>
