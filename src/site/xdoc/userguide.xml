@@ -70,6 +70,10 @@ In addition to manual registration of individual converters, each instance of <c
 has a list of factories to use. The <code>StringConverterFactory</code> interface defines the factory.
 This allows either bulk registration or dynamic lookup of converters.
 </p>
+<p>
+Arrays of <code>byte</code> are handled by default using Base64.
+Arrays of <code>char</code> are handled by default by conversion to a string.
+</p>
 </subsection>
 
 <subsection name="Annotation based conversion">

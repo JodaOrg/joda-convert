@@ -16,6 +16,7 @@
 package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import java.math.RoundingMode;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -107,9 +109,39 @@ public class TestJDKStringConverters {
     }
 
     @Test
+    public void test_charArray() {
+        JDKStringConverter test = JDKStringConverter.CHAR_ARRAY;
+        char[] array = new char[] {'M', 'a', 'p'};
+        String str = "Map";
+        assertEquals(char[].class, test.getType());
+        assertEquals(str, test.convertToString(array));
+        assertTrue(Arrays.equals(array, (char[]) test.convertFromString(char[].class, str)));
+    }
+
+    @Test
     public void test_Byte() {
         JDKStringConverter test = JDKStringConverter.BYTE;
         doTest(test, Byte.class, Byte.valueOf((byte) 12), "12");
+    }
+
+    @Test
+    public void test_byteArray1() {
+        JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
+        byte[] array = new byte[] {77, 97, 112};
+        String str = "TWFw";
+        assertEquals(byte[].class, test.getType());
+        assertEquals(str, test.convertToString(array));
+        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+    }
+
+    @Test
+    public void test_byteArray2() {
+        JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
+        byte[] array = new byte[] {77, 97};
+        String str = "TWE=";
+        assertEquals(byte[].class, test.getType());
+        assertEquals(str, test.convertToString(array));
+        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
     }
 
     @Test

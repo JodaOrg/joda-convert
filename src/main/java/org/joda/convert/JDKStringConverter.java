@@ -36,6 +36,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.xml.bind.DatatypeConverter;
+
 /**
  * Conversion between JDK classes and a {@code String}.
  */
@@ -109,6 +111,18 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
     },
     /**
+     * String converter.
+     */
+    BYTE_ARRAY(byte[].class) {
+        @Override
+        public String convertToString(Object object) {
+            return DatatypeConverter.printBase64Binary((byte[]) object);
+        }
+        public Object convertFromString(Class<?> cls, String str) {
+            return DatatypeConverter.parseBase64Binary(str);
+        }
+    },
+    /**
      * Character converter.
      */
     CHARACTER(Character.class) {
@@ -117,6 +131,18 @@ enum JDKStringConverter implements StringConverter<Object> {
                 throw new IllegalArgumentException("Character value must be a string length 1");
             }
             return new Character(str.charAt(0));
+        }
+    },
+    /**
+     * String converter.
+     */
+    CHAR_ARRAY(char[].class) {
+        @Override
+        public String convertToString(Object object) {
+            return new String((char[]) object);
+        }
+        public Object convertFromString(Class<?> cls, String str) {
+            return str.toCharArray();
         }
     },
     /**
