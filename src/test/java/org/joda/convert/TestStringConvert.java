@@ -16,6 +16,8 @@
 package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
@@ -54,6 +56,14 @@ public class TestStringConvert {
         StringConvert test = new StringConvert(false);
         StringConverter<?> conv = test.findConverter(Integer.class);
         assertEquals(null, conv);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isConvertible() {
+        assertTrue(StringConvert.INSTANCE.isConvertible(Integer.class));
+        assertTrue(StringConvert.INSTANCE.isConvertible(String.class));
+        assertFalse(StringConvert.INSTANCE.isConvertible(Object.class));
     }
 
     //-----------------------------------------------------------------------

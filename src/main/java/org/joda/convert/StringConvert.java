@@ -216,6 +216,26 @@ public final class StringConvert {
         return conv.convertFromString(cls, str);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if a suitable converter exists for the type.
+     * <p>
+     * This performs the same checks as the {@code findConverter} methods.
+     * Calling this before {@code findConverter} will cache the converter.
+     * <p>
+     * Note that all exceptions, including developer errors are caught and hidden.
+     * 
+     * @param cls  the class to find a converter for, null returns false
+     * @return true if convertible
+     */
+    public boolean isConvertible(final Class<?> cls) {
+        try {
+            return cls != null && findConverterQuiet(cls) != null;
+        } catch (RuntimeException ex) {
+            return false;
+        }
+    }
+
     /**
      * Finds a suitable converter for the type.
      * <p>
@@ -232,28 +252,57 @@ public final class StringConvert {
      * @return the converter, not null
      * @throws RuntimeException (or subclass) if no converter found
      */
-    @SuppressWarnings("unchecked")
     public <T> StringConverter<T> findConverter(final Class<T> cls) {
+        StringConverter<T> conv = findConverterQuiet(cls);
+        if (conv == null) {
+            throw new IllegalStateException("No registered converter found: " + cls);
+        }
+        return conv;
+    }
+
+    /**
+     * Finds a converter searching registered and annotated.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a method for, not null
+     * @return the converter, null if no converter
+     * @throws RuntimeException if invalid
+     */
+    @SuppressWarnings("unchecked")
+    private <T> StringConverter<T> findConverterQuiet(final Class<T> cls) {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
         StringConverter<T> conv = (StringConverter<T>) registered.get(cls);
         if (conv == CACHED_NULL) {
-            throw new IllegalStateException("No registered converter found: " + cls);
+            return null;
         }
         if (conv == null) {
-            conv = findAnnotationConverter(cls);
+            try {
+                conv = findAnyConverter(cls);
+            } catch (RuntimeException ex) {
+                registered.putIfAbsent(cls, CACHED_NULL);
+                throw ex;
+            }
             if (conv == null) {
                 registered.putIfAbsent(cls, CACHED_NULL);
-                throw new IllegalStateException("No registered converter found: " + cls);
+                return null;
             }
             registered.putIfAbsent(cls, conv);
         }
         return conv;
     }
 
+    /**
+     * Finds a converter searching registered and annotated.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a method for, not null
+     * @return the converter, not null
+     * @throws RuntimeException if invalid
+     */
     @SuppressWarnings("unchecked")
-    private <T> StringConverter<T> findAnnotationConverter(final Class<T> cls) {
+    private <T> StringConverter<T> findAnyConverter(final Class<T> cls) {
         StringConverter<T> conv = null;
         // check for registered on superclass
         Class<?> loopCls = cls.getSuperclass();
@@ -280,11 +329,12 @@ public final class StringConvert {
     }
 
     /**
-     * Finds the conversion method.
+     * Finds a converter searching annotated.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the converter, not null
+     * @throws RuntimeException if none found
      */
     private <T> StringConverter<T> findAnnotatedConverter(final Class<T> cls) {
         Method toString = findToStringMethod(cls);  // checks superclasses
@@ -311,6 +361,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
+     * @throws RuntimeException if invalid
      */
     private Method findToStringMethod(Class<?> cls) {
         Method matched = null;
@@ -353,6 +404,7 @@ public final class StringConvert {
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means use {@code toString}
+     * @throws RuntimeException if invalid
      */
     private <T> Constructor<T> findFromStringConstructor(Class<T> cls) {
         Constructor<T> con;
@@ -374,6 +426,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a method for, not null
      * @return the method to call, null means not found
+     * @throws RuntimeException if invalid
      */
     private Method findFromStringMethod(Class<?> cls, boolean searchSuperclasses) {
         Method matched = null;
@@ -401,6 +454,7 @@ public final class StringConvert {
      * @param cls  the class to find a method for, not null
      * @param matched  the matched method, may be null
      * @return the method to call, null means not found
+     * @throws RuntimeException if invalid
      */
     private Method findFromString(Class<?> cls, Method matched) {
         // find in declared methods
