@@ -13,13 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.convert;
+package org.joda.convert.factory;
 
 import java.util.regex.Pattern;
 
+import org.joda.convert.StringConverter;
+import org.joda.convert.StringConverterFactory;
+
 /**
- * Factory for {@code StringConverter} providing support for primitive arrays
- * as a comma separated list.
+ * Factory for {@code StringConverter} providing support for numeric object arrays
+ * as a comma separated list, using '-' for null.
  * <p>
  * To use, simply register the instance with a {@code StringConvert} instance.
  * <p>
@@ -27,12 +30,12 @@ import java.util.regex.Pattern;
  * 
  * @since 1.5
  */
-public final class NumericArrayStringConverterFactory implements StringConverterFactory {
+public final class NumericObjectArrayStringConverterFactory implements StringConverterFactory {
 
     /**
      * Singleton instance.
      */
-    public static final StringConverterFactory INSTANCE = new NumericArrayStringConverterFactory();
+    public static final StringConverterFactory INSTANCE = new NumericObjectArrayStringConverterFactory();
     /**
      * Delimiter to find.
      */
@@ -41,7 +44,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
     /**
      * Restricted constructor.
      */
-    private NumericArrayStringConverterFactory() {
+    private NumericObjectArrayStringConverterFactory() {
     }
 
     //-----------------------------------------------------------------------
@@ -53,20 +56,20 @@ public final class NumericArrayStringConverterFactory implements StringConverter
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     public StringConverter<?> findConverter(Class<?> cls) {
-        if (cls.isArray() && cls.getComponentType().isPrimitive()) {
-            if (cls == long[].class) {
+        if (cls.isArray()) {
+            if (cls == Long[].class) {
                 return LongArrayStringConverter.INSTANCE;
             }
-            if (cls == int[].class) {
+            if (cls == Integer[].class) {
                 return IntArrayStringConverter.INSTANCE;
             }
-            if (cls == short[].class) {
+            if (cls == Short[].class) {
                 return ShortArrayStringConverter.INSTANCE;
             }
-            if (cls == double[].class) {
+            if (cls == Double[].class) {
                 return DoubleArrayStringConverter.INSTANCE;
             }
-            if (cls == float[].class) {
+            if (cls == Float[].class) {
                 return FloatArrayStringConverter.INSTANCE;
             }
         }
@@ -80,158 +83,168 @@ public final class NumericArrayStringConverterFactory implements StringConverter
     }
 
     //-----------------------------------------------------------------------
-    enum LongArrayStringConverter implements StringConverter<long[]> {
+    enum LongArrayStringConverter implements StringConverter<Long[]> {
         INSTANCE {
             @Override
-            public String convertToString(long[] array) {
+            public String convertToString(Long[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 StringBuilder buf = new StringBuilder(array.length * 8);
-                buf.append(array[0]);
+                buf.append(array[0] != null ? array[0] : "-");
                 for (int i = 1; i < array.length; i++) {
-                    buf.append(',').append(array[i]);
+                    buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
             }
             @Override
-            public long[] convertFromString(Class<? extends long[]> cls, String str) {
+            public Long[] convertFromString(Class<? extends Long[]> cls, String str) {
                 if (str.length() == 0) {
                     return EMPTY;
                 }
                 String[] split = DELIMITER.split(str);
-                long[] array = new long[split.length];
+                Long[] array = new Long[split.length];
                 for (int i = 0; i < split.length; i++) {
-                    array[i] = Long.parseLong(split[i]);
+                    if (split[i].equals("-") == false) {
+                        array[i] = Long.parseLong(split[i]);
+                    }
                 }
                 return array;
             }
         };
-        private static final long[] EMPTY = new long[0];
+        private static final Long[] EMPTY = new Long[0];
     }
 
     //-----------------------------------------------------------------------
-    enum IntArrayStringConverter implements StringConverter<int[]> {
+    enum IntArrayStringConverter implements StringConverter<Integer[]> {
         INSTANCE {
             @Override
-            public String convertToString(int[] array) {
+            public String convertToString(Integer[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 StringBuilder buf = new StringBuilder(array.length * 6);
-                buf.append(array[0]);
+                buf.append(array[0] != null ? array[0] : "-");
                 for (int i = 1; i < array.length; i++) {
-                    buf.append(',').append(array[i]);
+                    buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
             }
             @Override
-            public int[] convertFromString(Class<? extends int[]> cls, String str) {
+            public Integer[] convertFromString(Class<? extends Integer[]> cls, String str) {
                 if (str.length() == 0) {
                     return EMPTY;
                 }
                 String[] split = DELIMITER.split(str);
-                int[] array = new int[split.length];
+                Integer[] array = new Integer[split.length];
                 for (int i = 0; i < split.length; i++) {
-                    array[i] = Integer.parseInt(split[i]);
+                    if (split[i].equals("-") == false) {
+                        array[i] = Integer.parseInt(split[i]);
+                    }
                 }
                 return array;
             }
         };
-        private static final int[] EMPTY = new int[0];
+        private static final Integer[] EMPTY = new Integer[0];
     }
 
     //-----------------------------------------------------------------------
-    enum ShortArrayStringConverter implements StringConverter<short[]> {
+    enum ShortArrayStringConverter implements StringConverter<Short[]> {
         INSTANCE {
             @Override
-            public String convertToString(short[] array) {
+            public String convertToString(Short[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 StringBuilder buf = new StringBuilder(array.length * 3);
-                buf.append(array[0]);
+                buf.append(array[0] != null ? array[0] : "-");
                 for (int i = 1; i < array.length; i++) {
-                    buf.append(',').append(array[i]);
+                    buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
             }
             @Override
-            public short[] convertFromString(Class<? extends short[]> cls, String str) {
+            public Short[] convertFromString(Class<? extends Short[]> cls, String str) {
                 if (str.length() == 0) {
                     return EMPTY;
                 }
                 String[] split = DELIMITER.split(str);
-                short[] array = new short[split.length];
+                Short[] array = new Short[split.length];
                 for (int i = 0; i < split.length; i++) {
-                    array[i] = Short.parseShort(split[i]);
+                    if (split[i].equals("-") == false) {
+                        array[i] = Short.parseShort(split[i]);
+                    }
                 }
                 return array;
             }
         };
-        private static final short[] EMPTY = new short[0];
+        private static final Short[] EMPTY = new Short[0];
     }
 
     //-----------------------------------------------------------------------
-    enum DoubleArrayStringConverter implements StringConverter<double[]> {
+    enum DoubleArrayStringConverter implements StringConverter<Double[]> {
         INSTANCE {
             @Override
-            public String convertToString(double[] array) {
+            public String convertToString(Double[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 StringBuilder buf = new StringBuilder(array.length * 8);
-                buf.append(array[0]);
+                buf.append(array[0] != null ? array[0] : "-");
                 for (int i = 1; i < array.length; i++) {
-                    buf.append(',').append(array[i]);
+                    buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
             }
             @Override
-            public double[] convertFromString(Class<? extends double[]> cls, String str) {
+            public Double[] convertFromString(Class<? extends Double[]> cls, String str) {
                 if (str.length() == 0) {
                     return EMPTY;
                 }
                 String[] split = DELIMITER.split(str);
-                double[] array = new double[split.length];
+                Double[] array = new Double[split.length];
                 for (int i = 0; i < split.length; i++) {
-                    array[i] = Double.parseDouble(split[i]);
+                    if (split[i].equals("-") == false) {
+                        array[i] = Double.parseDouble(split[i]);
+                    }
                 }
                 return array;
             }
         };
-        private static final double[] EMPTY = new double[0];
+        private static final Double[] EMPTY = new Double[0];
     }
 
     //-----------------------------------------------------------------------
-    enum FloatArrayStringConverter implements StringConverter<float[]> {
+    enum FloatArrayStringConverter implements StringConverter<Float[]> {
         INSTANCE {
             @Override
-            public String convertToString(float[] array) {
+            public String convertToString(Float[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 StringBuilder buf = new StringBuilder(array.length * 8);
-                buf.append(array[0]);
+                buf.append(array[0] != null ? array[0] : "-");
                 for (int i = 1; i < array.length; i++) {
-                    buf.append(',').append(array[i]);
+                    buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
             }
             @Override
-            public float[] convertFromString(Class<? extends float[]> cls, String str) {
+            public Float[] convertFromString(Class<? extends Float[]> cls, String str) {
                 if (str.length() == 0) {
                     return EMPTY;
                 }
                 String[] split = DELIMITER.split(str);
-                float[] array = new float[split.length];
+                Float[] array = new Float[split.length];
                 for (int i = 0; i < split.length; i++) {
-                    array[i] = Float.parseFloat(split[i]);
+                    if (split[i].equals("-") == false) {
+                        array[i] = Float.parseFloat(split[i]);
+                    }
                 }
                 return array;
             }
         };
-        private static final float[] EMPTY = new float[0];
+        private static final Float[] EMPTY = new Float[0];
     }
 
 }

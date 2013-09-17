@@ -13,11 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.joda.convert;
+package org.joda.convert.factory;
+
+import org.joda.convert.StringConverter;
+import org.joda.convert.StringConverterFactory;
 
 /**
- * Factory for {@code StringConverter} providing support for primitive boolean array
- * as a sequence of 'T' and 'F'.
+ * Factory for {@code StringConverter} providing support for Boolean object array
+ * as a sequence of 'T', 'F' and '-' for null.
  * <p>
  * This is intended as a human readable format, not a compact format.
  * <p>
@@ -27,17 +30,17 @@ package org.joda.convert;
  * 
  * @since 1.5
  */
-public final class BooleanArrayStringConverterFactory implements StringConverterFactory {
+public final class BooleanObjectArrayStringConverterFactory implements StringConverterFactory {
 
     /**
      * Singleton instance.
      */
-    public static final StringConverterFactory INSTANCE = new BooleanArrayStringConverterFactory();
+    public static final StringConverterFactory INSTANCE = new BooleanObjectArrayStringConverterFactory();
 
     /**
      * Restricted constructor.
      */
-    private BooleanArrayStringConverterFactory() {
+    private BooleanObjectArrayStringConverterFactory() {
     }
 
     //-----------------------------------------------------------------------
@@ -49,7 +52,7 @@ public final class BooleanArrayStringConverterFactory implements StringConverter
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     public StringConverter<?> findConverter(Class<?> cls) {
-        if (cls == boolean[].class) {
+        if (cls == Boolean[].class) {
             return BooleanArrayStringConverter.INSTANCE;
         }
         return null;
@@ -62,39 +65,41 @@ public final class BooleanArrayStringConverterFactory implements StringConverter
     }
 
     //-----------------------------------------------------------------------
-    enum BooleanArrayStringConverter implements StringConverter<boolean[]> {
+    enum BooleanArrayStringConverter implements StringConverter<Boolean[]> {
         INSTANCE {
             @Override
-            public String convertToString(boolean[] array) {
+            public String convertToString(Boolean[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 StringBuilder buf = new StringBuilder(array.length);
                 for (int i = 0; i < array.length; i++) {
-                    buf.append(array[i] ? 'T' : 'F');
+                    buf.append(array[i] == null ? '-' : (array[i].booleanValue() ? 'T' : 'F'));
                 }
                 return buf.toString();
             }
             @Override
-            public boolean[] convertFromString(Class<? extends boolean[]> cls, String str) {
+            public Boolean[] convertFromString(Class<? extends Boolean[]> cls, String str) {
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                boolean[] array = new boolean[str.length()];
+                Boolean[] array = new Boolean[str.length()];
                 for (int i = 0; i < array.length; i++) {
                     char ch = str.charAt(i);
                     if (ch == 'T') {
-                        array[i] = true;
+                        array[i] = Boolean.TRUE;
                     } else if (ch == 'F') {
-                        array[i] = false;
+                        array[i] = Boolean.FALSE;
+                    } else if (ch == '-') {
+                        array[i] = null;
                     } else {
-                        throw new IllegalArgumentException("boolean[] must consist only of 'T' and 'F'");
+                        throw new IllegalArgumentException("Invalid Boolean[] string, must consist only of 'T', 'F' and '-'");
                     }
                 }
                 return array;
             }
         };
-        private static final boolean[] EMPTY = new boolean[0];
+        private static final Boolean[] EMPTY = new Boolean[0];
     }
 
 }

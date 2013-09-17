@@ -20,27 +20,28 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.joda.convert.factory.BooleanArrayStringConverterFactory;
+import org.joda.convert.factory.BooleanObjectArrayStringConverterFactory;
 import org.junit.Test;
 
 /**
- * Test BooleanArrayStringConverterFactory.
+ * Test BooleanObjectArrayStringConverterFactory.
  */
-public class TestBooleanArrayStringConverterFactory {
+public class TestBooleanObjectArrayStringConverterFactory {
 
     @Test
     public void test_longArray() {
-        doTest(new boolean[0], "");
-        doTest(new boolean[] {true}, "T");
-        doTest(new boolean[] {false}, "F");
-        doTest(new boolean[] {true, true, false, true, false, false}, "TTFTFF");
+        doTest(new Boolean[0], "");
+        doTest(new Boolean[] {true}, "T");
+        doTest(new Boolean[] {false}, "F");
+        doTest(new Boolean[] {null}, "-");
+        doTest(new Boolean[] {true, true, false, null, true, false, null, null, false}, "TTF-TF--F");
     }
 
-    private void doTest(boolean[] array, String str) {
-        StringConvert test = new StringConvert(true, BooleanArrayStringConverterFactory.INSTANCE);
+    private void doTest(Boolean[] array, String str) {
+        StringConvert test = new StringConvert(true, BooleanObjectArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(boolean[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(boolean[].class, str)));
+        assertEquals(str, test.convertToString(Boolean[].class, array));
+        assertTrue(Arrays.equals(array, test.convertFromString(Boolean[].class, str)));
     }
 
 }

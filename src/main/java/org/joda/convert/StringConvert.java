@@ -23,6 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.joda.convert.factory.BooleanArrayStringConverterFactory;
+import org.joda.convert.factory.BooleanObjectArrayStringConverterFactory;
+import org.joda.convert.factory.ByteObjectArrayStringConverterFactory;
+import org.joda.convert.factory.CharObjectArrayStringConverterFactory;
+import org.joda.convert.factory.NumericArrayStringConverterFactory;
+import org.joda.convert.factory.NumericObjectArrayStringConverterFactory;
+
 /**
  * Manager for conversion to and from a {@code String}, acting as the main client interface.
  * <p>
@@ -63,6 +70,40 @@ public final class StringConvert {
      */
     private final ConcurrentMap<Class<?>, StringConverter<?>> registered = new ConcurrentHashMap<Class<?>, StringConverter<?>>();
 
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a new conversion manager including the extended standard set of converters.
+     * <p>
+     * The returned converter is a new instance that includes additional converters:
+     * <ul>
+     * <li>JDK converters
+     * <li>{@link NumericArrayStringConverterFactory}
+     * <li>{@link NumericObjectArrayStringConverterFactory}
+     * <li>{@link CharObjectArrayStringConverterFactory}
+     * <li>{@link ByteObjectArrayStringConverterFactory}
+     * <li>{@link BooleanArrayStringConverterFactory}
+     * <li>{@link BooleanObjectArrayStringConverterFactory}
+     * </ul>
+     * <p>
+     * The convert instance is mutable in a thread-safe manner.
+     * Converters may be altered at any time, including the JDK converters.
+     * It is strongly recommended to only alter the converters before performing
+     * actual conversions.
+     * 
+     * @return the new converter, not null
+     * @since 1.5
+     */
+    public static StringConvert create() {
+        return new StringConvert(true, 
+                        NumericArrayStringConverterFactory.INSTANCE,
+                        NumericObjectArrayStringConverterFactory.INSTANCE,
+                        CharObjectArrayStringConverterFactory.INSTANCE,
+                        ByteObjectArrayStringConverterFactory.INSTANCE,
+                        BooleanArrayStringConverterFactory.INSTANCE,
+                        BooleanObjectArrayStringConverterFactory.INSTANCE);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Creates a new conversion manager including the JDK converters.
      * <p>

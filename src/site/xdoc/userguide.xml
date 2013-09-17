@@ -76,11 +76,15 @@ This allows either bulk registration or dynamic lookup of converters.
 </p>
 <p>
 A factory is provided to allow numeric arrays to be converted to/from a comma separated list.
-This must be manually registered.
+A separate factory handles numeric object arrays.
+Another factory is provided to allow boolean arrays to be converted to/from a string such as 'TTFFT'.
+Again, a separate factory handles boolean object arrays.
+Primitive byte and char arrays are handled by default, but the primitive object arrays are
+handled  via their own factories.
 </p>
 <p>
-A factory is provided to allow boolean arrays to be converted to/from a string such as 'TTFFT'.
-Again, this must be manually registered.
+These extra factories must be manually registered, unless the <code>StringConvert.create()</code>
+static method is used, which defines an "extended" converter with the factories included.
 </p>
 </subsection>
 

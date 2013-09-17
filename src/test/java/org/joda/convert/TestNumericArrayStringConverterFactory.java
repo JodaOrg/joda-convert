@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.joda.convert.factory.NumericArrayStringConverterFactory;
 import org.junit.Test;
 
 /**
