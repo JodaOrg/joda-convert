@@ -17,6 +17,7 @@ package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -246,6 +247,18 @@ public class TestJDKStringConverters {
     }
 
     @Test
+    public void test_Class_withRename() {
+        try {
+            JDKStringConverter.CLASS.convertFromString(Class.class, "org.foo.StringConvert");
+            fail();
+        } catch (RuntimeException ex) {
+            // expected
+        }
+        RenameHandler.INSTANCE.renamedType("org.foo.StringConvert", StringConvert.class);
+        assertEquals(StringConvert.class, JDKStringConverter.CLASS.convertFromString(Class.class, "org.foo.StringConvert"));
+    }
+
+    @Test
     public void test_Package() {
         JDKStringConverter test = JDKStringConverter.PACKAGE;
         doTest(test, Package.class, Locale.class.getPackage(), "java.util");
@@ -407,6 +420,24 @@ public class TestJDKStringConverters {
     @Test(expected=RuntimeException.class)
     public void test_Enum_invalidConstant() {
         JDKStringConverter.ENUM.convertFromString(RoundingMode.class, "RUBBISH");
+    }
+
+    @Test
+    public void test_Enum_withRename() {
+        assertEquals("VALID", JDKStringConverter.ENUM.convertToString(Status.VALID));
+        assertEquals("INVALID", JDKStringConverter.ENUM.convertToString(Status.INVALID));
+        assertEquals(Status.VALID, JDKStringConverter.ENUM.convertFromString(Status.class, "VALID"));
+        assertEquals(Status.INVALID, JDKStringConverter.ENUM.convertFromString(Status.class, "INVALID"));
+        try {
+            JDKStringConverter.ENUM.convertFromString(Status.class, "OK");
+            fail();
+        } catch (RuntimeException ex) {
+            // expected
+        }
+        RenameHandler.INSTANCE.renamedEnum("OK", Status.VALID);
+        assertEquals(Status.VALID, JDKStringConverter.ENUM.convertFromString(Status.class, "OK"));
+        assertEquals(Status.VALID, JDKStringConverter.ENUM.convertFromString(Status.class, "VALID"));
+        assertEquals(Status.INVALID, JDKStringConverter.ENUM.convertFromString(Status.class, "INVALID"));
     }
 
     //-----------------------------------------------------------------------

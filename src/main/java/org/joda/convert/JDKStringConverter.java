@@ -250,9 +250,9 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
         public Object convertFromString(Class<?> cls, String str) {
             try {
-                return getClass().getClassLoader().loadClass(str);
+                return RenameHandler.INSTANCE.lookupType(str);
             } catch (ClassNotFoundException ex) {
-                throw new RuntimeException("Unable to create class: " + str, ex);
+                throw new RuntimeException("Unable to create type: " + str, ex);
             }
         }
     },
@@ -407,7 +407,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         }
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public Object convertFromString(Class cls, String str) {
-            return Enum.valueOf(cls, str);
+            return RenameHandler.INSTANCE.lookupEnum(cls, str);
         }
     },
     ;

@@ -491,6 +491,18 @@ public class TestStringConvert {
     }
 
     //-----------------------------------------------------------------------
+    @Test
+    public void test_convert_Enum_overrideDefaultWithConverter() {
+        StringConvert test = new StringConvert();
+        test.register(Validity.class, ValidityStringConverter.INSTANCE);
+        assertEquals("VALID", test.convertToString(Validity.class, Validity.VALID));
+        assertEquals("INVALID", test.convertToString(Validity.class, Validity.INVALID));
+        assertEquals(Validity.VALID, test.convertFromString(Validity.class, "VALID"));
+        assertEquals(Validity.INVALID, test.convertFromString(Validity.class, "INVALID"));
+        assertEquals(Validity.VALID, test.convertFromString(Validity.class, "OK"));
+    }
+
+    //-----------------------------------------------------------------------
     @Test(expected=IllegalArgumentException.class)
     public void test_register_classNotNull() {
         StringConvert.INSTANCE.register(null, MockIntegerStringConverter.INSTANCE);
