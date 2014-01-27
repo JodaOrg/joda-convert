@@ -180,7 +180,7 @@
       <plugin><!-- invoke with mvn site-deploy -->
         <groupId>com.github.github</groupId>
         <artifactId>site-maven-plugin</artifactId>
-        <version>0.8</version>
+        <version>0.9</version>
         <executions>
           <execution>
             <id>github-site</id>
