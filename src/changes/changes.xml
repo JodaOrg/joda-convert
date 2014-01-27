@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.6" date="xxx" description="Version 1.6">
+    <release version="1.6" date="2014-01-27" description="Version 1.6">
       <action dev="scolebourne" type="add" >
         Add support for renaming types and enum constants.
         Fixes #6.
