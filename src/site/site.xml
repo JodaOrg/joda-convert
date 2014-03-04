@@ -24,12 +24,13 @@
     <menu name="Development">
       <item name="GitHub" href="https://github.com/JodaOrg/joda-convert"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-convert/issues"/>
-      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-convert/"/>
+      <item name="Test results" href="surefire-report.html"/>
     </menu>
 
     <menu name="Joda">
       <item name="Joda home" href="http://www.joda.org"/>
       <item name="Beans" href="http://www.joda.org/joda-beans/"/>
+      <item name="Collect" href="http://www.joda.org/joda-collect/"/>
       <item name="Money" href="http://www.joda.org/joda-money/"/>
       <item name="Primitives" href="http://www.joda.org/joda-primitives/"/>
       <item name="Time" href="http://www.joda.org/joda-time/"/>

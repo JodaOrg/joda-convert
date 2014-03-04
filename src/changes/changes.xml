@@ -8,48 +8,48 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.6" date="2014-01-27" description="Version 1.6">
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for renaming types and enum constants.
         Fixes #6.
       </action>
     </release>
     <release version="1.5" date="2013-09-17" description="Version 1.5">
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for all primitive object arrays.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for boolean[].
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for numeric primitive arrays.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for char[] and byte[].
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add StringConverterFactory for more flexible initialization.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Weaken generics to better support framework-level access.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add isConvertible() method.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Validate the @FromString is a static method.
       </action>
     </release>
     <release version="1.4" date="2013-08-15" description="Version 1.4">
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Change to use Maven plugin for OSGi, changing some published info.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Home page at GitHub.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for FromString using a factory. Issue #5.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Change to use m2e Maven Eclipse.
       </action>
     </release>
@@ -59,52 +59,52 @@
       </action>
     </release>
     <release version="1.3" date="2013-01-25" description="Version 1.3">
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add register method designed for JDK 1.8 method references or lambdas.
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Change to requiring JDK 1.6.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add alternate package locations for JSR-310 classes.
       </action>
     </release>
     <release version="1.2" date="2011-10-27" description="Version 1.2">
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for CharSequence based fromString methods.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Add support for JSR-310 by reflection, avoiding a dependency.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Allow registration of conversions by method name.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Allow toString conversion to specify the desired type.
       </action>
     </release>
     <release version="1.1.2" date="2011-10-21" description="Version 1.1.2">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Allow conversion of primitive types.
       </action>
     </release>
     <release version="1.1.1" date="2011-10-24" description="Version 1.1.1">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Allow conversion of primitive types
       </action>
     </release>
     <release version="1.1" date="2010-12-04" description="Version 1.1">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Enable superclass factories.
       </action>
     </release>
     <release version="1.0" date="2010-09-05" description="Version 1.0">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Lots of tests and fixes.
       </action>
     </release>
     <release version="0.5" date="unreleased" description="Version 0.5">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Initial checkin.
       </action>
     </release>
