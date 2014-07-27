@@ -27,6 +27,7 @@ public class Test2Class implements Test2Interface {
         this.amount = amount;
     }
 
+    @Override
     public String print() {
         return amount + "g";
     }

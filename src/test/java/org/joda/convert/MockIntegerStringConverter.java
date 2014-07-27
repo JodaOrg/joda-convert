@@ -28,6 +28,7 @@ public enum MockIntegerStringConverter implements StringConverter<Integer> {
      * @param object  the object to convert, not null
      * @return the converted string, may be null but generally not
      */
+    @Override
     public String convertToString(Integer object) {
         return object.toString();
     }
@@ -38,6 +39,7 @@ public enum MockIntegerStringConverter implements StringConverter<Integer> {
      * @param str  the string to convert, not null
      * @return the converted integer, may be null but generally not
      */
+    @Override
     public Integer convertFromString(Class<? extends Integer> cls, String str) {
         return new Integer(str);
     }

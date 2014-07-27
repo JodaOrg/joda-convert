@@ -58,6 +58,7 @@ abstract class ReflectionStringConverter<T> implements StringConverter<T> {
      * @param object  the object to convert, not null
      * @return the converted string, may be null but generally not
      */
+    @Override
     public String convertToString(T object) {
         try {
             return (String) toString.invoke(object);

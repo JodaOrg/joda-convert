@@ -69,6 +69,7 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
      * @param str  the string to convert, not null
      * @return the converted object, may be null but generally not
      */
+    @Override
     public T convertFromString(Class<? extends T> cls, String str) {
         try {
             return cls.cast(fromString.invoke(null, str));

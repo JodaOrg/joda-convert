@@ -46,6 +46,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the converter, null if not found
      * @throws RuntimeException (or subclass) if source code is invalid
      */
+    @Override
     public StringConverter<?> findConverter(Class<?> cls) {
         return findAnnotatedConverter(cls);  // capture generics
     }

@@ -35,6 +35,7 @@ public class Test1Class implements Test1Interface {
         this.amount = amount;
     }
 
+    @Override
     public String print() {
         return amount + "g";
     }

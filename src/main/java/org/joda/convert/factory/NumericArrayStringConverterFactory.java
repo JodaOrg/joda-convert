@@ -55,6 +55,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
      * @return the converter, null if not found
      * @throws RuntimeException (or subclass) if source code is invalid
      */
+    @Override
     public StringConverter<?> findConverter(Class<?> cls) {
         if (cls.isArray() && cls.getComponentType().isPrimitive()) {
             if (cls == long[].class) {

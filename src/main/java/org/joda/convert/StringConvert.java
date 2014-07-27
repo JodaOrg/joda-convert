@@ -491,9 +491,11 @@ public final class StringConvert {
             throw new IllegalArgumentException("Converters must not be null");
         }
         register(cls, new StringConverter<T>() {
+            @Override
             public String convertToString(T object) {
                 return toString.convertToString(object);
             }
+            @Override
             public T convertFromString(Class<? extends T> cls, String str) {
                 return fromString.convertFromString(cls, str);
             }

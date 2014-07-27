@@ -47,6 +47,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * String converter.
      */
     STRING(String.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return str;
         }
@@ -55,6 +56,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * CharSequence converter.
      */
     CHAR_SEQUENCE(CharSequence.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return str;
         }
@@ -63,6 +65,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * StringBuffer converter.
      */
     STRING_BUFFER(StringBuffer.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new StringBuffer(str);
         }
@@ -71,6 +74,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * StringBuilder converter.
      */
     STRING_BUILDER(StringBuilder.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new StringBuilder(str);
         }
@@ -79,6 +83,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Long converter.
      */
     LONG(Long.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Long(str);
         }
@@ -88,6 +93,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Integer converter.
      */
     INTEGER(Integer.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Integer(str);
         }
@@ -97,6 +103,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Short converter.
      */
     SHORT (Short.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Short(str);
         }
@@ -106,6 +113,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Byte converter.
      */
     BYTE(Byte.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Byte(str);
         }
@@ -118,6 +126,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         public String convertToString(Object object) {
             return DatatypeConverter.printBase64Binary((byte[]) object);
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return DatatypeConverter.parseBase64Binary(str);
         }
@@ -126,6 +135,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Character converter.
      */
     CHARACTER(Character.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             if (str.length() != 1) {
                 throw new IllegalArgumentException("Character value must be a string length 1");
@@ -141,6 +151,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         public String convertToString(Object object) {
             return new String((char[]) object);
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return str.toCharArray();
         }
@@ -149,6 +160,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Boolean converter.
      */
     BOOLEAN(Boolean.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             if ("true".equalsIgnoreCase(str)) {
                 return Boolean.TRUE;
@@ -163,6 +175,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Double converter.
      */
     DOUBLE(Double.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Double(str);
         }
@@ -171,6 +184,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Float converter.
      */
     FLOAT(Float.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Float(str);
         }
@@ -179,6 +193,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * BigInteger converter.
      */
     BIG_INTEGER(BigInteger.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new BigInteger(str);
         }
@@ -187,6 +202,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * BigDecimal converter.
      */
     BIG_DECIMAL(BigDecimal.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new BigDecimal(str);
         }
@@ -195,6 +211,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * AtomicLong converter.
      */
     ATOMIC_LONG(AtomicLong.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             long val = Long.parseLong(str);
             return new AtomicLong(val);
@@ -204,6 +221,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * AtomicLong converter.
      */
     ATOMIC_INTEGER(AtomicInteger.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             int val = Integer.parseInt(str);
             return new AtomicInteger(val);
@@ -213,6 +231,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * AtomicBoolean converter.
      */
     ATOMIC_BOOLEAN(AtomicBoolean.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             if ("true".equalsIgnoreCase(str)) {
                 return new AtomicBoolean(true);
@@ -227,6 +246,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Locale converter.
      */
     LOCALE(Locale.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             String[] split = str.split("_", 3);
             switch (split.length) {
@@ -248,6 +268,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         public String convertToString(Object object) {
             return ((Class<?>) object).getName();
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             try {
                 return RenameHandler.INSTANCE.lookupType(str);
@@ -264,6 +285,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         public String convertToString(Object object) {
             return ((Package) object).getName();
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return Package.getPackage(str);
         }
@@ -272,6 +294,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Currency converter.
      */
     CURRENCY(Currency.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return Currency.getInstance(str);
         }
@@ -284,6 +307,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         public String convertToString(Object object) {
             return ((TimeZone) object).getID();
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return TimeZone.getTimeZone(str);
         }
@@ -292,6 +316,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * UUID converter.
      */
     UUID(UUID.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return java.util.UUID.fromString(str);
         }
@@ -300,6 +325,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * URL converter.
      */
     URL(URL.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             try {
                 return new URL(str);
@@ -312,6 +338,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * URI converter.
      */
     URI(URI.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return java.net.URI.create(str);
         }
@@ -324,6 +351,7 @@ enum JDKStringConverter implements StringConverter<Object> {
         public String convertToString(Object object) {
             return ((InetAddress) object).getHostAddress();
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             try {
                 return InetAddress.getByName(str);
@@ -336,6 +364,7 @@ enum JDKStringConverter implements StringConverter<Object> {
      * File converter.
      */
     FILE(File.class) {
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new File(str);
         }
@@ -350,6 +379,7 @@ enum JDKStringConverter implements StringConverter<Object> {
             String str = f.format(object);
             return str.substring(0, 26) + ":" + str.substring(26);
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             if (str.length() != 29) {
                 throw new IllegalArgumentException("Unable to parse date: " + str);
@@ -378,6 +408,7 @@ enum JDKStringConverter implements StringConverter<Object> {
             String str = f.format(cal.getTime());
             return str.substring(0, 26) + ":" + str.substring(26) + "[" + cal.getTimeZone().getID() + "]";
         }
+        @Override
         public Object convertFromString(Class<?> cls, String str) {
             if (str.length() < 31 || str.charAt(26) != ':'
                     || str.charAt(29) != '[' || str.charAt(str.length() - 1) != ']') {
@@ -401,10 +432,12 @@ enum JDKStringConverter implements StringConverter<Object> {
      * Enum converter.
      */
     ENUM(Enum.class) {
+        @Override
         @SuppressWarnings("rawtypes")
         public String convertToString(Object object) {
             return ((Enum) object).name();  // avoid toString() as that can be overridden
         }
+        @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public Object convertFromString(Class cls, String str) {
             return RenameHandler.INSTANCE.lookupEnum(cls, str);
@@ -432,6 +465,7 @@ enum JDKStringConverter implements StringConverter<Object> {
     }
 
     //-----------------------------------------------------------------------
+    @Override
     public String convertToString(Object object) {
         return object.toString();
     }

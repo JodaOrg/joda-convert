@@ -28,6 +28,7 @@ public enum ValidityStringConverter implements StringConverter<Validity> {
      * @param object  the object to convert, not null
      * @return the converted string, may be null but generally not
      */
+    @Override
     public String convertToString(Validity object) {
         return object.name();
     }
@@ -38,6 +39,7 @@ public enum ValidityStringConverter implements StringConverter<Validity> {
      * @param str  the string to convert, not null
      * @return the converted integer, may be null but generally not
      */
+    @Override
     public Validity convertFromString(Class<? extends Validity> cls, String str) {
         // handle renamed constant
         if (str.equals("OK")) {

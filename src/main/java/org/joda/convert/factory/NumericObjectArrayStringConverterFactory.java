@@ -55,6 +55,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
      * @return the converter, null if not found
      * @throws RuntimeException (or subclass) if source code is invalid
      */
+    @Override
     public StringConverter<?> findConverter(Class<?> cls) {
         if (cls.isArray()) {
             if (cls == Long[].class) {
