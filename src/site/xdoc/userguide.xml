@@ -51,11 +51,63 @@ This may be updated by registering your own converters.
 <p>
 Each instance of <code>StringConvert</code>, including the global singleton, includes a standard set of JDK-based converters.
 These cover all the standard JDK types for which conversion to and from a string is sensible.
-The set also includes JSR-310 types, but these are optional and loaded by reflection. The system will run without any dependency.
+The set also includes JSR-310 types, but these are optional and loaded by reflection.
+The system will run without any dependency.
 </p>
 <p>
-Arrays of <code>byte</code> are handled as a standard JDK type using Base64.
-Arrays of <code>char</code> are handled by a standard JDK type by conversion to a string.
+The JDK conversions are generally obvious. The types are as follows:
+</p>
+<ul>
+<li>String</li>
+<li>CharSequence</li>
+<li>StringBuffer</li>
+<li>StringBuilder</li>
+<li>long and Long</li>
+<li>int and Integer</li>
+<li>short and Short</li>
+<li>char and Character</li>
+<li>byte and Byte</li>
+<li>double and Double</li>
+<li>float and Float</li>
+<li>boolean and Boolean - 'true' or 'false'</li>
+<li>byte[] - using Base-64 encoding</li>
+<li>char[]</li>
+<li>BigInteger</li>
+<li>BigDecimal</li>
+<li>AtomicLong</li>
+<li>AtomicInteger</li>
+<li>AtomicBoolean - 'true' or 'false'</li>
+<li>Locale - separated by underscores, en_GB_VARIANT</li>
+<li>Class - using the class name, using the rename handler</li>
+<li>Package - using the package name</li>
+<li>Currency - using the three letter code</li>
+<li>TimeZone - using the ID</li>
+<li>UUID - using the toString() form</li>
+<li>URL - using the toString() form</li>
+<li>URI - using the toString() form</li>
+<li>InetAddress - using the host address</li>
+<li>File - using the toString() form</li>
+<li>Date - yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
+<li>Calendar - yyyy-MM-dd'T'HH:mm:ss.SSSZ, Gregorian only</li>
+<li>Instant</li>
+<li>Duration</li>
+<li>LocalDate</li>
+<li>LocalTime</li>
+<li>LocalDateTime</li>
+<li>OffsetTime</li>
+<li>OffsetDateTime</li>
+<li>ZonedDateTime</li>
+<li>Year</li>
+<li>YearMonth</li>
+<li>MonthDay</li>
+<li>Period</li>
+<li>ZoneOffset</li>
+<li>ZoneId</li>
+<li>Enum subclasses - using name(), annotations can override</li>
+</ul>
+<p>
+Note that the JSR-310 date types are supported in three different package namespaces -
+'java.time', 'javax.time' and 'org.threeten.bp'.
 </p>
 <p>
 Each <code>StringConvert</code> instance, other than the global singleton, may have additional converters registered manually.
@@ -80,7 +132,7 @@ A separate factory handles numeric object arrays.
 Another factory is provided to allow boolean arrays to be converted to/from a string such as 'TTFFT'.
 Again, a separate factory handles boolean object arrays.
 Primitive byte and char arrays are handled by default, but the primitive object arrays are
-handled  via their own factories.
+handled via their own factories.
 </p>
 <p>
 These extra factories must be manually registered, unless the <code>StringConvert.create()</code>
@@ -114,7 +166,7 @@ If the annotations are not found on the target class, then superclasses are sear
 </p>
 <p>
 Sometimes, you want to provide to/from string conversions for interfaces.
-In JDK 8 this can be done using static methods on interfaces.
+In Java SE 8 this can be done using static methods on interfaces.
 However in earlier versions, a separate "factory" class is necessary.
 This can also be annotated:
 </p>
@@ -146,6 +198,25 @@ The <code>FromStringFactory</code> annotation points at the factory class that w
 Although intended for use with interfaces, it can also be used on the target class or any superclass.
 Note that only the immediate parent interfaces of a class will be searched.
 </p>
+<p>
+The effective type of the converter in use is the type that declares the <code>FromString</code>
+or <code>FromStringFactory</code> annotation.
+This can be used by serialization systems to determine the best type of the value to send.
+One use case is to declare annotations on a public superclass and have all the subclasses be package scoped.
+Using the effective type, the package scoped subclasses remain out of the serialized form and
+off the public API.
+</p>
+</subsection>
+
+<subsection name="Rename handler">
+<p>
+Most large bodies of code will end up renaming classes and enum constants at some point.
+The <code>RenameHandler</code> class provides a convenient central place to track this.
+</p>
+<p>
+If the <code>RenameHandler</code> is setup with details of a rename, then an old class name
+or enum constant can be read in and will be automatically converted.
+</p>
 </subsection>
 
 <subsection name="Rationale">
@@ -156,8 +227,9 @@ The Joda-Convert jar file is not needed by your users unless they want to use co
 If they don't want to use Joda-Convert then the annotations are effectively ignored.
 </p>
 <p>
-Joda-Time v2.0 and Joda-Money will both contain the annotations.
-In both cases, the dependency is not a runtime for users of the projects.
+Joda-Time v2.0 and Joda-Money contain these annotations.
+In both cases, the dependency is optional at runtime for users of the projects.
+(Note that Scala does not honour the optional behaviour.)
 </p>
 </subsection>
 
