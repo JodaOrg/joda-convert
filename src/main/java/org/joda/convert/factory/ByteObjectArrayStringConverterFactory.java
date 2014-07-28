@@ -17,6 +17,7 @@ package org.joda.convert.factory;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
+import org.joda.convert.TypedStringConverter;
 
 /**
  * Factory for {@code StringConverter} providing support for Byte object array
@@ -66,7 +67,7 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
     }
 
     //-----------------------------------------------------------------------
-    enum ByteArrayStringConverter implements StringConverter<Byte[]> {
+    enum ByteArrayStringConverter implements TypedStringConverter<Byte[]> {
         INSTANCE {
             @Override
             public String convertToString(Byte[] array) {
@@ -102,6 +103,10 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
                     }
                 }
                 return array;
+            }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Byte[].class;
             }
         };
         private static final Byte[] EMPTY = new Byte[0];

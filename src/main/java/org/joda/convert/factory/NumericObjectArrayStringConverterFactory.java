@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
+import org.joda.convert.TypedStringConverter;
 
 /**
  * Factory for {@code StringConverter} providing support for numeric object arrays
@@ -84,7 +85,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum LongArrayStringConverter implements StringConverter<Long[]> {
+    enum LongArrayStringConverter implements TypedStringConverter<Long[]> {
         INSTANCE {
             @Override
             public String convertToString(Long[] array) {
@@ -112,12 +113,16 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 }
                 return array;
             }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Long[].class;
+            }
         };
         private static final Long[] EMPTY = new Long[0];
     }
 
     //-----------------------------------------------------------------------
-    enum IntArrayStringConverter implements StringConverter<Integer[]> {
+    enum IntArrayStringConverter implements TypedStringConverter<Integer[]> {
         INSTANCE {
             @Override
             public String convertToString(Integer[] array) {
@@ -145,12 +150,16 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 }
                 return array;
             }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Integer[].class;
+            }
         };
         private static final Integer[] EMPTY = new Integer[0];
     }
 
     //-----------------------------------------------------------------------
-    enum ShortArrayStringConverter implements StringConverter<Short[]> {
+    enum ShortArrayStringConverter implements TypedStringConverter<Short[]> {
         INSTANCE {
             @Override
             public String convertToString(Short[] array) {
@@ -178,12 +187,16 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 }
                 return array;
             }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Short[].class;
+            }
         };
         private static final Short[] EMPTY = new Short[0];
     }
 
     //-----------------------------------------------------------------------
-    enum DoubleArrayStringConverter implements StringConverter<Double[]> {
+    enum DoubleArrayStringConverter implements TypedStringConverter<Double[]> {
         INSTANCE {
             @Override
             public String convertToString(Double[] array) {
@@ -211,12 +224,16 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 }
                 return array;
             }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Double[].class;
+            }
         };
         private static final Double[] EMPTY = new Double[0];
     }
 
     //-----------------------------------------------------------------------
-    enum FloatArrayStringConverter implements StringConverter<Float[]> {
+    enum FloatArrayStringConverter implements TypedStringConverter<Float[]> {
         INSTANCE {
             @Override
             public String convertToString(Float[] array) {
@@ -243,6 +260,10 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                     }
                 }
                 return array;
+            }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Float[].class;
             }
         };
         private static final Float[] EMPTY = new Float[0];

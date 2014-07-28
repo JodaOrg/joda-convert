@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
  * 
  * @param <T>  the type of the converter
  */
-abstract class ReflectionStringConverter<T> implements StringConverter<T> {
+abstract class ReflectionStringConverter<T> implements TypedStringConverter<T> {
 
     /** The converted class. */
     private final Class<T> cls;

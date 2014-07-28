@@ -50,13 +50,17 @@ public final class StringConvert {
     /**
      * The cached null object.
      */
-    private static final StringConverter<?> CACHED_NULL = new StringConverter<Object>() {
+    private static final TypedStringConverter<?> CACHED_NULL = new TypedStringConverter<Object>() {
         @Override
         public String convertToString(Object object) {
             return null;
         }
         @Override
         public Object convertFromString(Class<? extends Object> cls, String str) {
+            return null;
+        }
+        @Override
+        public Class<?> getEffectiveType() {
             return null;
         }
     };
@@ -68,7 +72,7 @@ public final class StringConvert {
     /**
      * The cache of converters.
      */
-    private final ConcurrentMap<Class<?>, StringConverter<?>> registered = new ConcurrentHashMap<Class<?>, StringConverter<?>>();
+    private final ConcurrentMap<Class<?>, TypedStringConverter<?>> registered = new ConcurrentHashMap<Class<?>, TypedStringConverter<?>>();
 
     //-----------------------------------------------------------------------
     /**
@@ -150,6 +154,7 @@ public final class StringConvert {
             registered.put(Float.TYPE, JDKStringConverter.FLOAT);
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
+            this.factories.add(EnumStringConverterFactory.INSTANCE);
             // JDK 1.8 classes
             tryRegister("java.time.Instant", "parse");
             tryRegister("java.time.Duration", "parse");
@@ -313,11 +318,7 @@ public final class StringConvert {
      * @throws RuntimeException (or subclass) if no converter found
      */
     public <T> StringConverter<T> findConverter(final Class<T> cls) {
-        StringConverter<T> conv = findConverterQuiet(cls);
-        if (conv == null) {
-            throw new IllegalStateException("No registered converter found: " + cls);
-        }
-        return conv;
+        return findTypedConverter(cls);
     }
 
     /**
@@ -338,9 +339,70 @@ public final class StringConvert {
      * @throws RuntimeException (or subclass) if no converter found
      * @since 1.5
      */
-    @SuppressWarnings("unchecked")
     public StringConverter<Object> findConverterNoGenerics(final Class<?> cls) {
-        StringConverter<Object> conv = (StringConverter<Object>) findConverterQuiet(cls);
+        return findTypedConverterNoGenerics(cls);
+    }
+
+    /**
+     * Finds a suitable converter for the type.
+     * <p>
+     * This returns an instance of {@code TypedStringConverter} for the specified class.
+     * This is designed for user code where the {@code Class} object generics is known.
+     * <p>
+     * The search algorithm first searches the registered converters in the
+     * class hierarchy and immediate parent interfaces.
+     * It then searches for {@code ToString} and {@code FromString} annotations on the
+     * specified class, class hierarchy or immediate parent interfaces.
+     * <p>
+     * The returned converter may be queried for the effective type of the conversion.
+     * This can be used to find the best type to send in a serialized form.
+     * <p>
+     * NOTE: Changing the method return type of {@link #findConverter(Class)}
+     * would be source compatible but not binary compatible. As this is a low-level
+     * library, binary compatibility is important, hence the addition of this method.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a converter for, not null
+     * @return the converter, not null
+     * @throws RuntimeException (or subclass) if no converter found
+     * @since 1.7
+     */
+    public <T> TypedStringConverter<T> findTypedConverter(final Class<T> cls) {
+        TypedStringConverter<T> conv = findConverterQuiet(cls);
+        if (conv == null) {
+            throw new IllegalStateException("No registered converter found: " + cls);
+        }
+        return conv;
+    }
+
+    /**
+     * Finds a suitable converter for the type with open generics.
+     * <p>
+     * This returns an instance of {@code TypedStringConverter} for the specified class.
+     * This is designed for framework usage where the {@code Class} object generics are unknown'?'.
+     * The returned type is declared with {@code Object} instead of '?' to
+     * allow the {@link ToStringConverter} to be invoked.
+     * <p>
+     * The search algorithm first searches the registered converters in the
+     * class hierarchy and immediate parent interfaces.
+     * It then searches for {@code ToString} and {@code FromString} annotations on the
+     * specified class, class hierarchy or immediate parent interfaces.
+     * <p>
+     * The returned converter may be queried for the effective type of the conversion.
+     * This can be used to find the best type to send in a serialized form.
+     * <p>
+     * NOTE: Changing the method return type of {@link #findConverterNoGenerics(Class)}
+     * would be source compatible but not binary compatible. As this is a low-level
+     * library, binary compatibility is important, hence the addition of this method.
+     * 
+     * @param cls  the class to find a converter for, not null
+     * @return the converter, using {@code Object} to avoid generics, not null
+     * @throws RuntimeException (or subclass) if no converter found
+     * @since 1.7
+     */
+    @SuppressWarnings("unchecked")
+    public TypedStringConverter<Object> findTypedConverterNoGenerics(final Class<?> cls) {
+        TypedStringConverter<Object> conv = (TypedStringConverter<Object>) findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
         }
@@ -356,11 +418,11 @@ public final class StringConvert {
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
-    private <T> StringConverter<T> findConverterQuiet(final Class<T> cls) {
+    private <T> TypedStringConverter<T> findConverterQuiet(final Class<T> cls) {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
-        StringConverter<T> conv = (StringConverter<T>) registered.get(cls);
+        TypedStringConverter<T> conv = (TypedStringConverter<T>) registered.get(cls);
         if (conv == CACHED_NULL) {
             return null;
         }
@@ -389,12 +451,12 @@ public final class StringConvert {
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
-    private <T> StringConverter<T> findAnyConverter(final Class<T> cls) {
-        StringConverter<T> conv = null;
+    private <T> TypedStringConverter<T> findAnyConverter(final Class<T> cls) {
+        TypedStringConverter<T> conv = null;
         // check for registered on superclass
         Class<?> loopCls = cls.getSuperclass();
         while (loopCls != null && conv == null) {
-            conv = (StringConverter<T>) registered.get(loopCls);
+            conv = (TypedStringConverter<T>) registered.get(loopCls);
             if (conv != null && conv != CACHED_NULL) {
                 return conv;
             }
@@ -402,16 +464,16 @@ public final class StringConvert {
         }
         // check for registered on interfaces
         for (Class<?> loopIfc : cls.getInterfaces()) {
-            conv = (StringConverter<T>) registered.get(loopIfc);
+            conv = (TypedStringConverter<T>) registered.get(loopIfc);
             if (conv != null && conv != CACHED_NULL) {
                 return conv;
             }
         }
         // check factories
         for (StringConverterFactory factory : factories) {
-            conv = (StringConverter<T>) factory.findConverter(cls);
-            if (conv != null) {
-                return conv;
+            StringConverter<T> factoryConv = (StringConverter<T>) factory.findConverter(cls);
+            if (factoryConv != null) {
+                return TypedAdapter.adapt(cls, factoryConv);
             }
         }
         return null;
@@ -463,7 +525,7 @@ public final class StringConvert {
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
-        registered.put(cls, converter);
+        registered.put(cls, TypedAdapter.adapt(cls, converter));
     }
 
     /**
@@ -490,7 +552,7 @@ public final class StringConvert {
         if (fromString == null || toString == null) {
             throw new IllegalArgumentException("Converters must not be null");
         }
-        register(cls, new StringConverter<T>() {
+        register(cls, new TypedStringConverter<T>() {
             @Override
             public String convertToString(T object) {
                 return toString.convertToString(object);
@@ -498,6 +560,10 @@ public final class StringConvert {
             @Override
             public T convertFromString(Class<? extends T> cls, String str) {
                 return fromString.convertFromString(cls, str);
+            }
+            @Override
+            public Class<?> getEffectiveType() {
+                return cls;
             }
         });
     }
@@ -533,7 +599,7 @@ public final class StringConvert {
         }
         Method toString = findToStringMethod(cls, toStringMethodName);
         Method fromString = findFromStringMethod(cls, fromStringMethodName);
-        MethodsStringConverter<T> converter = new MethodsStringConverter<T>(cls, toString, fromString);
+        MethodsStringConverter<T> converter = new MethodsStringConverter<T>(cls, toString, fromString, cls);
         registered.putIfAbsent(cls, converter);
     }
 

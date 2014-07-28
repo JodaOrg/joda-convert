@@ -7,6 +7,14 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.7" date="2014-xx-xx" description="Version 1.7">
+      <action dev="jodastephen" type="add" >
+        Add ability to extract the effective type.
+        Useful when serializing data to avoid exposing private subclasses.
+        The effective type is the class defining the FromString.
+        Fixes #8.
+      </action>
+    </release>
     <release version="1.6" date="2014-01-27" description="Version 1.6">
       <action dev="jodastephen" type="add" >
         Add support for renaming types and enum constants.

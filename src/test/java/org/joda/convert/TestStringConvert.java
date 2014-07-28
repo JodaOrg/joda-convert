@@ -16,9 +16,9 @@
 package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.RoundingMode;
@@ -28,6 +28,7 @@ import org.joda.convert.test1.Test1Class;
 import org.joda.convert.test2.Test2Class;
 import org.joda.convert.test2.Test2Interface;
 import org.joda.convert.test3.Test3Class;
+import org.joda.convert.test3.Test3SuperClass;
 import org.joda.convert.test4.Test4Class;
 import org.joda.convert.test4.Test4Interface;
 import org.junit.Test;
@@ -40,8 +41,9 @@ public class TestStringConvert {
     @Test
     public void test_constructor() {
         StringConvert test = new StringConvert();
-        StringConverter<?> conv = test.findConverter(Integer.class);
+        TypedStringConverter<?> conv = test.findTypedConverter(Integer.class);
         assertEquals(true, conv instanceof JDKStringConverter);
+        assertEquals(Integer.class, conv.getEffectiveType());
     }
 
     @Test
@@ -211,9 +213,10 @@ public class TestStringConvert {
         DistanceMethodMethod d = new DistanceMethodMethod(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(DistanceMethodMethod.class, "25m").amount);
-        StringConverter<DistanceMethodMethod> conv = test.findConverter(DistanceMethodMethod.class);
+        TypedStringConverter<DistanceMethodMethod> conv = test.findTypedConverter(DistanceMethodMethod.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
         assertSame(conv, test.findConverter(DistanceMethodMethod.class));
+        assertEquals(DistanceMethodMethod.class, conv.getEffectiveType());
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
 
@@ -223,9 +226,10 @@ public class TestStringConvert {
         DistanceMethodMethodCharSequence d = new DistanceMethodMethodCharSequence(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(DistanceMethodMethodCharSequence.class, "25m").amount);
-        StringConverter<DistanceMethodMethodCharSequence> conv = test.findConverter(DistanceMethodMethodCharSequence.class);
+        TypedStringConverter<DistanceMethodMethodCharSequence> conv = test.findTypedConverter(DistanceMethodMethodCharSequence.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
         assertSame(conv, test.findConverter(DistanceMethodMethodCharSequence.class));
+        assertEquals(DistanceMethodMethodCharSequence.class, conv.getEffectiveType());
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
 
@@ -235,9 +239,10 @@ public class TestStringConvert {
         DistanceMethodConstructor d = new DistanceMethodConstructor(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(DistanceMethodConstructor.class, "25m").amount);
-        StringConverter<DistanceMethodConstructor> conv = test.findConverter(DistanceMethodConstructor.class);
+        TypedStringConverter<DistanceMethodConstructor> conv = test.findTypedConverter(DistanceMethodConstructor.class);
         assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
         assertSame(conv, test.findConverter(DistanceMethodConstructor.class));
+        assertEquals(DistanceMethodConstructor.class, conv.getEffectiveType());
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
 
@@ -247,9 +252,10 @@ public class TestStringConvert {
         DistanceMethodConstructorCharSequence d = new DistanceMethodConstructorCharSequence(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(DistanceMethodConstructorCharSequence.class, "25m").amount);
-        StringConverter<DistanceMethodConstructorCharSequence> conv = test.findConverter(DistanceMethodConstructorCharSequence.class);
+        TypedStringConverter<DistanceMethodConstructorCharSequence> conv = test.findTypedConverter(DistanceMethodConstructorCharSequence.class);
         assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
         assertSame(conv, test.findConverter(DistanceMethodConstructorCharSequence.class));
+        assertEquals(DistanceMethodConstructorCharSequence.class, conv.getEffectiveType());
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
 
@@ -259,8 +265,9 @@ public class TestStringConvert {
         SubMethodMethod d = new SubMethodMethod(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(SubMethodMethod.class, "25m").amount);
-        StringConverter<SubMethodMethod> conv = test.findConverter(SubMethodMethod.class);
+        TypedStringConverter<SubMethodMethod> conv = test.findTypedConverter(SubMethodMethod.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertEquals(SubMethodMethod.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(SubMethodMethod.class));
     }
 
@@ -270,8 +277,9 @@ public class TestStringConvert {
         SubMethodConstructor d = new SubMethodConstructor("25m");
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(SubMethodConstructor.class, "25m").amount);
-        StringConverter<SubMethodConstructor> conv = test.findConverter(SubMethodConstructor.class);
+        TypedStringConverter<SubMethodConstructor> conv = test.findTypedConverter(SubMethodConstructor.class);
         assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
+        assertEquals(SubMethodConstructor.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(SubMethodConstructor.class));
     }
 
@@ -281,8 +289,9 @@ public class TestStringConvert {
         SuperFactorySuper d = new SuperFactorySuper(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(SuperFactorySuper.class, "25m").amount);
-        StringConverter<SuperFactorySuper> conv = test.findConverter(SuperFactorySuper.class);
+        TypedStringConverter<SuperFactorySuper> conv = test.findTypedConverter(SuperFactorySuper.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertEquals(SuperFactorySuper.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(SuperFactorySuper.class));
     }
 
@@ -294,9 +303,10 @@ public class TestStringConvert {
         SuperFactorySuper fromStr = test.convertFromString(SuperFactorySuper.class, "8m");
         assertEquals(d.amount, fromStr.amount);
         assertEquals(true, fromStr instanceof SuperFactorySub);
-        StringConverter<SuperFactorySuper> conv = test.findConverter(SuperFactorySuper.class);
+        TypedStringConverter<SuperFactorySub> conv = test.findTypedConverter(SuperFactorySub.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
-        assertSame(conv, test.findConverter(SuperFactorySuper.class));
+        assertEquals(SuperFactorySuper.class, conv.getEffectiveType());
+        assertSame(conv, test.findConverter(SuperFactorySub.class));
     }
 
     @Test
@@ -345,8 +355,9 @@ public class TestStringConvert {
         DistanceWithFactory d = new DistanceWithFactory(25);
         assertEquals("25m", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(DistanceWithFactory.class, "25m").amount);
-        StringConverter<DistanceWithFactory> conv = test.findConverter(DistanceWithFactory.class);
+        TypedStringConverter<DistanceWithFactory> conv = test.findTypedConverter(DistanceWithFactory.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertEquals(DistanceWithFactory.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(DistanceWithFactory.class));
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
@@ -357,8 +368,9 @@ public class TestStringConvert {
         Test1Class d = new Test1Class(25);
         assertEquals("25g", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(Test1Class.class, "25g").amount);
-        StringConverter<Test1Class> conv = test.findConverter(Test1Class.class);
+        TypedStringConverter<Test1Class> conv = test.findTypedConverter(Test1Class.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertEquals(Test1Class.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(Test1Class.class));
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
@@ -369,8 +381,9 @@ public class TestStringConvert {
         Test2Class d = new Test2Class(25);
         assertEquals("25g", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(Test2Class.class, "25g").amount);
-        StringConverter<Test2Class> conv = test.findConverter(Test2Class.class);
+        TypedStringConverter<Test2Class> conv = test.findTypedConverter(Test2Class.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertEquals(Test2Interface.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(Test2Class.class));
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
@@ -381,8 +394,9 @@ public class TestStringConvert {
         Test2Class d = new Test2Class(25);
         assertEquals("25g", test.convertToString(d));
         assertEquals("25g", test.convertFromString(Test2Interface.class, "25g").print());
-        StringConverter<Test2Interface> conv = test.findConverter(Test2Interface.class);
+        TypedStringConverter<Test2Interface> conv = test.findTypedConverter(Test2Interface.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
+        assertEquals(Test2Interface.class, conv.getEffectiveType());
         assertSame(conv, test.findConverter(Test2Interface.class));
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
@@ -393,9 +407,10 @@ public class TestStringConvert {
         Test3Class d = new Test3Class(25);
         assertEquals("25g", test.convertToString(d));
         assertEquals(d.amount, test.convertFromString(Test3Class.class, "25g").amount);
-        StringConverter<Test3Class> conv = test.findConverter(Test3Class.class);
+        TypedStringConverter<Test3Class> conv = test.findTypedConverter(Test3Class.class);
         assertEquals(true, conv instanceof MethodsStringConverter<?>);
         assertSame(conv, test.findConverter(Test3Class.class));
+        assertEquals(Test3SuperClass.class, conv.getEffectiveType());
         assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
     }
 

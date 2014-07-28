@@ -36,6 +36,8 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
 
     /** Conversion from a string. */
     private final Method fromString;
+    /** Effective type. */
+    private final Class<?> effectiveType;
 
     /**
      * Creates an instance using two methods.
@@ -44,7 +46,7 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
      * @param fromString  the fromString method, not null
      * @throws RuntimeException (or subclass) if the method signatures are invalid
      */
-    MethodsStringConverter(Class<T> cls, Method toString, Method fromString) {
+    MethodsStringConverter(Class<T> cls, Method toString, Method fromString, Class<?> effectiveType) {
         super(cls, toString);
         if (Modifier.isStatic(fromString.getModifiers()) == false) {
             throw new IllegalStateException("FromString method must be static: " + fromString);
@@ -60,6 +62,7 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
             throw new IllegalStateException("FromString method must return specified class or a supertype: " + fromString);
         }
         this.fromString = fromString;
+        this.effectiveType = effectiveType;
     }
 
     //-----------------------------------------------------------------------
@@ -81,6 +84,12 @@ final class MethodsStringConverter<T> extends ReflectionStringConverter<T> {
             }
             throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
+    }
+
+    //-------------------------------------------------------------------------
+    @Override
+    public Class<?> getEffectiveType() {
+        return effectiveType;
     }
 
 }

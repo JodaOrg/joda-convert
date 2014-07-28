@@ -78,4 +78,10 @@ final class MethodConstructorStringConverter<T> extends ReflectionStringConverte
         }
     }
 
+    //-------------------------------------------------------------------------
+    @Override
+    public Class<?> getEffectiveType() {
+        return fromString.getDeclaringClass();
+    }
+
 }

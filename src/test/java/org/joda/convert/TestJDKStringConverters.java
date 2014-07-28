@@ -411,33 +411,35 @@ public class TestJDKStringConverters {
 
     @Test
     public void test_Enum() {
-        JDKStringConverter test = JDKStringConverter.ENUM;
-        assertEquals(Enum.class, test.getType());
+        TypedStringConverter<RoundingMode> test = StringConvert.create().findTypedConverter(RoundingMode.class);
+        assertEquals(RoundingMode.class, test.getEffectiveType());
         assertEquals("CEILING", test.convertToString(RoundingMode.CEILING));
         assertEquals(RoundingMode.CEILING, test.convertFromString(RoundingMode.class, "CEILING"));
     }
 
     @Test(expected=RuntimeException.class)
     public void test_Enum_invalidConstant() {
-        JDKStringConverter.ENUM.convertFromString(RoundingMode.class, "RUBBISH");
+        TypedStringConverter<RoundingMode> test = StringConvert.create().findTypedConverter(RoundingMode.class);
+        test.convertFromString(RoundingMode.class, "RUBBISH");
     }
 
     @Test
     public void test_Enum_withRename() {
-        assertEquals("VALID", JDKStringConverter.ENUM.convertToString(Status.VALID));
-        assertEquals("INVALID", JDKStringConverter.ENUM.convertToString(Status.INVALID));
-        assertEquals(Status.VALID, JDKStringConverter.ENUM.convertFromString(Status.class, "VALID"));
-        assertEquals(Status.INVALID, JDKStringConverter.ENUM.convertFromString(Status.class, "INVALID"));
+        TypedStringConverter<Status> test = StringConvert.create().findTypedConverter(Status.class);
+        assertEquals("VALID", test.convertToString(Status.VALID));
+        assertEquals("INVALID", test.convertToString(Status.INVALID));
+        assertEquals(Status.VALID, test.convertFromString(Status.class, "VALID"));
+        assertEquals(Status.INVALID, test.convertFromString(Status.class, "INVALID"));
         try {
-            JDKStringConverter.ENUM.convertFromString(Status.class, "OK");
+            test.convertFromString(Status.class, "OK");
             fail();
         } catch (RuntimeException ex) {
             // expected
         }
         RenameHandler.INSTANCE.renamedEnum("OK", Status.VALID);
-        assertEquals(Status.VALID, JDKStringConverter.ENUM.convertFromString(Status.class, "OK"));
-        assertEquals(Status.VALID, JDKStringConverter.ENUM.convertFromString(Status.class, "VALID"));
-        assertEquals(Status.INVALID, JDKStringConverter.ENUM.convertFromString(Status.class, "INVALID"));
+        assertEquals(Status.VALID, test.convertFromString(Status.class, "OK"));
+        assertEquals(Status.VALID, test.convertFromString(Status.class, "VALID"));
+        assertEquals(Status.INVALID, test.convertFromString(Status.class, "INVALID"));
     }
 
     //-----------------------------------------------------------------------

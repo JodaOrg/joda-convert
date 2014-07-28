@@ -17,6 +17,7 @@ package org.joda.convert.factory;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
+import org.joda.convert.TypedStringConverter;
 
 /**
  * Factory for {@code StringConverter} providing support for Boolean object array
@@ -66,7 +67,7 @@ public final class BooleanObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum BooleanArrayStringConverter implements StringConverter<Boolean[]> {
+    enum BooleanArrayStringConverter implements TypedStringConverter<Boolean[]> {
         INSTANCE {
             @Override
             public String convertToString(Boolean[] array) {
@@ -98,6 +99,10 @@ public final class BooleanObjectArrayStringConverterFactory implements StringCon
                     }
                 }
                 return array;
+            }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Boolean[].class;
             }
         };
         private static final Boolean[] EMPTY = new Boolean[0];

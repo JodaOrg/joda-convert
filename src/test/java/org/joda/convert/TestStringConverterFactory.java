@@ -15,7 +15,7 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class TestStringConverterFactory {
     @Test
     public void test_constructor() {
         StringConvert test = new StringConvert(true, new Factory1());
-        assertSame(MockDistanceStringConverter.INSTANCE, test.findConverter(DistanceMethodMethod.class));
+        assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -44,7 +44,7 @@ public class TestStringConverterFactory {
     public void test_registerFactory() {
         StringConvert test = new StringConvert();
         test.registerFactory(new Factory1());
-        assertSame(MockDistanceStringConverter.INSTANCE, test.findConverter(DistanceMethodMethod.class));
+        assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
     static class Factory1 implements StringConverterFactory {

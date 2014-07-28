@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
+import org.joda.convert.TypedStringConverter;
 
 /**
  * Factory for {@code StringConverter} providing support for Character object arrays
@@ -74,7 +75,7 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
     }
 
     //-----------------------------------------------------------------------
-    enum CharecterArrayStringConverter implements StringConverter<Character[]> {
+    enum CharecterArrayStringConverter implements TypedStringConverter<Character[]> {
         INSTANCE {
             @Override
             public String convertToString(Character[] array) {
@@ -121,6 +122,10 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
                     array[arrayPos++] = str.charAt(i);
                 }
                 return Arrays.copyOf(array, arrayPos);
+            }
+            @Override
+            public Class<?> getEffectiveType() {
+                return Character[].class;
             }
         };
         private static final Character[] EMPTY = new Character[0];

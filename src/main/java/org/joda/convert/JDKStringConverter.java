@@ -41,7 +41,7 @@ import javax.xml.bind.DatatypeConverter;
 /**
  * Conversion between JDK classes and a {@code String}.
  */
-enum JDKStringConverter implements StringConverter<Object> {
+enum JDKStringConverter implements TypedStringConverter<Object> {
 
     /**
      * String converter.
@@ -428,21 +428,6 @@ enum JDKStringConverter implements StringConverter<Object> {
             }
         }
     },
-    /**
-     * Enum converter.
-     */
-    ENUM(Enum.class) {
-        @Override
-        @SuppressWarnings("rawtypes")
-        public String convertToString(Object object) {
-            return ((Enum) object).name();  // avoid toString() as that can be overridden
-        }
-        @Override
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        public Object convertFromString(Class cls, String str) {
-            return RenameHandler.INSTANCE.lookupEnum(cls, str);
-        }
-    },
     ;
 
     /** The type. */
@@ -461,6 +446,15 @@ enum JDKStringConverter implements StringConverter<Object> {
      * @return the type, not null
      */
     Class<?> getType() {
+        return type;
+    }
+
+    /**
+     * Gets the type of the converter.
+     * @return the type, not null
+     */
+    @Override
+    public Class<?> getEffectiveType() {
         return type;
     }
 
