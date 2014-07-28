@@ -583,6 +583,12 @@ public class TestStringConvert {
         test.register(DistanceNoAnnotations.class, DISTANCE_TO_STRING_CONVERTER, null);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void test_registerFactory_cannotChangeSingleton() {
+        StringConvert.INSTANCE.register(
+            DistanceNoAnnotations.class, DISTANCE_TO_STRING_CONVERTER, DISTANCE_FROM_STRING_CONVERTER);
+    }
+
     //-------------------------------------------------------------------------
     @Test
     public void test_registerMethods() {
@@ -624,6 +630,29 @@ public class TestStringConvert {
     public void test_registerMethods_nullFromString() {
         StringConvert test = new StringConvert();
         test.registerMethods(DistanceNoAnnotations.class, "toString", null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethods_noSuchToStringMethod() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(DistanceNoAnnotations.class, "rubbishName", "parse");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethods_invalidToStringMethod() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(Thread.class, "currentThread", "toString");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethods_noSuchFromStringMethod() {
+        StringConvert test = new StringConvert();
+        test.registerMethods(DistanceNoAnnotations.class, "toString", "rubbishName");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void ttest_registerMethods_cannotChangeSingleton() {
+        StringConvert.INSTANCE.registerMethods(DistanceNoAnnotationsCharSequence.class, "toString", "parse");
     }
 
     @Test
@@ -668,6 +697,17 @@ public class TestStringConvert {
     public void test_registerMethodConstructor_nullToString() {
         StringConvert test = new StringConvert();
         test.registerMethodConstructor(DistanceNoAnnotations.class, null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void test_registerMethodConstructor_noSuchConstructor() {
+        StringConvert test = new StringConvert();
+        test.registerMethodConstructor(Enum.class, "toString");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void ttest_registerMethodConstructor_cannotChangeSingleton() {
+        StringConvert.INSTANCE.registerMethodConstructor(DistanceNoAnnotationsCharSequence.class, "toString");
     }
 
     @Test

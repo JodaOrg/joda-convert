@@ -47,6 +47,17 @@ public class TestStringConverterFactory {
         assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void test_registerFactory_null() {
+        StringConvert test = new StringConvert();
+        test.registerFactory(null);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_registerFactory_cannotChangeSingleton() {
+        StringConvert.INSTANCE.registerFactory(new Factory1());
+    }
+
     static class Factory1 implements StringConverterFactory {
         @Override
         public StringConverter<?> findConverter(Class<?> cls) {
