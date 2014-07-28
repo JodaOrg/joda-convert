@@ -101,7 +101,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         }
         // find in immediate parent interfaces
         if (matched == null) {
-            for (Class<?> loopIfc : cls.getInterfaces()) {
+            for (Class<?> loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
                 Method[] methods = loopIfc.getDeclaredMethods();
                 for (Method method : methods) {
                     ToString toString = method.getAnnotation(ToString.class);
@@ -169,7 +169,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         // find in immediate parent interfaces
         MethodsStringConverter<T> matched = null;
         if (searchSuperclasses) {
-            for (Class<?> loopIfc : cls.getInterfaces()) {
+            for (Class<?> loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
                 Method fromString = findFromString(loopIfc);
                 if (fromString != null) {
                     if (matched != null) {
@@ -225,6 +225,15 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             }
         }
         return matched;
+    }
+
+    // eliminates enum subclass as they are pesky
+    private Class<?> eliminateEnumSubclass(Class<?> cls) {
+        Class<?> sup = cls.getSuperclass();
+        if (sup != null && sup.getSuperclass() == Enum.class) {
+            return sup;
+        }
+        return cls;
     }
 
     //-----------------------------------------------------------------------

@@ -45,8 +45,11 @@ final class EnumStringConverterFactory implements StringConverterFactory {
      */
     @Override
     public StringConverter<?> findConverter(Class<?> cls) {
-        if (Enum.class.isAssignableFrom(cls)) {
+        Class<?> sup = cls.getSuperclass();
+        if (sup == Enum.class) {
             return new EnumStringConverter(cls);
+        } else if (sup != null && sup.getSuperclass() == Enum.class) {
+            return new EnumStringConverter(sup);
         }
         return null;
     }

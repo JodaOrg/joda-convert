@@ -123,11 +123,6 @@ public class TestStringConvert {
     }
 
     @Test
-    public void test_convertToString_withType_inherit2() {
-        assertEquals("CEILING", StringConvert.INSTANCE.convertToString(Enum.class, RoundingMode.CEILING));
-    }
-
-    @Test
     public void test_convertToString_withType_null() {
         assertEquals(null, StringConvert.INSTANCE.convertToString(Integer.class, null));
     }

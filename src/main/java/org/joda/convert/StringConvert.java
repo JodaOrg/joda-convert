@@ -154,7 +154,6 @@ public final class StringConvert {
             registered.put(Float.TYPE, JDKStringConverter.FLOAT);
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
-            this.factories.add(EnumStringConverterFactory.INSTANCE);
             // JDK 1.8 classes
             tryRegister("java.time.Instant", "parse");
             tryRegister("java.time.Duration", "parse");
@@ -207,6 +206,9 @@ public final class StringConvert {
             this.factories.addAll(Arrays.asList(factories));
         }
         this.factories.add(AnnotationStringConverterFactory.INSTANCE);
+        if (includeJdkConverters) {
+            this.factories.add(EnumStringConverterFactory.INSTANCE);
+        }
     }
 
     /**
@@ -311,6 +313,7 @@ public final class StringConvert {
      * class hierarchy and immediate parent interfaces.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
+     * Finally, it handles {@code Enum} instances.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a converter for, not null
@@ -333,6 +336,7 @@ public final class StringConvert {
      * class hierarchy and immediate parent interfaces.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
+     * Finally, it handles {@code Enum} instances.
      * 
      * @param cls  the class to find a converter for, not null
      * @return the converter, using {@code Object} to avoid generics, not null
@@ -353,6 +357,7 @@ public final class StringConvert {
      * class hierarchy and immediate parent interfaces.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
+     * Finally, it handles {@code Enum} instances.
      * <p>
      * The returned converter may be queried for the effective type of the conversion.
      * This can be used to find the best type to send in a serialized form.
@@ -387,6 +392,7 @@ public final class StringConvert {
      * class hierarchy and immediate parent interfaces.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
+     * Finally, it handles {@code Enum} instances.
      * <p>
      * The returned converter may be queried for the effective type of the conversion.
      * This can be used to find the best type to send in a serialized form.
