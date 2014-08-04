@@ -25,14 +25,14 @@ The main access is via the class <code>StringConvert</code>.
 <p>
 The easiest way to use the conversion is via the global constant:
 </p>
-<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+<pre class="source">
 // conversion to a String
 TimeZone zone = ...
 String str = StringConvert.INSTANCE.convertToString(zone);
 
 // conversion from a String
 TimeZone zone = StringConvert.INSTANCE.convertFromString(TimeZone.class, str);
-</pre></div>
+</pre>
 <p>
 In both cases, if the input is <code>null</code> then the output will also be <code>null</code>.
 </p>
@@ -146,7 +146,7 @@ If there is no registered converter for a type, then a search by annotation is p
 This will search for the <code>ToString</code> and <code>FromString</code> annotation on the type.
 These annotations will indicate which method should be called to perform the conversion.
 </p>
-<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+<pre class="source">
 public class Distance {
 
   @FromString
@@ -156,7 +156,7 @@ public class Distance {
   public String getStandardOutput() { ... }
 
 }
-</pre></div>
+</pre>
 <p>
 To be valid, the class must contain one <code>ToString</code> annotation and one <code>FromString</code> annotation.
 The <code>ToString</code> annotation must be an instance method taking no parameters and returning a String.
@@ -170,7 +170,7 @@ In Java SE 8 this can be done using static methods on interfaces.
 However in earlier versions, a separate "factory" class is necessary.
 This can also be annotated:
 </p>
-<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
+<pre class="source">
 @FromStringFactory(factory = DistanceFactory.class)
 public interface Distance {
 
@@ -192,7 +192,7 @@ public class DistanceFactory {
   public static Distance parseDistance(String str) { ... }
 
 }
-</pre></div>
+</pre>
 <p>
 The <code>FromStringFactory</code> annotation points at the factory class that will provide the factory method.
 Although intended for use with interfaces, it can also be used on the target class or any superclass.

@@ -11,16 +11,16 @@
 
 <section name="Joda Convert">
 <p>
-Joda-Convert provides a small set of classes to aid conversion between Objects and Strings.
-It is not intended to tackle the wider problem of Object to Object transformation.
+Joda-Convert provides a small set of classes to provide round-trip conversion between Objects and Strings.
+It does not tackle the wider problem of Object to Object transformation.
 </p>
-<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
-// conversion to String
-String str = StringConvert.INSTANCE.convertToString(foo);
+<pre class="source">
+  // conversion to String
+  String str = StringConvert.INSTANCE.convertToString(foo);
 
-// conversion from String
-Foo bar = StringConvert.INSTANCE.convertFromString(Foo.class, str);
-</pre></div>
+  // conversion from String
+  Foo bar = StringConvert.INSTANCE.convertFromString(Foo.class, str);
+</pre>
 <p>
 Joda-Convert supports two mechanisms of extending the list of supported conversions.
 The first is to write your own converter implementing an interface.
@@ -32,17 +32,17 @@ For example, most value classes, like <code>Currency</code> or <code>TimeZone</c
 to convert to and from a standard format String.
 Consider a <code>Distance</code> class:
 </p>
-<div style="border:1px solid black; padding: 0px 6px; margin: 4px;"><pre>
-public class Distance {
+<pre class="source">
+  public class Distance {
 
-  @FromString
-  public static Distance parse(String str) { ... }
+    @FromString
+    public static Distance parse(String str) { ... }
 
-  @ToString
-  public String getStandardOutput() { ... }
+    @ToString
+    public String getStandardOutput() { ... }
 
-}
-</pre></div>
+  }
+</pre>
 <p>
 As shown, the two methods may have any name. They must simply fulfil the required method signatures for conversion.
 The <code>FromString</code> annotation may also be applied to a constructor.
