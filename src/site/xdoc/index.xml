@@ -72,12 +72,12 @@ Various documentation is available:
 
 <section name="Releases">
 <p>
-Release 1.6 is the current latest release.
+Release 1.7 is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
-It depends on JDK 1.6 or later.
+It depends on Java SE 6 or later.
 </p>
 <p>
-Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.6|jar">Maven Central repository</a>.
+Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.7|jar">Maven Central repository</a>.
 </p>
 </section>
 
