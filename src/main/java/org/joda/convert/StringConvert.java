@@ -218,7 +218,7 @@ public final class StringConvert {
      */
     private void tryRegister(String className, String fromStringMethodName) {
         try {
-            Class<?> cls = getClass().getClassLoader().loadClass(className);
+            Class<?> cls = RenameHandler.INSTANCE.lookupType(className);
             registerMethods(cls, "toString", fromStringMethodName);
         } catch (Exception ex) {
             // ignore

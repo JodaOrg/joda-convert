@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.8" date="" description="Version 1.8">
+      <action dev="jodastephen" type="fix" >
+        Avoid possible null pointer exception when loading a class.
+      </action>
+    </release>
     <release version="1.7" date="2014-08-04" description="Version 1.7">
       <action dev="jodastephen" type="add" >
         Add ability to extract the effective type.

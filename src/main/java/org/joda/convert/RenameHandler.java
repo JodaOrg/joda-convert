@@ -122,7 +122,14 @@ public final class RenameHandler {
         return type;
     }
 
-    private Class<?> loadType(String fullName) throws ClassNotFoundException {
+    /**
+     * Loads a type avoiding nulls
+     * 
+     * @param fullName  the full class name
+     * @return the loaded class
+     * @throws ClassNotFoundException if the class is not found
+     */
+    Class<?> loadType(String fullName) throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
     }
