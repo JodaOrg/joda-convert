@@ -77,6 +77,7 @@ The JDK conversions are generally obvious. The types are as follows:
 <li>AtomicLong</li>
 <li>AtomicInteger</li>
 <li>AtomicBoolean - 'true' or 'false'</li>
+<li>OptionalInt, OptionalLong and OptionalDouble (Java SE 8 by reflection)</li>
 <li>Locale - separated by underscores, en_GB_VARIANT</li>
 <li>Class - using the class name, using the rename handler</li>
 <li>Package - using the package name</li>

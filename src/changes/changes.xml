@@ -8,6 +8,10 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="1.8" date="" description="Version 1.8">
+      <action dev="jodastephen" type="add" >
+        Support OptionalDouble, OptionalInt and OptionalLong from Java SE 8 (by reflection).
+        Fixes #9
+      </action>
       <action dev="jodastephen" type="fix" >
         Avoid possible null pointer exception when loading a class.
       </action>

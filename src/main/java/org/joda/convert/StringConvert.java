@@ -155,6 +155,9 @@ public final class StringConvert {
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
             // JDK 1.8 classes
+            tryRegister(OptionalIntStringConverter.INSTANCE);
+            tryRegister(OptionalLongStringConverter.INSTANCE);
+            tryRegister(OptionalDoubleStringConverter.INSTANCE);
             tryRegister("java.time.Instant", "parse");
             tryRegister("java.time.Duration", "parse");
             tryRegister("java.time.LocalDate", "parse");
@@ -215,6 +218,7 @@ public final class StringConvert {
      * Tries to register a class using the standard toString/parse pattern.
      * 
      * @param className  the class name, not null
+     * @param fromStringMethodName  the name of the fromString method
      */
     private void tryRegister(String className, String fromStringMethodName) {
         try {
@@ -222,6 +226,18 @@ public final class StringConvert {
             registerMethods(cls, "toString", fromStringMethodName);
         } catch (Exception ex) {
             // ignore
+        }
+    }
+
+    /**
+     * Tries to register a class using a dedicated converter.
+     * 
+     * @param className  the class name, not null
+     */
+    @SuppressWarnings("unchecked")
+    private <R> void tryRegister(TypedStringConverter<R> converter) {
+        if (converter != null) {
+            register((Class<R>) converter.getEffectiveType(), converter);
         }
     }
 
