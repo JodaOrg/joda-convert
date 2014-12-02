@@ -78,9 +78,8 @@ then the annotations are checked. If they are found, then the methods are called
 
 [Release 1.7](download.html) is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
-It depends on Java SE 6 or later.
 
-The project runs on JDK 1.6 and has [no dependencies](dependencies.html).
+Joda-Convert requires Java SE 6 or later and has [no dependencies](dependencies.html).
 
 Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-convert%7C1.7%7Cjar).
 
