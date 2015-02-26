@@ -154,6 +154,8 @@ public final class StringConvert {
             registered.put(Float.TYPE, JDKStringConverter.FLOAT);
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
+            // Guava
+            tryRegisterGuava();
             // JDK 1.8 classes
             tryRegister("java.time.Instant", "parse");
             tryRegister("java.time.Duration", "parse");
@@ -208,6 +210,30 @@ public final class StringConvert {
         this.factories.add(AnnotationStringConverterFactory.INSTANCE);
         if (includeJdkConverters) {
             this.factories.add(EnumStringConverterFactory.INSTANCE);
+        }
+    }
+
+    /**
+     * Tries to register the Guava converters class.
+     * 
+     * @param className  the class name, not null
+     */
+    private void tryRegisterGuava() {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<?> cls = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
+                    .loadType("org.joda.convert.TypeTokenStringConverter");
+            TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.newInstance();
+            registered.put(conv.getEffectiveType(), conv);
+
+            @SuppressWarnings("unchecked")
+            Class<?> cls2 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
+                    .loadType("org.joda.convert.TypeStringConverter");
+            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.newInstance();
+            registered.put(conv2.getEffectiveType(), conv2);
+
+        } catch (Exception ex) {
+            // ignore
         }
     }
 
