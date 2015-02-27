@@ -125,6 +125,10 @@ abstract class AbstractTypeStringConverter {
                 String componentStr = splitArg.substring(0, splitArg.length() - 2);
                 Class<?> componentCls = RenameHandler.INSTANCE.loadType(componentStr);
                 argType = Array.newInstance(componentCls, 0).getClass();
+            } else if (splitArg.startsWith("[L") && splitArg.endsWith(";")) {
+                String componentStr = splitArg.substring(2, splitArg.length() - 1);
+                Class<?> componentCls = RenameHandler.INSTANCE.loadType(componentStr);
+                argType = Array.newInstance(componentCls, 0).getClass();
             } else {
                 argType = doParse(splitArg);
             }

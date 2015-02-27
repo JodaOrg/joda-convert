@@ -75,10 +75,19 @@ public class TestGuavaTypeTokenStringConverter {
         doTest(token, "java.util.List<?>");
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void test_oneArray() {
         TypeToken<?> token = new TypeToken<List<String[]>>() {};
-        doTest(token, "java.util.List<java.lang.String[]>");
+        // two different output formats to parse
+        TypeTokenStringConverter test = new TypeTokenStringConverter();
+        String asStr = test.convertToString(token);
+        Object reverse1 = test.convertFromString((Class) TypeToken.class, "java.util.List<java.lang.String[]>");
+        Object reverse2 = test.convertFromString((Class) TypeToken.class, "java.util.List<[Ljava.lang.String;>");
+        assertEquals(reverse1, reverse2);
+        String expected = (asStr.equals("java.util.List<java.lang.String[]>") ?
+                "java.util.List<java.lang.String[]>" : "java.util.List<[Ljava.lang.String;>");
+        doTest(token, expected);
     }
 
     @Test
