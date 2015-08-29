@@ -146,6 +146,26 @@ public class TestJDKStringConverters {
     }
 
     @Test
+    public void test_byteArray3() {
+        JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
+        byte[] array = new byte[] {77};
+        String str = "TQ==";
+        assertEquals(byte[].class, test.getType());
+        assertEquals(str, test.convertToString(array));
+        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+    }
+
+    @Test
+    public void test_byteArray4() {
+        JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
+        byte[] array = new byte[] {73, 97, 112, 77};
+        String str = "SWFwTQ==";
+        assertEquals(byte[].class, test.getType());
+        assertEquals(str, test.convertToString(array));
+        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+    }
+
+    @Test
     public void test_Boolean() {
         JDKStringConverter test = JDKStringConverter.BOOLEAN;
         doTest(test, Boolean.class, Boolean.TRUE, "true");

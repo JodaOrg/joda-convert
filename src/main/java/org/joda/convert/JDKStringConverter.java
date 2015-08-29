@@ -36,8 +36,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * Conversion between JDK classes and a {@code String}.
  */
@@ -124,11 +122,11 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     BYTE_ARRAY(byte[].class) {
         @Override
         public String convertToString(Object object) {
-            return DatatypeConverter.printBase64Binary((byte[]) object);
+            return printBase64Binary((byte[]) object);
         }
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return DatatypeConverter.parseBase64Binary(str);
+            return parseBase64Binary(str);
         }
     },
     /**
@@ -462,6 +460,73 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     @Override
     public String convertToString(Object object) {
         return object.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    private static String base64Str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    private static char[] base64Array = base64Str.toCharArray();
+    private static final int MASK_8BIT = 0xff;
+    private static final int MASK_6BIT = 0x3f;
+
+    private static String printBase64Binary(byte[] array) {
+        int len = array.length;
+        char[] buf = new char[((len + 2) / 3) * 4];
+        int pos = 0;
+        for (int i = 0; i < len; i += 3) {
+            int remaining = len - i;
+            if (remaining >= 3) {
+                int bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8 | (array[i + 2] & MASK_8BIT);
+                buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
+                buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
+                buf[pos++] = base64Array[(bits >>> 6) & MASK_6BIT];
+                buf[pos++] = base64Array[bits & MASK_6BIT];
+            } else if (remaining == 2) {
+                int bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8;
+                buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
+                buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
+                buf[pos++] = base64Array[(bits >>> 6) & MASK_6BIT];
+                buf[pos++] = '=';
+            } else {
+                int bits = (array[i] & MASK_8BIT) << 16;
+                buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
+                buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
+                buf[pos++] = '=';
+                buf[pos++] = '=';
+            }
+        }
+        return new String(buf);
+    }
+
+    private static byte[] parseBase64Binary(String str) {
+        // strict parser, must have length divisble by 4
+        if (str.length() % 4 != 0) {
+            throw new IllegalArgumentException("Invalid Base64 string");
+        }
+        // base64Str has 65 characters, with '=' at the end which is masked away
+        int parsedLen = (str.length() * 3) / 4;
+        byte[] decoded = new byte[parsedLen];
+        char[] inChars = str.toCharArray();
+        int pos = 0;
+        for (int i = 0; i < inChars.length; ) {
+            int bits = (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 18 |
+                            (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 12 |
+                            (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 6 |
+                            (base64Str.indexOf(inChars[i++]) & MASK_6BIT);
+            decoded[pos++] = (byte) ((bits >>> 16) & MASK_8BIT);
+            decoded[pos++] = (byte) ((bits >>> 8) & MASK_8BIT);
+            decoded[pos++] = (byte)  (bits & MASK_8BIT);
+        }
+        // fixup avoiding Arrays.copyRange
+        if (str.endsWith("==")) {
+            byte[] result = new byte[parsedLen - 2];
+            System.arraycopy(decoded, 0, result, 0, parsedLen - 2);
+            return result;
+        } else if (str.endsWith("=")) {
+            byte[] result = new byte[parsedLen - 1];
+            System.arraycopy(decoded, 0, result, 0, parsedLen - 1);
+            return result;
+        }
+        return decoded;
     }
 
 }
