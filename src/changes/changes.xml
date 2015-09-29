@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.8" date="SNAPSHOT" description="Version 1.8">
+    <release version="1.8" date="2015-09-29" description="Version 1.8">
       <action dev="jodastephen" type="update" >
         Avoid use of java.xml.DatatypeConverter which may help Android.
         Fixes #7.
