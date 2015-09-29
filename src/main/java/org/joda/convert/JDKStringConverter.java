@@ -435,7 +435,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
      * Creates an enum.
      * @param type  the type, not null
      */
-    private JDKStringConverter(Class<?> type) {
+    JDKStringConverter(Class<?> type) {
         this.type = type;
     }
 
