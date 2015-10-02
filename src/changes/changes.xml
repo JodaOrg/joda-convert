@@ -7,6 +7,13 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.8.1" date="2015-10-02" description="Version 1.8.1">
+      <action dev="jodastephen" type="fix" >
+        Make Guava dependency optional again.
+        Add test run to ensure this
+        Fixes #14.
+      </action>
+    </release>
     <release version="1.8" date="2015-09-29" description="Version 1.8">
       <action dev="jodastephen" type="update" >
         Avoid use of java.xml.DatatypeConverter which may help Android.

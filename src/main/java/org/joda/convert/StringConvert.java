@@ -220,6 +220,7 @@ public final class StringConvert {
      */
     private void tryRegisterGuava() {
         try {
+            RenameHandler.INSTANCE.loadType("com.google.common.reflect.Types");
             @SuppressWarnings("unchecked")
             Class<?> cls = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.TypeTokenStringConverter");
@@ -232,7 +233,7 @@ public final class StringConvert {
             TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
 
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             // ignore
         }
     }
@@ -246,7 +247,7 @@ public final class StringConvert {
         try {
             Class<?> cls = RenameHandler.INSTANCE.lookupType(className);
             registerMethods(cls, "toString", fromStringMethodName);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             // ignore
         }
     }

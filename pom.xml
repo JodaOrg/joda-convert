@@ -9,7 +9,7 @@
   <artifactId>joda-convert</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Convert</name>
-  <version>1.9-SNAPSHOT</version>
+  <version>1.8.1-SNAPSHOT</version>
   <description>Library to convert Objects to and from String</description>
   <url>http://www.joda.org/joda-convert/</url>
 
@@ -94,6 +94,40 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <!-- execute all tests with guava present -->
+          <execution>
+            <id>default-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
+          <!-- execute all suitable tests with guava not present -->
+          <execution>
+            <id>no-guava</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>com.google.guava:guava</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>**/TestBooleanArrayStringConverterFactory.java</include>
+                <include>**/TestBooleanObjectArrayStringConverterFactory.java</include>
+                <include>**/TestByteObjectArrayStringConverterFactory.java</include>
+                <include>**/TestCharObjectArrayStringConverterFactory.java</include>
+                <include>**/TestJDKStringConverters.java</include>
+                <include>**/TestNumericArrayStringConverterFactory.java</include>
+                <include>**/TestNumericObjectArrayStringConverterFactory.java</include>
+                <include>**/TestStringConvert.java</include>
+                <include>**/TestStringConverterFactory.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <properties>
             <property>
