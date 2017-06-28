@@ -100,7 +100,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     /**
      * Short converter.
      */
-    SHORT (Short.class) {
+    SHORT(Short.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
             return new Short(str);
