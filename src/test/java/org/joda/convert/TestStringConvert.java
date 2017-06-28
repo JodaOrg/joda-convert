@@ -149,8 +149,18 @@ public class TestStringConvert {
     }
 
     @Test
+    public void test_convertFromString_enumSubclass() {
+      assertEquals(ValidityCheck.VALID, StringConvert.INSTANCE.convertFromString(ValidityCheck.class, "VALID"));
+    }
+
+    @Test
     public void test_convertFromString_inherit() {
         assertEquals(RoundingMode.CEILING, StringConvert.INSTANCE.convertFromString(RoundingMode.class, "CEILING"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_convertFromString_inheritNotSearchedFor() {
+        StringConvert.INSTANCE.convertFromString(AltCharSequence.class, "A");
     }
 
     @Test

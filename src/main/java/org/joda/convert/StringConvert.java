@@ -364,8 +364,7 @@ public final class StringConvert {
      * This returns an instance of {@code StringConverter} for the specified class.
      * This is designed for user code where the {@code Class} object generics is known.
      * <p>
-     * The search algorithm first searches the registered converters in the
-     * class hierarchy and immediate parent interfaces.
+     * The search algorithm first searches the registered converters.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
      * Finally, it handles {@code Enum} instances.
@@ -387,8 +386,7 @@ public final class StringConvert {
      * The returned type is declared with {@code Object} instead of '?' to
      * allow the {@link ToStringConverter} to be invoked.
      * <p>
-     * The search algorithm first searches the registered converters in the
-     * class hierarchy and immediate parent interfaces.
+     * The search algorithm first searches the registered converters.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
      * Finally, it handles {@code Enum} instances.
@@ -408,8 +406,7 @@ public final class StringConvert {
      * This returns an instance of {@code TypedStringConverter} for the specified class.
      * This is designed for user code where the {@code Class} object generics is known.
      * <p>
-     * The search algorithm first searches the registered converters in the
-     * class hierarchy and immediate parent interfaces.
+     * The search algorithm first searches the registered converters.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
      * Finally, it handles {@code Enum} instances.
@@ -443,8 +440,7 @@ public final class StringConvert {
      * The returned type is declared with {@code Object} instead of '?' to
      * allow the {@link ToStringConverter} to be invoked.
      * <p>
-     * The search algorithm first searches the registered converters in the
-     * class hierarchy and immediate parent interfaces.
+     * The search algorithm first searches the registered converters.
      * It then searches for {@code ToString} and {@code FromString} annotations on the
      * specified class, class hierarchy or immediate parent interfaces.
      * Finally, it handles {@code Enum} instances.
@@ -513,23 +509,6 @@ public final class StringConvert {
      */
     @SuppressWarnings("unchecked")
     private <T> TypedStringConverter<T> findAnyConverter(final Class<T> cls) {
-        TypedStringConverter<T> conv = null;
-        // check for registered on superclass
-        Class<?> loopCls = cls.getSuperclass();
-        while (loopCls != null && conv == null) {
-            conv = (TypedStringConverter<T>) registered.get(loopCls);
-            if (conv != null && conv != CACHED_NULL) {
-                return conv;
-            }
-            loopCls = loopCls.getSuperclass();
-        }
-        // check for registered on interfaces
-        for (Class<?> loopIfc : cls.getInterfaces()) {
-            conv = (TypedStringConverter<T>) registered.get(loopIfc);
-            if (conv != null && conv != CACHED_NULL) {
-                return conv;
-            }
-        }
         // check factories
         for (StringConverterFactory factory : factories) {
             StringConverter<T> factoryConv = (StringConverter<T>) factory.findConverter(cls);
