@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.8.2" date="SNAPSHOT" description="Version 1.8.2">
+    <release version="1.8.2" date="2017-06-28" description="Version 1.8.2">
       <action dev="jodastephen" type="fix" >
         Fix to ensure primitive types can be deserialized.
         Fixes #16.
