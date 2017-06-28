@@ -153,7 +153,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.4.0</version>
+        <version>2.5.4</version>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -161,6 +161,11 @@
             <goals>
               <goal>manifest</goal>
             </goals>
+            <configuration>
+              <instructions>
+                <Export-Package>org.joda.convert.*</Export-Package>
+              </instructions>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -186,26 +191,6 @@
             <phase>package</phase>
             <goals>
               <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <attach>false</attach>
-          <descriptors>
-            <descriptor>src/main/assembly/dist.xml</descriptor>
-          </descriptors>
-          <tarLongFileMode>gnu</tarLongFileMode>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>single</goal>
             </goals>
           </execution>
         </executions>
@@ -367,7 +352,6 @@
           <artifactId>maven-toolchains-plugin</artifactId>
           <version>${maven-toolchains-plugin.version}</version>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -379,7 +363,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <versionRange>[2.4.0,)</versionRange>
+                    <versionRange>[2.5.4,)</versionRange>
                     <goals>
                       <goal>manifest</goal>
                     </goals>
@@ -401,6 +385,8 @@
     <maven>3.0.4</maven>
   </prerequisites>
   <dependencies>
+    <!-- The Guava dependency is optional -->
+    <!-- It can be a different version, as it is accessed only by reflection -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -463,7 +449,7 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${maven-surefire-report-plugin.version}</version>
         <configuration>
-           <showSuccess>true</showSuccess>
+          <showSuccess>true</showSuccess>
         </configuration>
       </plugin>
       <plugin>
@@ -515,11 +501,11 @@
       <activation>
         <property>
           <name>oss.repo</name>
-          <value>true</value>
         </property>
       </activation>
       <build>
         <plugins>
+          <!-- Use Java 6 -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-toolchains-plugin</artifactId>
@@ -540,6 +526,7 @@
               </toolchains>
             </configuration>
           </plugin>
+          <!-- Sign artifacts -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
@@ -549,6 +536,59 @@
                 <phase>verify</phase>
                 <goals>
                   <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Create dist files -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <attach>false</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/dist.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+            <executions>
+              <execution>
+                <id>make-assembly</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Release dist files to GitHub -->
+          <!-- This will create a tag on GitHub on deploy -->
+          <!-- The release commit must have been pushed first -->
+          <plugin>
+            <groupId>de.jutzig</groupId>
+            <artifactId>github-release-plugin</artifactId>
+            <version>1.1.1</version>
+            <configuration>
+              <releaseName>Release v${project.version}</releaseName>
+              <description>See the [change notes](http://www.joda.org/joda-beans/changes-report.html) for more information.</description>
+              <tag>v${project.version}</tag>
+              <overwriteArtifact>true</overwriteArtifact>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}</directory>
+                  <includes>
+                    <include>${project.artifactId}*-dist.tar.gz</include>
+                    <include>${project.artifactId}*-dist.zip</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+            </configuration>
+            <executions>
+              <execution>
+                <id>github-releases</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>release</goal>
                 </goals>
               </execution>
             </executions>
@@ -564,27 +604,27 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Plugin version numbers -->
-    <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
-    <maven-changes-plugin.version>2.11</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>2.11</maven-checkstyle-plugin.version><!-- Needed for JDK 6 -->
-    <maven-clean-plugin.version>2.6.1</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
+    <maven-checkstyle-plugin.version>2.14</maven-checkstyle-plugin.version>
+    <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
+    <maven-dependency-plugin.version>3.0.0</maven-dependency-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-    <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+    <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
-    <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
-    <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
+    <maven-plugin-plugin.version>3.5</maven-plugin-plugin.version>
+    <maven-pmd-plugin.version>3.7</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
+    <maven-repository-plugin.version>3.0.2</maven-repository-plugin.version>
+    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
     <maven-site-plugin.version>3.4</maven-site-plugin.version>
-    <maven-source-plugin.version>2.4</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.18.1</maven-surefire-report-plugin.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
@@ -592,8 +632,6 @@
     <maven.compiler.target>1.6</maven.compiler.target>
     <maven.compiler.fork>true</maven.compiler.fork>
     <maven.compiler.verbose>true</maven.compiler.verbose>
-    <maven.compiler.debug>true</maven.compiler.debug>
-    <maven.compiler.optimize>true</maven.compiler.optimize>
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
     <notimestamp>true</notimestamp>
