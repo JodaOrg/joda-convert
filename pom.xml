@@ -381,9 +381,6 @@
   </build>
 
   <!-- ==================================================================== -->
-  <prerequisites>
-    <maven>3.0.4</maven>
-  </prerequisites>
   <dependencies>
     <!-- The Guava dependency is optional -->
     <!-- It can be a different version, as it is accessed only by reflection -->
@@ -637,6 +634,7 @@
     <notimestamp>true</notimestamp>
     <!-- Properties for maven-checkstyle-plugin -->
     <checkstyle.config.location>${project.basedir}/src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
+    <linkXRef>false</linkXRef>
     <!-- Other properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
