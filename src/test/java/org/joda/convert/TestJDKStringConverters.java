@@ -261,6 +261,20 @@ public class TestJDKStringConverters {
         doTest(test, Class.class, FromString.class, "org.joda.convert.FromString");
     }
 
+    @Test
+    public void test_Class_primitive() {
+        JDKStringConverter test = JDKStringConverter.CLASS;
+        doTest(test, Class.class, byte.class, "byte");
+        doTest(test, Class.class, short.class, "short");
+        doTest(test, Class.class, int.class, "int");
+        doTest(test, Class.class, long.class, "long");
+        doTest(test, Class.class, float.class, "float");
+        doTest(test, Class.class, double.class, "double");
+        doTest(test, Class.class, boolean.class, "boolean");
+        doTest(test, Class.class, char.class, "char");
+        doTest(test, Class.class, void.class, "void");
+    }
+
     @Test(expected=RuntimeException.class)
     public void test_Class_fail() {
         JDKStringConverter.CLASS.convertFromString(Class.class, "RUBBISH");

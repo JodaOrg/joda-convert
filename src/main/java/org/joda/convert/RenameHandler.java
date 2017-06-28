@@ -130,8 +130,36 @@ public final class RenameHandler {
      * @throws ClassNotFoundException if the class is not found
      */
     Class<?> loadType(String fullName) throws ClassNotFoundException {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+        } catch (ClassNotFoundException ex) {
+            return loadPrimitiveType(fullName, ex);
+        }
+    }
+
+    // handle primitive types
+    private Class<?> loadPrimitiveType(String fullName, ClassNotFoundException ex) throws ClassNotFoundException {
+        if (fullName.equals("int")) {
+            return int.class;
+        } else if (fullName.equals("long")) {
+            return long.class;
+        } else if (fullName.equals("double")) {
+            return double.class;
+        } else if (fullName.equals("boolean")) {
+            return boolean.class;
+        } else if (fullName.equals("short")) {
+            return short.class;
+        } else if (fullName.equals("byte")) {
+            return byte.class;
+        } else if (fullName.equals("char")) {
+            return char.class;
+        } else if (fullName.equals("float")) {
+            return float.class;
+        } else if (fullName.equals("void")) {
+            return void.class;            
+        }
+        throw ex;
     }
 
     //-----------------------------------------------------------------------
