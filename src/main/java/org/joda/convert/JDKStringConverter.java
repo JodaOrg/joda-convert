@@ -382,10 +382,10 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             if (str.length() != 29) {
                 throw new IllegalArgumentException("Unable to parse date: " + str);
             }
-            str = str.substring(0, 26) + str.substring(27);
+            String str2 = str.substring(0, 26) + str.substring(27);
             SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             try {
-                return f.parseObject(str);
+                return f.parseObject(str2);
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
@@ -413,13 +413,13 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
                 throw new IllegalArgumentException("Unable to parse date: " + str);
             }
             TimeZone zone = TimeZone.getTimeZone(str.substring(30, str.length() - 1));
-            str = str.substring(0, 26) + str.substring(27, 29);
+            String str2 = str.substring(0, 26) + str.substring(27, 29);
             SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             GregorianCalendar cal = new GregorianCalendar(zone);
             cal.setTimeInMillis(0);
             f.setCalendar(cal);
             try {
-                f.parseObject(str);
+                f.parseObject(str2);
                 return f.getCalendar();
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);

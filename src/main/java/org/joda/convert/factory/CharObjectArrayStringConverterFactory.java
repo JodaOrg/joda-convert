@@ -102,24 +102,25 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                Character[] array = new Character[str.length()];
+                String adjusted = str;
+                Character[] array = new Character[adjusted.length()];
                 int arrayPos = 0;
                 int pos;
-                while ((pos = str.indexOf('\\')) >= 0) {
+                while ((pos = adjusted.indexOf('\\')) >= 0) {
                     for (int i = 0; i < pos; i++) {
-                        array[arrayPos++] = str.charAt(i);
+                        array[arrayPos++] = adjusted.charAt(i);
                     }
-                    if (str.charAt(pos + 1) == '\\') {
+                    if (adjusted.charAt(pos + 1) == '\\') {
                         array[arrayPos++] = '\\';
-                    } else if (str.charAt(pos + 1) == '-') {
+                    } else if (adjusted.charAt(pos + 1) == '-') {
                         array[arrayPos++] = null;
                     } else {
                         throw new IllegalArgumentException("Invalid Character[] string, incorrect escape");
                     }
-                    str = str.substring(pos + 2);
+                    adjusted = adjusted.substring(pos + 2);
                 }
-                for (int i = 0; i < str.length(); i++) {
-                    array[arrayPos++] = str.charAt(i);
+                for (int i = 0; i < adjusted.length(); i++) {
+                    array[arrayPos++] = adjusted.charAt(i);
                 }
                 return Arrays.copyOf(array, arrayPos);
             }

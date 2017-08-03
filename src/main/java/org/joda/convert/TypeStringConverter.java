@@ -32,7 +32,7 @@ final class TypeStringConverter
         extends AbstractTypeStringConverter
         implements TypedStringConverter<Type> {
 
-    public TypeStringConverter() {
+    TypeStringConverter() {
     }
 
     @Override

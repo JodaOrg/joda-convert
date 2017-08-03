@@ -30,7 +30,7 @@ final class TypeTokenStringConverter
         extends AbstractTypeStringConverter
         implements TypedStringConverter<TypeToken<?>> {
 
-    public TypeTokenStringConverter() {
+    TypeTokenStringConverter() {
     }
 
     @Override
