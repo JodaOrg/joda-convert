@@ -7,6 +7,13 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="2.0" date="SNAPSHOT" description="Version 2.0">
+      <action dev="jodastephen" type="add" >
+        Add support for Java 8 primitive optional types - `OptionalInt`, `OptionalLong`, `OptionalDouble`.
+        These are supported by reflection - Joda-Convert still supports Java 1.6.
+        Fixes #9.
+      </action>
+    </release>
     <release version="1.8.3" date="2017-08-21" description="Version 1.8.3">
       <action dev="jodastephen" type="update" >
         Optional Guava dependency updated to v20.0.

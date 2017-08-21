@@ -154,8 +154,9 @@ public final class StringConvert {
             registered.put(Float.TYPE, JDKStringConverter.FLOAT);
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
-            // Guava
+            // Guava and Java 8
             tryRegisterGuava();
+            tryRegisterJava8Optionals();
             // JDK 1.8 classes
             tryRegister("java.time.Instant", "parse");
             tryRegister("java.time.Duration", "parse");
@@ -215,8 +216,6 @@ public final class StringConvert {
 
     /**
      * Tries to register the Guava converters class.
-     * 
-     * @param className  the class name, not null
      */
     private void tryRegisterGuava() {
         try {
@@ -232,6 +231,35 @@ public final class StringConvert {
                     .loadType("org.joda.convert.TypeStringConverter");
             TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+    }
+
+    /**
+     * Tries to register the Java 8 optional classes.
+     */
+    private void tryRegisterJava8Optionals() {
+        try {
+            RenameHandler.INSTANCE.loadType("java.util.OptionalInt");
+            @SuppressWarnings("unchecked")
+            Class<?> cls1 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
+                    .loadType("org.joda.convert.OptionalIntStringConverter");
+            TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.newInstance();
+            registered.put(conv1.getEffectiveType(), conv1);
+
+            @SuppressWarnings("unchecked")
+            Class<?> cls2 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
+                    .loadType("org.joda.convert.OptionalLongStringConverter");
+            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.newInstance();
+            registered.put(conv2.getEffectiveType(), conv2);
+
+            @SuppressWarnings("unchecked")
+            Class<?> cls3 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
+                    .loadType("org.joda.convert.OptionalDoubleStringConverter");
+            TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.newInstance();
+            registered.put(conv3.getEffectiveType(), conv3);
 
         } catch (Throwable ex) {
             // ignore
