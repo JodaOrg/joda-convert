@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.8.3" date="SNAPSHOT" description="Version 1.8.3">
+    <release version="1.8.3" date="2017-08-21" description="Version 1.8.3">
       <action dev="jodastephen" type="update" >
         Optional Guava dependency updated to v20.0.
         As Guava is accessed only by reflection guarded by try-catch, any version of Guava may be used by end users.

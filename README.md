@@ -52,11 +52,11 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.8.2](http://www.joda.org/joda-convert/download.html) is the current latest release.
+[Release 1.8.3](http://www.joda.org/joda-convert/download.html) is the current latest release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on Java SE 6 or later.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.8.2|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.8.3|jar)
 
 
 ### Support
