@@ -7,6 +7,13 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.8.3" date="SNAPSHOT" description="Version 1.8.3">
+      <action dev="jodastephen" type="update" >
+        Optional Guava dependency updated to v20.0.
+        As Guava is accessed only by reflection guarded by try-catch, any version of Guava may be used by end users.
+        This version has been selected for the pom.xml as it is the last version for Java 1.6.
+      </action>
+    </release>
     <release version="1.8.2" date="2017-06-28" description="Version 1.8.2">
       <action dev="jodastephen" type="fix" >
         Fix to ensure primitive types can be deserialized.
