@@ -33,6 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * </pre>
  * The recommended usage is to edit the static singleton before using other classes.
  * Editing a static is acceptable because renames are driven by bytecode which is static.
+ * For additional security, an application should lock the rename handler instance
+ * once any types and enums have been registered using {@link #lock()}.
  * <p>
  * This class is thread-safe with concurrent caches.
  * 
@@ -46,6 +48,10 @@ public final class RenameHandler {
      */
     public static final RenameHandler INSTANCE = new RenameHandler();
 
+    /**
+     * The lock flag.
+     */
+    private volatile boolean locked;
     /**
      * The type renames.
      */
@@ -79,6 +85,8 @@ public final class RenameHandler {
     //-----------------------------------------------------------------------
     /**
      * Register the fact that a type was renamed.
+     * <p>
+     * This handles the use case where a class is renamed.
      * 
      * @param oldName  the old name of the type including the package name, not null
      * @param currentValue  the current type, not null
@@ -90,6 +98,10 @@ public final class RenameHandler {
         if (currentValue == null) {
             throw new IllegalArgumentException("currentValue must not be null");
         }
+        if (oldName.startsWith("java.") || oldName.startsWith("javax.") || oldName.startsWith("org.joda.")) {
+            throw new IllegalArgumentException("oldName must not be a java.*, javax.* or org.joda.* type");
+        }
+        checkNotLocked();
         typeRenames.put(oldName, currentValue);
     }
 
@@ -165,6 +177,8 @@ public final class RenameHandler {
     //-----------------------------------------------------------------------
     /**
      * Register the fact that an enum constant was renamed.
+     * <p>
+     * This handles the use case where an enum constant is renamed, but the enum class remains the same.
      * 
      * @param oldName  the old name of the enum constant, not null
      * @param currentValue  the current enum constant, not null
@@ -176,6 +190,7 @@ public final class RenameHandler {
         if (currentValue == null) {
             throw new IllegalArgumentException("currentValue must not be null");
         }
+        checkNotLocked();
         Class<?> enumType = currentValue.getDeclaringClass();
         Map<String, Enum<?>> perClass = enumRenames.get(enumType);
         if (perClass == null) {
@@ -237,6 +252,25 @@ public final class RenameHandler {
             return type.cast(value);
         }
         return Enum.valueOf(type, name);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Locks this instance of the rename handler.
+     * <p>
+     * For additional security, an application should lock the rename handler
+     * once any types and enums have been registered.
+     */
+    public void lock() {
+        checkNotLocked();
+        locked = true;
+    }
+
+    // ensure not locked
+    private void checkNotLocked() {
+        if (locked) {
+            throw new IllegalStateException("RenameHandler has been locked and it cannot now be changed");
+        }
     }
 
     //-----------------------------------------------------------------------

@@ -13,6 +13,10 @@
         As Guava is accessed only by reflection guarded by try-catch, any version of Guava may be used by end users.
         This version has been selected for the pom.xml as it is the last version for Java 1.6.
       </action>
+      <action dev="jodastephen" type="update" >
+        Provide ability to lock rename handler for additional security.
+        Prevent renames of java.*, javax.* and org.joda.* types.
+      </action>
     </release>
     <release version="1.8.2" date="2017-06-28" description="Version 1.8.2">
       <action dev="jodastephen" type="fix" >
