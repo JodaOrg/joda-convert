@@ -19,6 +19,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -157,6 +159,7 @@ public final class StringConvert {
             // Guava and Java 8
             tryRegisterGuava();
             tryRegisterJava8Optionals();
+            tryRegisterTimeZone();
             // JDK 1.8 classes
             tryRegister("java.time.Instant", "parse");
             tryRegister("java.time.Duration", "parse");
@@ -260,6 +263,33 @@ public final class StringConvert {
                     .loadType("org.joda.convert.OptionalDoubleStringConverter");
             TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.newInstance();
             registered.put(conv3.getEffectiveType(), conv3);
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+    }
+
+    /**
+     * Tries to register the subclasses of TimeZone.
+     * Try various things, doesn't matter if the map entry gets overwritten.
+     */
+    private void tryRegisterTimeZone() {
+        try {
+            registered.put(SimpleTimeZone.class, JDKStringConverter.TIME_ZONE);
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+        try {
+            TimeZone zone = TimeZone.getDefault();
+            registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+        try {
+            TimeZone zone = TimeZone.getTimeZone("Europe/London");
+            registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
 
         } catch (Throwable ex) {
             // ignore

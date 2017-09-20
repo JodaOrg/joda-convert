@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="1.9.2" date="2017-09-20" description="Version 1.9.2">
+      <action dev="jodastephen" type="fix" >
+        Standard subclass of `TimeZone` must be explicitly registered.
+      </action>
+    </release>
     <release version="1.9.1" date="2017-09-20" description="Version 1.9.1">
       <action dev="jodastephen" type="fix" >
         Add `Automatic-Module-Name` into `MANIFEST.MF`.
