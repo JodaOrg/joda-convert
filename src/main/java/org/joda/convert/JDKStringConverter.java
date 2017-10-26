@@ -83,7 +83,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     LONG(Long.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return new Long(str);
+            return Long.valueOf(str);
         }
     },
 
@@ -93,7 +93,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     INTEGER(Integer.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return new Integer(str);
+            return Integer.valueOf(str);
         }
     },
 
@@ -103,7 +103,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     SHORT(Short.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return new Short(str);
+            return Short.valueOf(str);
         }
     },
 
@@ -113,7 +113,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     BYTE(Byte.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return new Byte(str);
+            return Byte.valueOf(str);
         }
     },
     /**
@@ -138,7 +138,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             if (str.length() != 1) {
                 throw new IllegalArgumentException("Character value must be a string length 1");
             }
-            return new Character(str.charAt(0));
+            return Character.valueOf(str.charAt(0));
         }
     },
     /**
@@ -175,7 +175,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     DOUBLE(Double.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return new Double(str);
+            return Double.valueOf(str);
         }
     },
     /**
@@ -184,7 +184,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     FLOAT(Float.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            return new Float(str);
+            return Float.valueOf(str);
         }
     },
     /**

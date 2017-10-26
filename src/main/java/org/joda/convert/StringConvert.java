@@ -226,13 +226,13 @@ public final class StringConvert {
             @SuppressWarnings("unchecked")
             Class<?> cls = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.TypeTokenStringConverter");
-            TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.newInstance();
+            TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
             registered.put(conv.getEffectiveType(), conv);
 
             @SuppressWarnings("unchecked")
             Class<?> cls2 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.TypeStringConverter");
-            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.newInstance();
+            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
 
         } catch (Throwable ex) {
@@ -249,19 +249,19 @@ public final class StringConvert {
             @SuppressWarnings("unchecked")
             Class<?> cls1 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.OptionalIntStringConverter");
-            TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.newInstance();
+            TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.getDeclaredConstructor().newInstance();
             registered.put(conv1.getEffectiveType(), conv1);
 
             @SuppressWarnings("unchecked")
             Class<?> cls2 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.OptionalLongStringConverter");
-            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.newInstance();
+            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
 
             @SuppressWarnings("unchecked")
             Class<?> cls3 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.OptionalDoubleStringConverter");
-            TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.newInstance();
+            TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.getDeclaredConstructor().newInstance();
             registered.put(conv3.getEffectiveType(), conv3);
 
         } catch (Throwable ex) {
