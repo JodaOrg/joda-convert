@@ -9,6 +9,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="2.0" date="SNAPSHOT" description="Version 2.0">
       <action dev="jodastephen" type="add">
+        Add module-info for Java 9.
+        Fixes #21.
+      </action>
+      <action dev="jodastephen" type="add">
         Update and redesign build to support Java 9.
       </action>
       <action dev="jodastephen" type="add" >
