@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
  * This is loaded by reflection only when using Java 8.
  */
 final class OptionalIntStringConverter
-        extends AbstractTypeStringConverter
         implements TypedStringConverter<Object> {
 
     private static final Class<?> TYPE;
