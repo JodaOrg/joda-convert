@@ -9,6 +9,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.9.3" date="SNAPSHOT" description="Version 1.9.3">
       <action dev="jodastephen" type="fix" >
+        Enable build to work on Java 9.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Dynamic Java 8 code must not extend Guava code.
         Incorrect setup of reflection-based converters.
         Fixes #19.
