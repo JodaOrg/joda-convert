@@ -15,7 +15,7 @@
  */
 package org.joda.convert;
 
-import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 /**
  * Parse the string format of Guava TypeToken.
@@ -28,24 +28,29 @@ import com.google.common.reflect.TypeToken;
  */
 final class TypeTokenStringConverter
         extends AbstractTypeStringConverter
-        implements TypedStringConverter<TypeToken<?>> {
+        implements TypedStringConverter<Object> {
 
     TypeTokenStringConverter() {
     }
 
     @Override
-    public String convertToString(TypeToken<?> object) {
+    public String convertToString(Object object) {
         return object.toString();
     }
 
     @Override
-    public TypeToken<?> convertFromString(Class<? extends TypeToken<?>> cls, String str) {
-        return TypeToken.of(parse(str));
+    public Object convertFromString(Class<?> cls, String str) {
+        Type parsed = parse(str);
+        try {
+            return TYPE_TOKEN_METHOD_OF.invoke(null, parsed);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override
     public Class<?> getEffectiveType() {
-        return TypeToken.class;
+        return TYPE_TOKEN_CLASS;
     }
 
 }

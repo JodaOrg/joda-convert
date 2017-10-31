@@ -17,8 +17,6 @@ package org.joda.convert;
 
 import java.lang.reflect.Type;
 
-import com.google.common.reflect.TypeToken;
-
 /**
  * Parse the string format of Type via Guava TypeToken.
  * <p>
@@ -37,7 +35,11 @@ final class TypeStringConverter
 
     @Override
     public String convertToString(Type object) {
-        return TypeToken.of(object).toString();
+        try {
+            return TYPE_TOKEN_METHOD_OF.invoke(null, object).toString();
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
     @Override

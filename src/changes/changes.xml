@@ -7,7 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="1.9.3" date="SNAPSHOT" description="Version 1.9.3">
+    <release version="2.0" date="SNAPSHOT" description="Version 2.0">
+      <action dev="jodastephen" type="add" >
+        Remove direct dependency on Guava. Reflection is used instead to get
+        the same effect without requiring Maven to resolve an optional dependency.
+        Fixes #20.
+      </action>
       <action dev="jodastephen" type="fix" >
         Enable build to work on Java 9.
       </action>

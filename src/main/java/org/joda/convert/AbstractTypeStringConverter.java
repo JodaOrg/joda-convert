@@ -20,9 +20,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /**
  * Parse the string format of Guava TypeToken.
@@ -42,16 +43,19 @@ abstract class AbstractTypeStringConverter {
     private static final String SUPER = "? super ";
 
     // primitive types
-    private static final ImmutableMap<String, Class<?>> PRIMITIVES = ImmutableMap.<String, Class<?>>builder()
-            .put("byte", byte.class)
-            .put("short", short.class)
-            .put("int", int.class)
-            .put("long", long.class)
-            .put("boolean", boolean.class)
-            .put("char", char.class)
-            .put("float", float.class)
-            .put("double", double.class)
-            .build();
+    private static final Map<String, Class<?>> PRIMITIVES;
+    static {
+        Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+        map.put("byte", byte.class);
+        map.put("short", short.class);
+        map.put("int", int.class);
+        map.put("long", long.class);
+        map.put("boolean", boolean.class);
+        map.put("char", char.class);
+        map.put("float", float.class);
+        map.put("double", double.class);
+        PRIMITIVES = Collections.unmodifiableMap(map);
+    }
 
     private static final Method NEW_PARAM_TYPE;
     private static final Method EXTENDS_TYPE;
@@ -70,6 +74,18 @@ abstract class AbstractTypeStringConverter {
             SUPER_TYPE = superType;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    static final Class<?> TYPE_TOKEN_CLASS;
+    static final Method TYPE_TOKEN_METHOD_OF;
+    static {
+        try {
+            TYPE_TOKEN_CLASS = Class.forName("com.google.common.reflect.TypeToken");
+            TYPE_TOKEN_METHOD_OF = TYPE_TOKEN_CLASS.getDeclaredMethod("of", Type.class);
+
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
