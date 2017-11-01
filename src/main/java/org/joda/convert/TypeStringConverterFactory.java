@@ -15,24 +15,33 @@
  */
 package org.joda.convert;
 
+import java.lang.reflect.Type;
+
 /**
- * Factory for {@code StringConverter} looking up enums.
+ * Factory for {@code StringConverter} looking up types.
  * <p>
  * This class is immutable and thread-safe.
- * 
- * @since 1.7
+ * <p>
+ * This parses the string format of Type.
+ * <p>
+ * This is achieved thanks to some code copied from Guava.
+ * (A Guava dependency is painful when building a Java 6 library for Java 9)
+ * <p>
+ * This parser is incomplete, but handles common cases.
+ * It does not handle union types or multi-dimensional arrays.
  */
-final class EnumStringConverterFactory implements StringConverterFactory {
+final class TypeStringConverterFactory
+        implements StringConverterFactory {
 
     /**
      * Singleton instance.
      */
-    static final StringConverterFactory INSTANCE = new EnumStringConverterFactory();
+    static final TypeStringConverterFactory INSTANCE = new TypeStringConverterFactory();
 
     /**
      * Restricted constructor.
      */
-    private EnumStringConverterFactory() {
+    private TypeStringConverterFactory() {
     }
 
     //-----------------------------------------------------------------------
@@ -45,11 +54,8 @@ final class EnumStringConverterFactory implements StringConverterFactory {
      */
     @Override
     public StringConverter<?> findConverter(Class<?> cls) {
-        Class<?> sup = cls.getSuperclass();
-        if (sup == Enum.class) {
-            return new EnumStringConverter(cls);
-        } else if (sup != null && sup.getSuperclass() == Enum.class) {
-            return new EnumStringConverter(sup);
+        if (Type.class.isAssignableFrom(cls) && cls != Class.class) {
+            return new TypeStringConverter(cls);
         }
         return null;
     }
@@ -61,23 +67,26 @@ final class EnumStringConverterFactory implements StringConverterFactory {
     }
 
     //-----------------------------------------------------------------------
-    static final class EnumStringConverter implements TypedStringConverter<Enum<?>> {
+    static final class TypeStringConverter implements TypedStringConverter<Type> {
 
         private final Class<?> effectiveType;
 
-        EnumStringConverter(Class<?> effectiveType) {
+        TypeStringConverter(Class<?> effectiveType) {
             this.effectiveType = effectiveType;
         }
 
         @Override
-        public String convertToString(Enum<?> en) {
-            return en.name();  // avoid toString() as that can be overridden
+        public String convertToString(Type type) {
+            try {
+                return Types.toString(type);
+            } catch (Exception ex) {
+                return type.toString();
+            }
         }
 
         @Override
-        @SuppressWarnings({"unchecked", "rawtypes"})
-        public Enum<?> convertFromString(Class<? extends Enum<?>> cls, String str) {
-            return RenameHandler.INSTANCE.lookupEnum((Class) cls, str);
+        public Type convertFromString(Class<? extends Type> cls, String str) {
+            return TypeUtils.parse(str);
         }
 
         @Override

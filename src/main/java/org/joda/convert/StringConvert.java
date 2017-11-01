@@ -214,6 +214,7 @@ public final class StringConvert {
         this.factories.add(AnnotationStringConverterFactory.INSTANCE);
         if (includeJdkConverters) {
             this.factories.add(EnumStringConverterFactory.INSTANCE);
+            this.factories.add(TypeStringConverterFactory.INSTANCE);
         }
     }
 
@@ -222,18 +223,32 @@ public final class StringConvert {
      */
     private void tryRegisterGuava() {
         try {
+            // Guava is not a direct dependency, which is significant in the Java 9 module system
+            // to access Guava this module must add a read edge to the module graph
+            // but since this code is written for Java 6, we have to do this by reflection
+            // yuck
+            Class<?> moduleClass = Class.class.getMethod("getModule").getReturnType();
+            Object convertModule = Class.class.getMethod("getModule").invoke(StringConvert.class);
+            Object layer = convertModule.getClass().getMethod("getLayer").invoke(convertModule);
+            if (layer != null) {
+                Object optGuava = layer.getClass().getMethod("findModule", String.class).invoke(layer, "com.google.common");
+                boolean found = (Boolean) optGuava.getClass().getMethod("isPresent").invoke(optGuava);
+                if (found) {
+                    Object guavaModule = optGuava.getClass().getMethod("get").invoke(optGuava);
+                    moduleClass.getMethod("addReads", moduleClass).invoke(convertModule, guavaModule);
+                }
+            }
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+        try {
             RenameHandler.INSTANCE.loadType("com.google.common.reflect.Types");
             @SuppressWarnings("unchecked")
             Class<?> cls = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.TypeTokenStringConverter");
             TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
             registered.put(conv.getEffectiveType(), conv);
-
-            @SuppressWarnings("unchecked")
-            Class<?> cls2 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
-                    .loadType("org.joda.convert.TypeStringConverter");
-            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
-            registered.put(conv2.getEffectiveType(), conv2);
 
         } catch (Throwable ex) {
             // ignore

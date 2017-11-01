@@ -17,6 +17,7 @@ package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -160,15 +161,21 @@ public class TestGuavaTypeTokenStringConverter {
         assertEquals(str, test2.convertToString(obj));
         assertEquals(obj, test2.convertFromString(TypeToken.class, str));
 
-        TypeStringConverter test3 = new TypeStringConverter();
-        assertEquals(Type.class, test3.getEffectiveType());
-        assertEquals(str, test3.convertToString(obj.getType()));
-        assertEquals(obj.getType(), test3.convertFromString(Type.class, str));
+        TypeStringConverterFactory test3 = TypeStringConverterFactory.INSTANCE;
+        TypedStringConverter<Type> converter3 = (TypedStringConverter<Type>) test3.findConverter(Type.class);
+        assertEquals(Type.class, converter3.getEffectiveType());
+        assertEquals(str, converter3.convertToString(obj.getType()));
+        assertEquals(obj.getType(), converter3.convertFromString(Type.class, str));
 
         TypedStringConverter<Object> test4 = StringConvert.INSTANCE.findTypedConverterNoGenerics(Type.class);
         assertEquals(Type.class, test4.getEffectiveType());
         assertEquals(str, test4.convertToString(obj.getType()));
         assertEquals(obj.getType(), test4.convertFromString(Type.class, str));
+
+        TypedStringConverter<Object> test5 = StringConvert.INSTANCE.findTypedConverterNoGenerics(ParameterizedType.class);
+        assertEquals(ParameterizedType.class, test5.getEffectiveType());
+        assertEquals(str, test5.convertToString(obj.getType()));
+        assertEquals(obj.getType(), test5.convertFromString(ParameterizedType.class, str));
     }
 
 }

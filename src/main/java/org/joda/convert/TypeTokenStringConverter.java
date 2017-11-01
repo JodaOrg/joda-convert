@@ -15,6 +15,7 @@
  */
 package org.joda.convert;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
@@ -27,8 +28,20 @@ import java.lang.reflect.Type;
  * It does not handle union types or multi-dimensional arrays.
  */
 final class TypeTokenStringConverter
-        extends AbstractTypeStringConverter
         implements TypedStringConverter<Object> {
+
+    static final Class<?> TYPE_TOKEN_CLASS;
+    static final Method TYPE_TOKEN_METHOD_OF;
+    static {
+        try {
+            // see StringConvert, which adds the necessary read edge for Java 9
+            TYPE_TOKEN_CLASS = Class.forName("com.google.common.reflect.TypeToken");
+            TYPE_TOKEN_METHOD_OF = TYPE_TOKEN_CLASS.getDeclaredMethod("of", Type.class);
+
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
 
     TypeTokenStringConverter() {
     }
@@ -40,7 +53,7 @@ final class TypeTokenStringConverter
 
     @Override
     public Object convertFromString(Class<?> cls, String str) {
-        Type parsed = parse(str);
+        Type parsed = TypeUtils.parse(str);
         try {
             return TYPE_TOKEN_METHOD_OF.invoke(null, parsed);
         } catch (Exception ex) {

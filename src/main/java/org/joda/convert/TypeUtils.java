@@ -16,7 +16,6 @@
 package org.joda.convert;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import java.util.Map;
  * This parser is incomplete, but handles common cases.
  * It does not handle union types or multi-dimensional arrays.
  */
-abstract class AbstractTypeStringConverter {
+final class TypeUtils {
 
     // extends
     private static final String EXTENDS = "? extends ";
@@ -57,41 +56,9 @@ abstract class AbstractTypeStringConverter {
         PRIMITIVES = Collections.unmodifiableMap(map);
     }
 
-    private static final Method NEW_PARAM_TYPE;
-    private static final Method EXTENDS_TYPE;
-    private static final Method SUPER_TYPE;
-    static {
-        try {
-            Class<?> typesClass = RenameHandler.INSTANCE.loadType("com.google.common.reflect.Types");
-            Method newParam = typesClass.getDeclaredMethod("newParameterizedType", Class.class, Type[].class);
-            newParam.setAccessible(true);
-            NEW_PARAM_TYPE = newParam;
-            Method extendsType = typesClass.getDeclaredMethod("subtypeOf", Type.class);
-            extendsType.setAccessible(true);
-            EXTENDS_TYPE = extendsType;
-            Method superType = typesClass.getDeclaredMethod("supertypeOf", Type.class);
-            superType.setAccessible(true);
-            SUPER_TYPE = superType;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    static final Class<?> TYPE_TOKEN_CLASS;
-    static final Method TYPE_TOKEN_METHOD_OF;
-    static {
-        try {
-            TYPE_TOKEN_CLASS = Class.forName("com.google.common.reflect.TypeToken");
-            TYPE_TOKEN_METHOD_OF = TYPE_TOKEN_CLASS.getDeclaredMethod("of", Type.class);
-
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
     //-----------------------------------------------------------------------
     // constructor
-    AbstractTypeStringConverter() {
+    private TypeUtils() {
     }
 
     //-----------------------------------------------------------------------
@@ -174,17 +141,17 @@ abstract class AbstractTypeStringConverter {
 
     // create a type representing "? extends X"
     private static Type wildExtendsType(Type bound) throws Exception {
-        return (Type) EXTENDS_TYPE.invoke(null, bound);
+        return Types.subtypeOf(bound);
     }
 
     // create a type representing "? super X"
     private static Type wildSuperType(Type bound) throws Exception {
-        return (Type) SUPER_TYPE.invoke(null, bound);
+        return Types.supertypeOf(bound);
     }
 
     // create a type representing "base<args...>"
     private static ParameterizedType newParameterizedType(final Class<?> base, Type... args) throws Exception {
-        return (ParameterizedType) NEW_PARAM_TYPE.invoke(null, base, args);
+        return Types.newParameterizedType(base, args);
     }
 
 }
