@@ -76,7 +76,7 @@ public class TestGuavaTypeTokenStringConverter {
         doTest(token, "java.util.List<?>");
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     @Test
     public void test_oneArray() {
         TypeToken<?> token = new TypeToken<List<String[]>>() {};
