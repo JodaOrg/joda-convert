@@ -8,6 +8,9 @@
   <body>
     <!-- types are add, fix, remove, update -->
     <release version="2.0" date="SNAPSHOT" description="Version 2.0">
+      <action dev="jodastephen" type="add">
+        Update and redesign build to support Java 9.
+      </action>
       <action dev="jodastephen" type="add" >
         Remove direct dependency on Guava by copying code into Joda-Convert.
         The code previously used reflection setAccessible() which would not work on Java 9.
