@@ -243,7 +243,9 @@ public final class StringConvert {
             // ignore
         }
         try {
-            RenameHandler.INSTANCE.loadType("com.google.common.reflect.Types");
+            // can now check for Guava
+            // if we have created a read edge, or if we are on the classpath, this will succeed
+            RenameHandler.INSTANCE.loadType("com.google.common.reflect.TypeToken");
             @SuppressWarnings("unchecked")
             Class<?> cls = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
                     .loadType("org.joda.convert.TypeTokenStringConverter");
