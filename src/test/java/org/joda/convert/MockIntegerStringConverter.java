@@ -41,7 +41,7 @@ public enum MockIntegerStringConverter implements StringConverter<Integer> {
      */
     @Override
     public Integer convertFromString(Class<? extends Integer> cls, String str) {
-        return new Integer(str);
+        return Integer.valueOf(str);
     }
 
 }

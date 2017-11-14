@@ -17,6 +17,7 @@ package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -170,7 +171,7 @@ public class TestStringConvert {
 
     @Test(expected = IllegalArgumentException.class)
     public void test_convertFromString_nullClass() {
-        assertEquals(null, StringConvert.INSTANCE.convertFromString(null, "6"));
+        assertNull(StringConvert.INSTANCE.convertFromString(null, "6"));
     }
 
     //-----------------------------------------------------------------------
