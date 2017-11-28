@@ -20,7 +20,7 @@
         The code previously used reflection setAccessible() which would not work on Java 9.
         The best alternative was to copy (shaded) the relevant part of Guava (same license).
         This also allowed the converter for `Type` to work without Guava.
-        Given all this, Joda-Convert no longer has an optoinal dependency on Guava.
+        Given all this, Joda-Convert no longer has an optional dependency on Guava.
         It will still adapt and setup a converter for `TypeToken` if Guava is present.
         This adaptation will also work on Java 9, provided the modules are loaded in the same layer.
         Fixes #20, #22.
