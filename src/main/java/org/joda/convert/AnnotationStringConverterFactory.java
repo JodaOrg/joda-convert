@@ -89,12 +89,14 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         while (loopCls != null && matched == null) {
             Method[] methods = loopCls.getDeclaredMethods();
             for (Method method : methods) {
-                ToString toString = method.getAnnotation(ToString.class);
-                if (toString != null) {
-                    if (matched != null) {
-                        throw new IllegalStateException("Two methods are annotated with @ToString: " + cls.getName());
+                if (!method.isBridge() && !method.isSynthetic()) {
+                    ToString toString = method.getAnnotation(ToString.class);
+                    if (toString != null) {
+                        if (matched != null) {
+                            throw new IllegalStateException("Two methods are annotated with @ToString: " + cls.getName());
+                        }
+                        matched = method;
                     }
-                    matched = method;
                 }
             }
             loopCls = loopCls.getSuperclass();
@@ -104,12 +106,14 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             for (Class<?> loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
                 Method[] methods = loopIfc.getDeclaredMethods();
                 for (Method method : methods) {
-                    ToString toString = method.getAnnotation(ToString.class);
-                    if (toString != null) {
-                        if (matched != null) {
-                            throw new IllegalStateException("Two methods are annotated with @ToString on interfaces: " + cls.getName());
+                    if (!method.isBridge() && !method.isSynthetic()) {
+                        ToString toString = method.getAnnotation(ToString.class);
+                        if (toString != null) {
+                            if (matched != null) {
+                                throw new IllegalStateException("Two methods are annotated with @ToString on interfaces: " + cls.getName());
+                            }
+                            matched = method;
                         }
-                        matched = method;
                     }
                 }
             }
@@ -196,12 +200,14 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         Method[] methods = cls.getDeclaredMethods();
         Method matched = null;
         for (Method method : methods) {
-            FromString fromString = method.getAnnotation(FromString.class);
-            if (fromString != null) {
-                if (matched != null) {
-                    throw new IllegalStateException("Two methods are annotated with @FromString: " + cls.getName());
+            if (!method.isBridge() && !method.isSynthetic()) {
+                FromString fromString = method.getAnnotation(FromString.class);
+                if (fromString != null) {
+                    if (matched != null) {
+                        throw new IllegalStateException("Two methods are annotated with @FromString: " + cls.getName());
+                    }
+                    matched = method;
                 }
-                matched = method;
             }
         }
         // check for factory
@@ -212,14 +218,16 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             }
             Method[] factoryMethods = factory.factory().getDeclaredMethods();
             for (Method method : factoryMethods) {
-                // handle factory containing multiple FromString for different types
-                if (cls.isAssignableFrom(method.getReturnType())) {
-                    FromString fromString = method.getAnnotation(FromString.class);
-                    if (fromString != null) {
-                        if (matched != null) {
-                            throw new IllegalStateException("Two methods are annotated with @FromString on the factory: " + factory.factory().getName());
+                if (!method.isBridge() && !method.isSynthetic()) {
+                    // handle factory containing multiple FromString for different types
+                    if (cls.isAssignableFrom(method.getReturnType())) {
+                        FromString fromString = method.getAnnotation(FromString.class);
+                        if (fromString != null) {
+                            if (matched != null) {
+                                throw new IllegalStateException("Two methods are annotated with @FromString on the factory: " + factory.factory().getName());
+                            }
+                            matched = method;
                         }
-                        matched = method;
                     }
                 }
             }

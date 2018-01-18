@@ -266,6 +266,19 @@ public class TestStringConvert {
     }
 
     @Test
+    public void test_convert_annotationMethodBridgeMethod() {
+        StringConvert test = new StringConvert();
+        HasCodeImpl d = new HasCodeImpl("CODE");
+        assertEquals("CODE", test.convertToString(d));
+        assertEquals(d.code, test.convertFromString(HasCodeImpl.class, "CODE").code);
+        TypedStringConverter<HasCodeImpl> conv = test.findTypedConverter(HasCodeImpl.class);
+        assertEquals(true, conv instanceof MethodConstructorStringConverter<?>);
+        assertSame(conv, test.findConverter(HasCodeImpl.class));
+        assertEquals(HasCodeImpl.class, conv.getEffectiveType());
+        assertEquals(true, conv.toString().startsWith("RefectionStringConverter"));
+    }
+
+    @Test
     public void test_convert_annotationSubMethodMethod() {
         StringConvert test = new StringConvert();
         SubMethodMethod d = new SubMethodMethod(25);

@@ -33,6 +33,11 @@
         Incorrect setup of reflection-based converters.
         Fixes #19.
       </action>
+      <action dev="jodastephen" type="fix" >
+        Avoid bridge and synthetic methods in reflection.
+        If an annotation is copied to the bridge/synthetic method it causes trouble.
+        Fixes #23.
+      </action>
     </release>
     <release version="1.9.2" date="2017-09-20" description="Version 1.9.2">
       <action dev="jodastephen" type="fix" >
