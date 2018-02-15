@@ -52,11 +52,12 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.9.2](http://www.joda.org/joda-convert/download.html) is the current latest release.
-This release is considered stable and worthy of the 1.x tag.
+[Release 2.0](http://www.joda.org/joda-convert/download.html) is the current latest release.
+This release is considered stable and worthy of the 2.x tag.
+The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
 It depends on Java SE 6 or later.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|1.9.2|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|2.0|jar)
 
 
 ### Support
