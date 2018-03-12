@@ -76,19 +76,19 @@ then the annotations are checked. If they are found, then the methods are called
 
 ## <i></i> Releases
 
-[Release 2.0](download.html) is the current latest release.
+[Release 2.0.1](download.html) is the current latest release.
 This release is considered stable and worthy of the 2.x tag.
 The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
 
 Joda-Convert requires Java SE 6 or later and has [no dependencies](dependencies.html).
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-convert%7C2.0%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-convert%7C2.0.1%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-convert</artifactId>
-  <version>2.0</version>
+  <version>2.0.1</version>
 </dependency>
 ```
 
