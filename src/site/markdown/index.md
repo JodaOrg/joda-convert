@@ -92,7 +92,7 @@ Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda
 </dependency>
 ```
 
-The main jar file is based on Java 8 but contains a `module-info.class` file for Java 9 and later.
+The main jar file is based on Java 6 but contains a `module-info.class` file for Java 9 and later.
 If you have problems with this, there is a "classic" variant you can use instead:
 
 ```xml
