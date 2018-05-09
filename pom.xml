@@ -97,6 +97,7 @@
   <!-- ==================================================================== -->
   <dependencies>
     <!-- The Guava dependency is accessed by reflection, so only needed for tests -->
+    <!-- This Guava version is needed for Java 6 support -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
