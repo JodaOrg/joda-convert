@@ -7,6 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="2.0.2" date="SNAPSHOT" description="Version 2.0.2">
+      <action dev="jodastephen" type="add">
+        Enhance speed of numeric array parsing.
+        Previous version used regex patterns, which were slower.
+      </action>
+    </release>
     <release version="2.0.1" date="2018-03-12" description="Version 2.0.1">
       <action dev="jodastephen" type="add">
         Add "classic" variant for systems that can't handle module-info.class.

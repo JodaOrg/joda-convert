@@ -15,7 +15,7 @@
  */
 package org.joda.convert.factory;
 
-import java.util.regex.Pattern;
+import java.util.Arrays;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
@@ -37,10 +37,6 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
      * Singleton instance.
      */
     public static final StringConverterFactory INSTANCE = new NumericObjectArrayStringConverterFactory();
-    /**
-     * Delimiter to find.
-     */
-    static final Pattern DELIMITER = Pattern.compile("[,]");
 
     /**
      * Restricted constructor.
@@ -104,14 +100,19 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                Long[] array = new Long[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    if (split[i].equals("-") == false) {
-                        array[i] = Long.parseLong(split[i]);
-                    }
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                Long[] array = new Long[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    String split = str.substring(base, sep);
+                    array[count++] = split.equals("-") ? null : new Long(split);
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                String split = str.substring(base, str.length());
+                array[count++] = split.equals("-") ? null : new Long(split);
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -141,14 +142,19 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                Integer[] array = new Integer[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    if (split[i].equals("-") == false) {
-                        array[i] = Integer.parseInt(split[i]);
-                    }
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                Integer[] array = new Integer[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    String split = str.substring(base, sep);
+                    array[count++] = split.equals("-") ? null : new Integer(split);
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                String split = str.substring(base, str.length());
+                array[count++] = split.equals("-") ? null : new Integer(split);
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -178,14 +184,19 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                Short[] array = new Short[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    if (split[i].equals("-") == false) {
-                        array[i] = Short.parseShort(split[i]);
-                    }
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                Short[] array = new Short[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    String split = str.substring(base, sep);
+                    array[count++] = split.equals("-") ? null : new Short(split);
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                String split = str.substring(base, str.length());
+                array[count++] = split.equals("-") ? null : new Short(split);
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -215,14 +226,19 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                Double[] array = new Double[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    if (split[i].equals("-") == false) {
-                        array[i] = Double.parseDouble(split[i]);
-                    }
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                Double[] array = new Double[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    String split = str.substring(base, sep);
+                    array[count++] = split.equals("-") ? null : new Double(split);
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                String split = str.substring(base, str.length());
+                array[count++] = split.equals("-") ? null : new Double(split);
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -252,14 +268,19 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                Float[] array = new Float[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    if (split[i].equals("-") == false) {
-                        array[i] = Float.parseFloat(split[i]);
-                    }
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                Float[] array = new Float[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    String split = str.substring(base, sep);
+                    array[count++] = split.equals("-") ? null : new Float(split);
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                String split = str.substring(base, str.length());
+                array[count++] = split.equals("-") ? null : new Float(split);
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {

@@ -15,7 +15,7 @@
  */
 package org.joda.convert.factory;
 
-import java.util.regex.Pattern;
+import java.util.Arrays;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
@@ -37,10 +37,6 @@ public final class NumericArrayStringConverterFactory implements StringConverter
      * Singleton instance.
      */
     public static final StringConverterFactory INSTANCE = new NumericArrayStringConverterFactory();
-    /**
-     * Delimiter to find.
-     */
-    static final Pattern DELIMITER = Pattern.compile("[,]");
 
     /**
      * Restricted constructor.
@@ -104,12 +100,17 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                long[] array = new long[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    array[i] = Long.parseLong(split[i]);
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                long[] array = new long[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    array[count++] = Long.parseLong(str.substring(base, sep));
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                array[count++] = Long.parseLong(str.substring(base, str.length()));
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -139,12 +140,17 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                int[] array = new int[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    array[i] = Integer.parseInt(split[i]);
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                int[] array = new int[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    array[count++] = Integer.parseInt(str.substring(base, sep));
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                array[count++] = Integer.parseInt(str.substring(base, str.length()));
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -174,12 +180,17 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                short[] array = new short[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    array[i] = Short.parseShort(split[i]);
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                short[] array = new short[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    array[count++] = Short.parseShort(str.substring(base, sep));
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                array[count++] = Short.parseShort(str.substring(base, str.length()));
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -209,12 +220,17 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                double[] array = new double[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    array[i] = Double.parseDouble(split[i]);
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                double[] array = new double[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    array[count++] = Double.parseDouble(str.substring(base, sep));
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                array[count++] = Double.parseDouble(str.substring(base, str.length()));
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {
@@ -244,12 +260,17 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String[] split = DELIMITER.split(str);
-                float[] array = new float[split.length];
-                for (int i = 0; i < split.length; i++) {
-                    array[i] = Float.parseFloat(split[i]);
+                int count = 0;
+                int base = 0;
+                int sep = str.indexOf(',');
+                float[] array = new float[str.length() / 2 + 1];
+                while (sep >= 0) {
+                    array[count++] = Float.parseFloat(str.substring(base, sep));
+                    base = sep + 1;
+                    sep = str.indexOf(',', sep + 1);
                 }
-                return array;
+                array[count++] = Float.parseFloat(str.substring(base, str.length()));
+                return Arrays.copyOf(array, count);
             }
             @Override
             public Class<?> getEffectiveType() {

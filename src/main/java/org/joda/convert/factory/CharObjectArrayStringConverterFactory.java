@@ -16,7 +16,6 @@
 package org.joda.convert.factory;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
@@ -41,10 +40,6 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
      * Singleton instance.
      */
     public static final StringConverterFactory INSTANCE = new CharObjectArrayStringConverterFactory();
-    /**
-     * Delimiter to find.
-     */
-    static final Pattern DELIMITER = Pattern.compile("[,]");
 
     /**
      * Restricted constructor.
