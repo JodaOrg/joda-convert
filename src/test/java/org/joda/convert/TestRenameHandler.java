@@ -15,7 +15,8 @@
  */
 package org.joda.convert;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -28,7 +29,7 @@ public class TestRenameHandler {
         RenameHandler test = RenameHandler.create();
         test.renamedType("com.foo.Bar", TestRenameHandler.class);
         Class<?> renamed = test.lookupType("com.foo.Bar");
-        Assert.assertEquals(TestRenameHandler.class, renamed);
+        assertEquals(TestRenameHandler.class, renamed);
     }
 
     @Test(expected = ClassNotFoundException.class)
@@ -61,6 +62,15 @@ public class TestRenameHandler {
         test.renamedType("com.foo.Bar", TestRenameHandler.class);
         test.lock();
         test.renamedType("com.foo.Foo", TestRenameHandler.class);
+    }
+
+    @Test
+    public void test_matchUsingConfigFile() throws ClassNotFoundException {
+        RenameHandler test = RenameHandler.create(true);
+        assertEquals(Status.class, test.lookupType("com.foo.Bar"));
+        assertEquals(Status.VALID, test.lookupEnum(Status.class, "YES"));
+        assertEquals(DistanceMethodMethod.class, test.lookupType("com.foo.Foo"));
+        assertEquals(Status.INVALID, test.lookupEnum(Status.class, "NO"));
     }
 
 }

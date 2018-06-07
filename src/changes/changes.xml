@@ -7,6 +7,13 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="2.1" date="SNAPSHOT" description="Version 2.1">
+      <action dev="jodastephen" type="add">
+        Register renames by configuration.
+        Add `Renamed.ini` to configure renames more cleanly.
+        Fixes #26.
+      </action>
+    </release>
     <release version="2.0.2" date="2018-05-30" description="Version 2.0.2">
       <action dev="jodastephen" type="add">
         Enhance speed of numeric array parsing.

@@ -15,8 +15,15 @@
  */
 package org.joda.convert;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +38,14 @@ import java.util.concurrent.ConcurrentHashMap;
  *  RenameHandler.INSTANCE.renamedEnum("CORRECT", Status.VALID);
  *  RenameHandler.INSTANCE.renamedEnum("INCORRECT", Status.INVALID);
  * </pre>
+ * From v2.1, renames can be stored on the classpath in configuration files.
+ * The file location is {@code META-INF/org/joda/convert/Renamed.ini}.
+ * All files found in this location are read and processed.
+ * The format has two sections {@code [types]} and {@code [enums]}.
+ * The {@code [types]} section has lines of the format {@code oldClassName = newClassName}.
+ * The {@code [enums]} section has lines of the format {@code oldEnumConstantName = enumClassName.newEnumConstantName}.
+ * Lines starting with {@code #} are treated as comments.
+ * <p>
  * The recommended usage is to edit the static singleton before using other classes.
  * Editing a static is acceptable because renames are driven by bytecode which is static.
  * For additional security, an application should lock the rename handler instance
@@ -45,8 +60,9 @@ public final class RenameHandler {
     /**
      * A mutable global instance.
      * This is a singleton instance which is mutated.
+     * It will be populated by the contents of the {@code Renamed.ini} configuration files.
      */
-    public static final RenameHandler INSTANCE = new RenameHandler();
+    public static final RenameHandler INSTANCE = create(true);
 
     /**
      * The lock flag.
@@ -73,6 +89,24 @@ public final class RenameHandler {
      */
     public static RenameHandler create() {
         return new RenameHandler();
+    }
+
+    /**
+     * Creates an instance, providing the ability to load types in config files.
+     * <p>
+     * This is not normally used as the preferred option is to edit the singleton.
+     * <p>
+     * If the flag is set to true, the classpath config files will be used to register types and enums.
+     * 
+     * @param loadFromClasspath  whether to load any types in classpath config files
+     * @return a new instance, not null
+     */
+    public static RenameHandler create(boolean loadFromClasspath) {
+        RenameHandler handler = new RenameHandler();
+        if (loadFromClasspath) {
+            handler.loadFromClasspath();
+        }
+        return handler;
     }
 
     //-----------------------------------------------------------------------
@@ -270,6 +304,82 @@ public final class RenameHandler {
     private void checkNotLocked() {
         if (locked) {
             throw new IllegalStateException("RenameHandler has been locked and it cannot now be changed");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // loads config files
+    private void loadFromClasspath() {
+        URL url = null;
+        try {
+            // this is the new location of the file, working on Java 8, Java 9 class path and Java 9 module path
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            if (loader == null) {
+                loader = RenameHandler.class.getClassLoader();
+            }
+            Enumeration<URL> en = loader.getResources("META-INF/org/joda/convert/Renamed.ini");
+            while (en.hasMoreElements()) {
+                url = en.nextElement();
+                loadRenames(url);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to load Renamed.ini: " + url, ex);
+        }
+    }
+
+    // loads a single rename file
+    private void loadRenames(URL url) throws Exception {
+        List<String> lines = new ArrayList<String>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), Charset.forName("UTF-8")));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String trimmed = line.trim();
+                if (!trimmed.isEmpty() && !trimmed.startsWith("#")) {
+                    lines.add(trimmed);
+                }
+            }
+        } finally {
+            reader.close();
+        }
+        // format allows multiple [types] and [enums] so file can be merged
+        boolean types = false;
+        boolean enums = false;
+        for (String line : lines) {
+            if (line.equals("[types]")) {
+                types = true;
+                enums = false;
+            } else if (line.equals("[enums]")) {
+                types = false;
+                enums = true;
+            } else if (types) {
+                int equalsPos = line.indexOf('=');
+                if (equalsPos < 0) {
+                    throw new IllegalArgumentException(
+                            "Renamed.ini type line must be formatted as 'oldClassName = newClassName'");
+                }
+                String oldName = line.substring(0, equalsPos).trim();
+                String newName = line.substring(equalsPos + 1).trim();
+                Class<?> newClass = Class.forName(newName);
+                renamedType(oldName, newClass);
+            } else if (enums) {
+                int equalsPos = line.indexOf('=');
+                int lastDotPos = line.lastIndexOf('.');
+                if (equalsPos < 0 || lastDotPos < 0 || lastDotPos < equalsPos) {
+                    throw new IllegalArgumentException(
+                            "Renamed.ini enum line must be formatted as 'oldEnumConstantName = enumClassName.newEnumConstantName'");
+                }
+                String oldName = line.substring(0, equalsPos).trim();
+                String enumClassName = line.substring(equalsPos + 1, lastDotPos).trim();
+                String enumConstantName = line.substring(lastDotPos + 1).trim();
+                @SuppressWarnings("rawtypes")
+                Class<? extends Enum> enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
+                @SuppressWarnings("unchecked")
+                Enum<?> newEnum = Enum.valueOf(enumClass, enumConstantName);
+                renamedEnum(oldName, newEnum);
+            } else {
+                throw new IllegalArgumentException("Renamed.ini must start with [types] or [enums]");
+            }
         }
     }
 
