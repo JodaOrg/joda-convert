@@ -16,6 +16,7 @@
 package org.joda.convert;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -62,7 +63,25 @@ public final class RenameHandler {
      * This is a singleton instance which is mutated.
      * It will be populated by the contents of the {@code Renamed.ini} configuration files.
      */
-    public static final RenameHandler INSTANCE = create(true);
+    public static final RenameHandler INSTANCE;
+    static {
+        // log errors to System.err, as problems in static initializers can be troublesome to diagnose
+        RenameHandler handler = new RenameHandler();
+        try {
+            // don't just call loadFromClasspath() as that mutates and might leave an invalid state
+            handler = create(true);
+        } catch (IllegalStateException ex) {
+            System.err.println("ERROR: " + ex.getMessage());
+            ex.printStackTrace();
+        } catch (RuntimeException ex) {
+            System.err.println("ERROR: Failed to load Renamed.ini files: " + ex.getMessage());
+            ex.printStackTrace();
+        } catch (Error ex) {
+            System.err.println("ERROR: Failed to load Renamed.ini files: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        INSTANCE = handler;
+    }
 
     /**
      * The lock flag.
@@ -320,15 +339,18 @@ public final class RenameHandler {
             Enumeration<URL> en = loader.getResources("META-INF/org/joda/convert/Renamed.ini");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
-                loadRenames(url);
+                List<String> lines = loadRenameFile(url);
+                parseRenameFile(lines, url);
             }
+        } catch (Error ex) {
+            throw new IllegalStateException("Unable to load Renamed.ini: " + url + ": " + ex.getMessage(), ex);
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to load Renamed.ini: " + url, ex);
+            throw new IllegalStateException("Unable to load Renamed.ini: " + url + ": " + ex.getMessage(), ex);
         }
     }
 
     // loads a single rename file
-    private void loadRenames(URL url) throws Exception {
+    private List<String> loadRenameFile(URL url) throws IOException {
         List<String> lines = new ArrayList<String>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), Charset.forName("UTF-8")));
         try {
@@ -342,43 +364,52 @@ public final class RenameHandler {
         } finally {
             reader.close();
         }
+        return lines;
+    }
+
+    // parses a single rename file
+    private void parseRenameFile(List<String> lines, URL url) {
         // format allows multiple [types] and [enums] so file can be merged
         boolean types = false;
         boolean enums = false;
         for (String line : lines) {
-            if (line.equals("[types]")) {
-                types = true;
-                enums = false;
-            } else if (line.equals("[enums]")) {
-                types = false;
-                enums = true;
-            } else if (types) {
-                int equalsPos = line.indexOf('=');
-                if (equalsPos < 0) {
-                    throw new IllegalArgumentException(
-                            "Renamed.ini type line must be formatted as 'oldClassName = newClassName'");
+            try {
+                if (line.equals("[types]")) {
+                    types = true;
+                    enums = false;
+                } else if (line.equals("[enums]")) {
+                    types = false;
+                    enums = true;
+                } else if (types) {
+                    int equalsPos = line.indexOf('=');
+                    if (equalsPos < 0) {
+                        throw new IllegalArgumentException(
+                                "Renamed.ini type line must be formatted as 'oldClassName = newClassName'");
+                    }
+                    String oldName = line.substring(0, equalsPos).trim();
+                    String newName = line.substring(equalsPos + 1).trim();
+                    Class<?> newClass = Class.forName(newName);
+                    renamedType(oldName, newClass);
+                } else if (enums) {
+                    int equalsPos = line.indexOf('=');
+                    int lastDotPos = line.lastIndexOf('.');
+                    if (equalsPos < 0 || lastDotPos < 0 || lastDotPos < equalsPos) {
+                        throw new IllegalArgumentException(
+                                "Renamed.ini enum line must be formatted as 'oldEnumConstantName = enumClassName.newEnumConstantName'");
+                    }
+                    String oldName = line.substring(0, equalsPos).trim();
+                    String enumClassName = line.substring(equalsPos + 1, lastDotPos).trim();
+                    String enumConstantName = line.substring(lastDotPos + 1).trim();
+                    @SuppressWarnings("rawtypes")
+                    Class<? extends Enum> enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
+                    @SuppressWarnings("unchecked")
+                    Enum<?> newEnum = Enum.valueOf(enumClass, enumConstantName);
+                    renamedEnum(oldName, newEnum);
+                } else {
+                    throw new IllegalArgumentException("Renamed.ini must start with [types] or [enums]");
                 }
-                String oldName = line.substring(0, equalsPos).trim();
-                String newName = line.substring(equalsPos + 1).trim();
-                Class<?> newClass = Class.forName(newName);
-                renamedType(oldName, newClass);
-            } else if (enums) {
-                int equalsPos = line.indexOf('=');
-                int lastDotPos = line.lastIndexOf('.');
-                if (equalsPos < 0 || lastDotPos < 0 || lastDotPos < equalsPos) {
-                    throw new IllegalArgumentException(
-                            "Renamed.ini enum line must be formatted as 'oldEnumConstantName = enumClassName.newEnumConstantName'");
-                }
-                String oldName = line.substring(0, equalsPos).trim();
-                String enumClassName = line.substring(equalsPos + 1, lastDotPos).trim();
-                String enumConstantName = line.substring(lastDotPos + 1).trim();
-                @SuppressWarnings("rawtypes")
-                Class<? extends Enum> enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
-                @SuppressWarnings("unchecked")
-                Enum<?> newEnum = Enum.valueOf(enumClass, enumConstantName);
-                renamedEnum(oldName, newEnum);
-            } else {
-                throw new IllegalArgumentException("Renamed.ini must start with [types] or [enums]");
+            } catch (Exception ex) {
+                System.err.println("ERROR: Invalid Renamed.ini: " + url + ": " + ex.getMessage());
             }
         }
     }

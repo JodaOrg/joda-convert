@@ -16,6 +16,10 @@
 package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import org.junit.Test;
 
@@ -65,12 +69,25 @@ public class TestRenameHandler {
     }
 
     @Test
-    public void test_matchUsingConfigFile() throws ClassNotFoundException {
-        RenameHandler test = RenameHandler.create(true);
-        assertEquals(Status.class, test.lookupType("com.foo.Bar"));
-        assertEquals(Status.VALID, test.lookupEnum(Status.class, "YES"));
-        assertEquals(DistanceMethodMethod.class, test.lookupType("com.foo.Foo"));
-        assertEquals(Status.INVALID, test.lookupEnum(Status.class, "NO"));
+    public void test_matchUsingConfigFile() throws Exception {
+        PrintStream originalErr = System.err;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(baos, false, "UTF-8");
+            System.setErr(ps);
+            RenameHandler test = RenameHandler.create(true);
+            System.err.flush();
+            assertEquals(Status.class, test.lookupType("com.foo.Bar"));
+            assertEquals(Status.VALID, test.lookupEnum(Status.class, "YES"));
+            assertEquals(DistanceMethodMethod.class, test.lookupType("com.foo.Foo"));
+            assertEquals(Status.INVALID, test.lookupEnum(Status.class, "NO"));
+            String logged = baos.toString("UTF-8");
+            assertTrue(logged.startsWith("ERROR: Invalid Renamed.ini: "));
+            assertTrue(logged.contains("org.joda.convert.ClassDoesNotExist"));
+
+        } finally {
+            System.setErr(originalErr);
+        }
     }
 
 }
