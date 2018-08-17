@@ -82,14 +82,6 @@
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <properties>
-            <property>
-              <name>usedefaultlisteners</name>
-              <value>false</value>
-            </property>
-          </properties>
-        </configuration>
       </plugin>
     </plugins>
   </build>
