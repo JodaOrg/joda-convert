@@ -106,12 +106,12 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 Long[] array = new Long[str.length() / 2 + 1];
                 while (sep >= 0) {
                     String split = str.substring(base, sep);
-                    array[count++] = split.equals("-") ? null : new Long(split);
+                    array[count++] = split.equals("-") ? null : Long.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
                 String split = str.substring(base, str.length());
-                array[count++] = split.equals("-") ? null : new Long(split);
+                array[count++] = split.equals("-") ? null : Long.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -148,12 +148,12 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 Integer[] array = new Integer[str.length() / 2 + 1];
                 while (sep >= 0) {
                     String split = str.substring(base, sep);
-                    array[count++] = split.equals("-") ? null : new Integer(split);
+                    array[count++] = split.equals("-") ? null : Integer.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
                 String split = str.substring(base, str.length());
-                array[count++] = split.equals("-") ? null : new Integer(split);
+                array[count++] = split.equals("-") ? null : Integer.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -190,12 +190,12 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 Short[] array = new Short[str.length() / 2 + 1];
                 while (sep >= 0) {
                     String split = str.substring(base, sep);
-                    array[count++] = split.equals("-") ? null : new Short(split);
+                    array[count++] = split.equals("-") ? null : Short.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
                 String split = str.substring(base, str.length());
-                array[count++] = split.equals("-") ? null : new Short(split);
+                array[count++] = split.equals("-") ? null : Short.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -232,12 +232,12 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 Double[] array = new Double[str.length() / 2 + 1];
                 while (sep >= 0) {
                     String split = str.substring(base, sep);
-                    array[count++] = split.equals("-") ? null : new Double(split);
+                    array[count++] = split.equals("-") ? null : Double.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
                 String split = str.substring(base, str.length());
-                array[count++] = split.equals("-") ? null : new Double(split);
+                array[count++] = split.equals("-") ? null : Double.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -274,12 +274,12 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 Float[] array = new Float[str.length() / 2 + 1];
                 while (sep >= 0) {
                     String split = str.substring(base, sep);
-                    array[count++] = split.equals("-") ? null : new Float(split);
+                    array[count++] = split.equals("-") ? null : Float.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
                 String split = str.substring(base, str.length());
-                array[count++] = split.equals("-") ? null : new Float(split);
+                array[count++] = split.equals("-") ? null : Float.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
             @Override
