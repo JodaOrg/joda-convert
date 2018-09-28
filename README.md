@@ -39,25 +39,25 @@ The <code>FromString</code> annotation may also be applied to a constructor.
 When Joda-Convert is asked to convert between an object and a String, if there is no registered converter
 then the annotations are checked. If they are found, then the methods are called by reflection.
 
-Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](http://www.joda.org/joda-convert/license.html).
+Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](https://www.joda.org/joda-convert/licenses.html).
 
 
 ### Documentation
 Various documentation is available:
 
-* The [home page](http://www.joda.org/joda-convert/)
-* The helpful [user guide](http://www.joda.org/joda-convert/userguide.html)
-* The [Javadoc](http://www.joda.org/joda-convert/apidocs/index.html)
-* The change notes for the [releases](http://www.joda.org/joda-convert/changes-report.html)
+* The [home page](https://www.joda.org/joda-convert/)
+* The helpful [user guide](https://www.joda.org/joda-convert/userguide.html)
+* The [Javadoc](https://www.joda.org/joda-convert/apidocs/index.html)
+* The change notes for the [releases](https://www.joda.org/joda-convert/changes-report.html)
 
 
 ### Releases
-[Release 2.1.1](http://www.joda.org/joda-convert/download.html) is the current latest release.
+[Release 2.1.1](https://www.joda.org/joda-convert/download.html) is the current latest release.
 This release is considered stable and worthy of the 2.x tag.
 The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
 It depends on Java SE 6 or later.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-convert|2.1.1|jar)
+Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav)
 
 
 ### Support

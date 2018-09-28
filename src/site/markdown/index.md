@@ -7,7 +7,7 @@ like JSON, is that of converting simple objects to and from strings.
 Joda-Convert addresses this without getting caught up in the wider problem
 of Object to Object transformation.
 
-Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](license.html).
+Joda-Convert is licensed under the business-friendly [Apache 2.0 licence](licenses.html).
 
 
 ## <i></i> Features
@@ -82,7 +82,7 @@ The v2.x releases are compatible with v1.x releases, with the exception that the
 
 Joda-Convert requires Java SE 6 or later and has [no dependencies](dependencies.html).
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-convert%7C2.1.1%7Cjar).
+Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav).
 
 ```xml
 <dependency>
