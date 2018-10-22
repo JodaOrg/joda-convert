@@ -63,13 +63,14 @@ public final class RenameHandler {
      * This is a singleton instance which is mutated.
      * It will be populated by the contents of the {@code Renamed.ini} configuration files.
      */
-    public static final RenameHandler INSTANCE;
+    public static final RenameHandler INSTANCE = create(false);
     static {
         // log errors to System.err, as problems in static initializers can be troublesome to diagnose
-        RenameHandler handler = new RenameHandler();
         try {
-            // don't just call loadFromClasspath() as that mutates and might leave an invalid state
-            handler = create(true);
+            // calling loadFromClasspath() is the best option even though it mutates INSTANCE
+            // only serious errors will be caught here, most errors will log from parseRenameFile()
+            INSTANCE.loadFromClasspath();
+
         } catch (IllegalStateException ex) {
             System.err.println("ERROR: " + ex.getMessage());
             ex.printStackTrace();
@@ -80,7 +81,6 @@ public final class RenameHandler {
             System.err.println("ERROR: Failed to load Renamed.ini files: " + ex.getMessage());
             ex.printStackTrace();
         }
-        INSTANCE = handler;
     }
 
     /**
