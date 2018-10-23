@@ -16,10 +16,12 @@
 package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
@@ -27,6 +29,8 @@ import org.junit.Test;
  * Test {@link RenameHandler}.
  */
 public class TestRenameHandler {
+
+    static final AtomicBoolean BAD_INIT = new AtomicBoolean();
 
     @Test
     public void test_matchRenamedType() throws ClassNotFoundException {
@@ -84,6 +88,9 @@ public class TestRenameHandler {
             String logged = baos.toString("UTF-8");
             assertTrue(logged.startsWith("ERROR: Invalid Renamed.ini: "));
             assertTrue(logged.contains("org.joda.convert.ClassDoesNotExist"));
+            // ensure that the bad init class is loaded, and that it did not see a null RenameHandler
+            assertTrue(test.getTypeRenames().containsKey("com.foo.convert.TestRenameHandlerBadInit"));
+            assertFalse(BAD_INIT.get());
 
         } finally {
             System.setErr(originalErr);
