@@ -210,5 +210,13 @@
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
+    <!-- Overrides -->
+    <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
+    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
+    <bndlib.version>4.1.0</bndlib.version>
+    <checkstyle.version>8.14</checkstyle.version>
+    <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+    <spotbugs-maven-plugin.version>3.1.7</spotbugs-maven-plugin.version>
   </properties>
 </project>

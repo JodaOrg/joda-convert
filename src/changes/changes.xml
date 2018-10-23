@@ -7,7 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="2.1.1" date="2018-07-10" description="Version 2.1.2">
+    <release version="2.1.2" date="SNAPSHOT" description="Version 2.1.2">
+      <action dev="jodastephen" type="fix">
+        Fix build to work on Java 11.
+      </action>
+    </release>
+    <release version="2.1.1" date="2018-07-10" description="Version 2.1.1">
       <action dev="jodastephen" type="add">
         Log startup issues when using renames by configuration.
         Add `Renamed.ini` to configure renames more cleanly.
