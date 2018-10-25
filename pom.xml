@@ -3,12 +3,12 @@
 
   <!-- ==================================================================== -->
   <!-- Build requires Java SE 8 or later -->
-  <!-- Releases require Java SE 9 or later -->
+  <!-- Releases require Java SE 11 or later -->
   <!-- ==================================================================== -->
   <parent>
     <groupId>org.joda</groupId>
     <artifactId>joda-parent</artifactId>
-    <version>1.3.2</version>
+    <version>1.4.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>joda-convert</artifactId>
@@ -210,13 +210,5 @@
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
-    <!-- Overrides -->
-    <maven-bundle-plugin.version>4.1.0</maven-bundle-plugin.version>
-    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
-    <bndlib.version>4.1.0</bndlib.version>
-    <checkstyle.version>8.14</checkstyle.version>
-    <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
-    <spotbugs-maven-plugin.version>3.1.7</spotbugs-maven-plugin.version>
   </properties>
 </project>
