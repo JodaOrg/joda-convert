@@ -108,9 +108,11 @@ If you have problems with this, there is a "classic" variant you can use instead
 
 ### Support
 
-Support on bugs, library usage or enhancement requests is available on a best efforts basis.
+Please use [Stack Overflow](https://stackoverflow.com/search?q=joda-convert) for general usage questions.
+GitHub [issues](https://github.com/JodaOrg/joda-convert/issues) and [pull requests](https://github.com/JodaOrg/joda-convert/pulls)
+should be used when you want to help advance the project.
+Commercial support is available via the
+[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-joda-joda-convert?utm_source=maven-org-joda-joda-convert&utm_medium=referral&utm_campaign=website).
 
-To suggest enhancements or contribute, please [fork the source code](https://github.com/JodaOrg/joda-convert)
-on GitHub and send a Pull Request.
-
-Alternatively, use GitHub [issues](https://github.com/JodaOrg/joda-convert/issues).
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.
