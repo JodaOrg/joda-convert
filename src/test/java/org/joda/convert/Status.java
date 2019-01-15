@@ -23,4 +23,5 @@ public enum Status {
     VALID,
     INVALID;
 
+    public static final boolean STRING_CONVERTIBLE = StringConvert.INSTANCE.isConvertible(String.class);
 }

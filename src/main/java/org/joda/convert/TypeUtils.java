@@ -86,11 +86,11 @@ final class TypeUtils {
         }
         int first = str.indexOf('<');
         if (first < 0) {
-            return RenameHandler.INSTANCE.loadType(str);
+            return StringConvert.loadType(str);
         }
         int last = str.lastIndexOf('>');
         String baseStr = str.substring(0, first);
-        Class<?> base = RenameHandler.INSTANCE.loadType(baseStr);
+        Class<?> base = StringConvert.loadType(baseStr);
         String argsStr = str.substring(first + 1, last);
         List<String> splitArgs = split(argsStr);
         List<Type> types = new ArrayList<Type>();
@@ -106,11 +106,11 @@ final class TypeUtils {
                 argType = wildExtendsType(Object.class);
             } else if (splitArg.endsWith("[]")) {
                 String componentStr = splitArg.substring(0, splitArg.length() - 2);
-                Class<?> componentCls = RenameHandler.INSTANCE.loadType(componentStr);
+                Class<?> componentCls = StringConvert.loadType(componentStr);
                 argType = Array.newInstance(componentCls, 0).getClass();
             } else if (splitArg.startsWith("[L") && splitArg.endsWith(";")) {
                 String componentStr = splitArg.substring(2, splitArg.length() - 1);
-                Class<?> componentCls = RenameHandler.INSTANCE.loadType(componentStr);
+                Class<?> componentCls = StringConvert.loadType(componentStr);
                 argType = Array.newInstance(componentCls, 0).getClass();
             } else {
                 argType = doParse(splitArg);

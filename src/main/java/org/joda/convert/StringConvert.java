@@ -41,16 +41,26 @@ import org.joda.convert.factory.NumericObjectArrayStringConverterFactory;
  * StringConvert is thread-safe with concurrent caches.
  */
 public final class StringConvert {
+    // NOTE!
+    // There must be no references (direct or indirect) to RenameHandler
+    // This class must be loaded first to avoid horrid loops in class initialization
 
     /**
-     * An immutable global instance.
-     * <p>
-     * This instance cannot be added to using {@link #register}, however annotated classes
-     * are picked up. To register your own converters, simply create an instance of this class.
+     * Errors in class initialization are hard to debug.
+     * Set -Dorg.joda.convert.debug=true on the command line to add extra logging to System.err
      */
-    public static final StringConvert INSTANCE = new StringConvert();
+    static final boolean LOG;
+    static {
+        String log = null;
+        try {
+            log = System.getProperty("org.joda.convert.debug");
+        } catch (SecurityException ex) {
+            // ignore
+        }
+        LOG = "true".equalsIgnoreCase(log);
+    }
     /**
-     * The cached null object.
+     * The cached null object. Ensure this is above public constants.
      */
     private static final TypedStringConverter<?> CACHED_NULL = new TypedStringConverter<Object>() {
         @Override
@@ -66,6 +76,13 @@ public final class StringConvert {
             return null;
         }
     };
+    /**
+     * An immutable global instance.
+     * <p>
+     * This instance cannot be added to using {@link #register}, however annotated classes
+     * are picked up. To register your own converters, simply create an instance of this class.
+     */
+    public static final StringConvert INSTANCE = new StringConvert();
 
     /**
      * The list of factories.
@@ -195,20 +212,23 @@ public final class StringConvert {
             }
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterGuava1: " + ex);
+            }
         }
         try {
             // can now check for Guava
             // if we have created a read edge, or if we are on the classpath, this will succeed
-            RenameHandler.INSTANCE.loadType("com.google.common.reflect.TypeToken");
+            loadType("com.google.common.reflect.TypeToken");
             @SuppressWarnings("unchecked")
-            Class<?> cls = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
-                    .loadType("org.joda.convert.TypeTokenStringConverter");
+            Class<?> cls = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.TypeTokenStringConverter");
             TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
             registered.put(conv.getEffectiveType(), conv);
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterGuava2: " + ex);
+            }
         }
     }
 
@@ -217,27 +237,26 @@ public final class StringConvert {
      */
     private void tryRegisterJava8Optionals() {
         try {
-            RenameHandler.INSTANCE.loadType("java.util.OptionalInt");
+            loadType("java.util.OptionalInt");
             @SuppressWarnings("unchecked")
-            Class<?> cls1 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
-                    .loadType("org.joda.convert.OptionalIntStringConverter");
+            Class<?> cls1 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalIntStringConverter");
             TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.getDeclaredConstructor().newInstance();
             registered.put(conv1.getEffectiveType(), conv1);
 
             @SuppressWarnings("unchecked")
-            Class<?> cls2 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
-                    .loadType("org.joda.convert.OptionalLongStringConverter");
+            Class<?> cls2 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalLongStringConverter");
             TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
 
             @SuppressWarnings("unchecked")
-            Class<?> cls3 = (Class<TypedStringConverter<?>>) RenameHandler.INSTANCE
-                    .loadType("org.joda.convert.OptionalDoubleStringConverter");
+            Class<?> cls3 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalDoubleStringConverter");
             TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.getDeclaredConstructor().newInstance();
             registered.put(conv3.getEffectiveType(), conv3);
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterOptionals: " + ex);
+            }
         }
     }
 
@@ -250,21 +269,27 @@ public final class StringConvert {
             registered.put(SimpleTimeZone.class, JDKStringConverter.TIME_ZONE);
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterTimeZone1: " + ex);
+            }
         }
         try {
             TimeZone zone = TimeZone.getDefault();
             registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterTimeZone2: " + ex);
+            }
         }
         try {
             TimeZone zone = TimeZone.getTimeZone("Europe/London");
             registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterTimeZone3: " + ex);
+            }
         }
     }
 
@@ -289,7 +314,9 @@ public final class StringConvert {
             tryRegister("java.time.ZoneId", "of");
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterJava8: " + ex);
+            }
         }
     }
 
@@ -314,7 +341,9 @@ public final class StringConvert {
             tryRegister("org.threeten.bp.ZoneId", "of");
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterThreeTenBackport: " + ex);
+            }
         }
     }
 
@@ -341,7 +370,9 @@ public final class StringConvert {
             tryRegister("javax.time.calendar.TimeZone", "of");
 
         } catch (Throwable ex) {
-            // ignore
+            if (LOG) {
+                System.err.println("tryRegisterThreeTenOld: " + ex);
+            }
         }
     }
 
@@ -352,7 +383,7 @@ public final class StringConvert {
      * @throws ClassNotFoundException if the class does not exist
      */
     private void tryRegister(String className, String fromStringMethodName) throws ClassNotFoundException {
-        Class<?> cls = RenameHandler.INSTANCE.lookupType(className);
+        Class<?> cls = loadType(className);
         registerMethods(cls, "toString", fromStringMethodName);
     }
 
@@ -814,6 +845,41 @@ public final class StringConvert {
                 throw new IllegalArgumentException("Constructor not found", ex2);
             }
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // loads a type avoiding nulls, context class loader if available
+    static Class<?> loadType(String fullName) throws ClassNotFoundException {
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+        } catch (ClassNotFoundException ex) {
+            return loadPrimitiveType(fullName, ex);
+        }
+    }
+
+    // handle primitive types
+    private static Class<?> loadPrimitiveType(String fullName, ClassNotFoundException ex) throws ClassNotFoundException {
+        if (fullName.equals("int")) {
+            return int.class;
+        } else if (fullName.equals("long")) {
+            return long.class;
+        } else if (fullName.equals("double")) {
+            return double.class;
+        } else if (fullName.equals("boolean")) {
+            return boolean.class;
+        } else if (fullName.equals("short")) {
+            return short.class;
+        } else if (fullName.equals("byte")) {
+            return byte.class;
+        } else if (fullName.equals("char")) {
+            return char.class;
+        } else if (fullName.equals("float")) {
+            return float.class;
+        } else if (fullName.equals("void")) {
+            return void.class;
+        }
+        throw ex;
     }
 
     //-----------------------------------------------------------------------

@@ -57,30 +57,42 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.6
  */
 public final class RenameHandler {
+    // NOTE!
+    // This class must be loaded after StringConvert to avoid horrid loops in class initialization
 
+    /**
+     * Errors in class initialization are hard to debug.
+     * Set -Dorg.joda.convert.debug=true on the command line to add extra logging to System.err
+     * <p>
+     * NOTE! This also forces {@link StringConvert} to be loaded before calling {@link #createInstance()}
+     * which is vital to avoid horrid ordering issues when loading Renamed.ini classes that
+     * reference {@code StringConvert}.
+     */
+    private static final boolean LOG = StringConvert.LOG;
     /**
      * A mutable global instance.
      * This is a singleton instance which is mutated.
      * It will be populated by the contents of the {@code Renamed.ini} configuration files.
      */
-    public static final RenameHandler INSTANCE = create(false);
-    static {
+    public static final RenameHandler INSTANCE = createInstance();
+
+    // this is a method to aid IDE debugging of class initialization
+    private static RenameHandler createInstance() {
         // log errors to System.err, as problems in static initializers can be troublesome to diagnose
+        RenameHandler instance = create(false);
         try {
             // calling loadFromClasspath() is the best option even though it mutates INSTANCE
             // only serious errors will be caught here, most errors will log from parseRenameFile()
-            INSTANCE.loadFromClasspath();
+            instance.loadFromClasspath();
 
         } catch (IllegalStateException ex) {
             System.err.println("ERROR: " + ex.getMessage());
             ex.printStackTrace();
-        } catch (RuntimeException ex) {
-            System.err.println("ERROR: Failed to load Renamed.ini files: " + ex.getMessage());
-            ex.printStackTrace();
-        } catch (Error ex) {
+        } catch (Throwable ex) {
             System.err.println("ERROR: Failed to load Renamed.ini files: " + ex.getMessage());
             ex.printStackTrace();
         }
+        return instance;
     }
 
     /**
@@ -182,49 +194,9 @@ public final class RenameHandler {
         }
         Class<?> type = typeRenames.get(name);
         if (type == null) {
-            type = loadType(name);
+            type = StringConvert.loadType(name);
         }
         return type;
-    }
-
-    /**
-     * Loads a type avoiding nulls
-     * 
-     * @param fullName  the full class name
-     * @return the loaded class
-     * @throws ClassNotFoundException if the class is not found
-     */
-    Class<?> loadType(String fullName) throws ClassNotFoundException {
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
-        } catch (ClassNotFoundException ex) {
-            return loadPrimitiveType(fullName, ex);
-        }
-    }
-
-    // handle primitive types
-    private Class<?> loadPrimitiveType(String fullName, ClassNotFoundException ex) throws ClassNotFoundException {
-        if (fullName.equals("int")) {
-            return int.class;
-        } else if (fullName.equals("long")) {
-            return long.class;
-        } else if (fullName.equals("double")) {
-            return double.class;
-        } else if (fullName.equals("boolean")) {
-            return boolean.class;
-        } else if (fullName.equals("short")) {
-            return short.class;
-        } else if (fullName.equals("byte")) {
-            return byte.class;
-        } else if (fullName.equals("char")) {
-            return char.class;
-        } else if (fullName.equals("float")) {
-            return float.class;
-        } else if (fullName.equals("void")) {
-            return void.class;            
-        }
-        throw ex;
     }
 
     //-----------------------------------------------------------------------
@@ -336,15 +308,22 @@ public final class RenameHandler {
             if (loader == null) {
                 loader = RenameHandler.class.getClassLoader();
             }
+            if (LOG) {
+                System.err.println("Loading from classpath: " + loader);
+            }
             Enumeration<URL> en = loader.getResources("META-INF/org/joda/convert/Renamed.ini");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
+                if (LOG) {
+                    System.err.println("Loading file: " + url);
+                }
                 List<String> lines = loadRenameFile(url);
                 parseRenameFile(lines, url);
             }
-        } catch (Error ex) {
-            throw new IllegalStateException("Unable to load Renamed.ini: " + url + ": " + ex.getMessage(), ex);
         } catch (Exception ex) {
+            if (LOG) {
+                ex.printStackTrace(System.err);
+            }
             throw new IllegalStateException("Unable to load Renamed.ini: " + url + ": " + ex.getMessage(), ex);
         }
     }
@@ -388,7 +367,16 @@ public final class RenameHandler {
                     }
                     String oldName = line.substring(0, equalsPos).trim();
                     String newName = line.substring(equalsPos + 1).trim();
-                    Class<?> newClass = Class.forName(newName);
+                    Class<?> newClass = null;
+                    try {
+                        newClass = StringConvert.loadType(newName);
+                    } catch (Throwable ex) {
+                        if (LOG) {
+                            ex.printStackTrace(System.err);
+                        }
+                        throw new IllegalArgumentException(
+                                "Class.forName(" + newName + ") failed: " + ex.getMessage());
+                    }
                     renamedType(oldName, newClass);
                 } else if (enums) {
                     int equalsPos = line.indexOf('=');
@@ -409,6 +397,7 @@ public final class RenameHandler {
                     throw new IllegalArgumentException("Renamed.ini must start with [types] or [enums]");
                 }
             } catch (Exception ex) {
+                // always print message, and then continue
                 System.err.println("ERROR: Invalid Renamed.ini: " + url + ": " + ex.getMessage());
             }
         }

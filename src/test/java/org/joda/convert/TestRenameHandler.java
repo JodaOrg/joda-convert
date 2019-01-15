@@ -90,6 +90,7 @@ public class TestRenameHandler {
             assertTrue(logged.contains("org.joda.convert.ClassDoesNotExist"));
             // ensure that the bad init class is loaded, and that it did not see a null RenameHandler
             assertTrue(test.getTypeRenames().containsKey("com.foo.convert.TestRenameHandlerBadInit"));
+            assertTrue(Status.STRING_CONVERTIBLE);
             assertFalse(BAD_INIT.get());
 
         } finally {
