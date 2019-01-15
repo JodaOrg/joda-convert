@@ -156,57 +156,12 @@ public final class StringConvert {
             registered.put(Float.TYPE, JDKStringConverter.FLOAT);
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
-            // Guava and Java 8
             tryRegisterGuava();
             tryRegisterJava8Optionals();
             tryRegisterTimeZone();
-            // JDK 1.8 classes
-            tryRegister("java.time.Instant", "parse");
-            tryRegister("java.time.Duration", "parse");
-            tryRegister("java.time.LocalDate", "parse");
-            tryRegister("java.time.LocalTime", "parse");
-            tryRegister("java.time.LocalDateTime", "parse");
-            tryRegister("java.time.OffsetTime", "parse");
-            tryRegister("java.time.OffsetDateTime", "parse");
-            tryRegister("java.time.ZonedDateTime", "parse");
-            tryRegister("java.time.Year", "parse");
-            tryRegister("java.time.YearMonth", "parse");
-            tryRegister("java.time.MonthDay", "parse");
-            tryRegister("java.time.Period", "parse");
-            tryRegister("java.time.ZoneOffset", "of");
-            tryRegister("java.time.ZoneId", "of");
-            // ThreeTen backport classes
-            tryRegister("org.threeten.bp.Instant", "parse");
-            tryRegister("org.threeten.bp.Duration", "parse");
-            tryRegister("org.threeten.bp.LocalDate", "parse");
-            tryRegister("org.threeten.bp.LocalTime", "parse");
-            tryRegister("org.threeten.bp.LocalDateTime", "parse");
-            tryRegister("org.threeten.bp.OffsetTime", "parse");
-            tryRegister("org.threeten.bp.OffsetDateTime", "parse");
-            tryRegister("org.threeten.bp.ZonedDateTime", "parse");
-            tryRegister("org.threeten.bp.Year", "parse");
-            tryRegister("org.threeten.bp.YearMonth", "parse");
-            tryRegister("org.threeten.bp.MonthDay", "parse");
-            tryRegister("org.threeten.bp.Period", "parse");
-            tryRegister("org.threeten.bp.ZoneOffset", "of");
-            tryRegister("org.threeten.bp.ZoneId", "of");
-            // Old ThreeTen/JSR-310 classes v0.6.3 and beyond
-            tryRegister("javax.time.Instant", "parse");
-            tryRegister("javax.time.Duration", "parse");
-            tryRegister("javax.time.calendar.LocalDate", "parse");
-            tryRegister("javax.time.calendar.LocalTime", "parse");
-            tryRegister("javax.time.calendar.LocalDateTime", "parse");
-            tryRegister("javax.time.calendar.OffsetDate", "parse");
-            tryRegister("javax.time.calendar.OffsetTime", "parse");
-            tryRegister("javax.time.calendar.OffsetDateTime", "parse");
-            tryRegister("javax.time.calendar.ZonedDateTime", "parse");
-            tryRegister("javax.time.calendar.Year", "parse");
-            tryRegister("javax.time.calendar.YearMonth", "parse");
-            tryRegister("javax.time.calendar.MonthDay", "parse");
-            tryRegister("javax.time.calendar.Period", "parse");
-            tryRegister("javax.time.calendar.ZoneOffset", "of");
-            tryRegister("javax.time.calendar.ZoneId", "of");
-            tryRegister("javax.time.calendar.TimeZone", "of");
+            tryRegisterJava8();
+            tryRegisterThreeTenBackport();
+            tryRegisterThreeTenOld();
         }
         if (factories.length > 0) {
             this.factories.addAll(Arrays.asList(factories));
@@ -314,17 +269,91 @@ public final class StringConvert {
     }
 
     /**
-     * Tries to register a class using the standard toString/parse pattern.
-     * 
-     * @param className  the class name, not null
+     * Tries to register Java 8 classes.
      */
-    private void tryRegister(String className, String fromStringMethodName) {
+    private void tryRegisterJava8() {
         try {
-            Class<?> cls = RenameHandler.INSTANCE.lookupType(className);
-            registerMethods(cls, "toString", fromStringMethodName);
+            tryRegister("java.time.Instant", "parse");
+            tryRegister("java.time.Duration", "parse");
+            tryRegister("java.time.LocalDate", "parse");
+            tryRegister("java.time.LocalTime", "parse");
+            tryRegister("java.time.LocalDateTime", "parse");
+            tryRegister("java.time.OffsetTime", "parse");
+            tryRegister("java.time.OffsetDateTime", "parse");
+            tryRegister("java.time.ZonedDateTime", "parse");
+            tryRegister("java.time.Year", "parse");
+            tryRegister("java.time.YearMonth", "parse");
+            tryRegister("java.time.MonthDay", "parse");
+            tryRegister("java.time.Period", "parse");
+            tryRegister("java.time.ZoneOffset", "of");
+            tryRegister("java.time.ZoneId", "of");
+
         } catch (Throwable ex) {
             // ignore
         }
+    }
+
+    /**
+     * Tries to register ThreeTen backport classes.
+     */
+    private void tryRegisterThreeTenBackport() {
+        try {
+            tryRegister("org.threeten.bp.Instant", "parse");
+            tryRegister("org.threeten.bp.Duration", "parse");
+            tryRegister("org.threeten.bp.LocalDate", "parse");
+            tryRegister("org.threeten.bp.LocalTime", "parse");
+            tryRegister("org.threeten.bp.LocalDateTime", "parse");
+            tryRegister("org.threeten.bp.OffsetTime", "parse");
+            tryRegister("org.threeten.bp.OffsetDateTime", "parse");
+            tryRegister("org.threeten.bp.ZonedDateTime", "parse");
+            tryRegister("org.threeten.bp.Year", "parse");
+            tryRegister("org.threeten.bp.YearMonth", "parse");
+            tryRegister("org.threeten.bp.MonthDay", "parse");
+            tryRegister("org.threeten.bp.Period", "parse");
+            tryRegister("org.threeten.bp.ZoneOffset", "of");
+            tryRegister("org.threeten.bp.ZoneId", "of");
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+    }
+
+    /**
+     * Tries to register ThreeTen ThreeTen/JSR-310 classes v0.6.3 and beyond.
+     */
+    private void tryRegisterThreeTenOld() {
+        try {
+            tryRegister("javax.time.Instant", "parse");
+            tryRegister("javax.time.Duration", "parse");
+            tryRegister("javax.time.calendar.LocalDate", "parse");
+            tryRegister("javax.time.calendar.LocalTime", "parse");
+            tryRegister("javax.time.calendar.LocalDateTime", "parse");
+            tryRegister("javax.time.calendar.OffsetDate", "parse");
+            tryRegister("javax.time.calendar.OffsetTime", "parse");
+            tryRegister("javax.time.calendar.OffsetDateTime", "parse");
+            tryRegister("javax.time.calendar.ZonedDateTime", "parse");
+            tryRegister("javax.time.calendar.Year", "parse");
+            tryRegister("javax.time.calendar.YearMonth", "parse");
+            tryRegister("javax.time.calendar.MonthDay", "parse");
+            tryRegister("javax.time.calendar.Period", "parse");
+            tryRegister("javax.time.calendar.ZoneOffset", "of");
+            tryRegister("javax.time.calendar.ZoneId", "of");
+            tryRegister("javax.time.calendar.TimeZone", "of");
+
+        } catch (Throwable ex) {
+            // ignore
+        }
+    }
+
+    /**
+     * Tries to register a class using the standard toString/parse pattern.
+     * 
+     * @param className  the class name, not null
+     * @throws ClassNotFoundException if the class does not exist
+     */
+    private void tryRegister(String className, String fromStringMethodName) throws ClassNotFoundException {
+        Class<?> cls = RenameHandler.INSTANCE.lookupType(className);
+        registerMethods(cls, "toString", fromStringMethodName);
     }
 
     //-----------------------------------------------------------------------
