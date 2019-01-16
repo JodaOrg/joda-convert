@@ -52,7 +52,7 @@ Various documentation is available:
 
 
 ### Releases
-[Release 2.1.2](https://www.joda.org/joda-convert/download.html) is the current latest release.
+[Release 2.2.0](https://www.joda.org/joda-convert/download.html) is the current latest release.
 This release is considered stable and worthy of the 2.x tag.
 The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
 It depends on Java SE 6 or later.
