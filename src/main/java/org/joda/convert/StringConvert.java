@@ -17,10 +17,9 @@ package org.joda.convert;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,22 +42,17 @@ import org.joda.convert.factory.NumericObjectArrayStringConverterFactory;
 public final class StringConvert {
     // NOTE!
     // There must be no references (direct or indirect) to RenameHandler
-    // This class must be loaded first to avoid horrid loops in class initialization
+    // This class must be loaded after StringConvertInit to avoid horrid loops in class initialization
 
     /**
      * Errors in class initialization are hard to debug.
      * Set -Dorg.joda.convert.debug=true on the command line to add extra logging to System.err
+     * <p>
+     * NOTE! This also forces {@link StringConvertInit} to be loaded before calling {@link #create()}
+     * which is vital to avoid horrid ordering issues when loading Renamed.ini classes that
+     * reference {@code StringConvert}.
      */
-    static final boolean LOG;
-    static {
-        String log = null;
-        try {
-            log = System.getProperty("org.joda.convert.debug");
-        } catch (SecurityException ex) {
-            // ignore
-        }
-        LOG = "true".equalsIgnoreCase(log);
-    }
+    static final boolean LOG = StringConvertInit.LOG;
     /**
      * The cached null object. Ensure this is above public constants.
      */
@@ -128,10 +122,10 @@ public final class StringConvert {
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a new conversion manager including the JDK converters.
+     * Creates a new conversion manager including the standard converters.
      * <p>
      * The convert instance is mutable in a thread-safe manner.
-     * Converters may be altered at any time, including the JDK converters.
+     * Converters may be altered at any time, including the standard converters.
      * It is strongly recommended to only alter the converters before performing
      * actual conversions.
      */
@@ -143,16 +137,16 @@ public final class StringConvert {
      * Creates a new conversion manager.
      * <p>
      * The convert instance is mutable in a thread-safe manner.
-     * Converters may be altered at any time, including the JDK converters.
+     * Converters may be altered at any time, including the standard converters.
      * It is strongly recommended to only alter the converters before performing
      * actual conversions.
      * <p>
      * If specified, the factories will be queried in the order specified.
      * 
-     * @param includeJdkConverters  true to include the JDK converters
+     * @param includeStandardConverters  true to include the standard converters
      * @param factories  optional array of factories to use, not null
      */
-    public StringConvert(boolean includeJdkConverters, StringConverterFactory... factories) {
+    public StringConvert(boolean includeStandardConverters, StringConverterFactory... factories) {
         if (factories == null) {
             throw new IllegalArgumentException("StringConverterFactory array must not be null");
         }
@@ -161,230 +155,19 @@ public final class StringConvert {
                 throw new IllegalArgumentException("StringConverterFactory array must not contain a null element");
             }
         }
-        if (includeJdkConverters) {
-            for (JDKStringConverter conv : JDKStringConverter.values()) {
-                registered.put(conv.getType(), conv);
-            }
-            registered.put(Boolean.TYPE, JDKStringConverter.BOOLEAN);
-            registered.put(Byte.TYPE, JDKStringConverter.BYTE);
-            registered.put(Short.TYPE, JDKStringConverter.SHORT);
-            registered.put(Integer.TYPE, JDKStringConverter.INTEGER);
-            registered.put(Long.TYPE, JDKStringConverter.LONG);
-            registered.put(Float.TYPE, JDKStringConverter.FLOAT);
-            registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
-            registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
-            tryRegisterGuava();
-            tryRegisterJava8Optionals();
-            tryRegisterTimeZone();
-            tryRegisterJava8();
-            tryRegisterThreeTenBackport();
-            tryRegisterThreeTenOld();
+        if (includeStandardConverters) {
+            registered.putAll(StringConvertInit.INSTANCE.converters);
         }
+        // factories, adding once to avoid multiple calls to CopyOnWriteArrayList
+        List<StringConverterFactory> factoriesToAdd = new ArrayList<StringConverterFactory>();
         if (factories.length > 0) {
-            this.factories.addAll(Arrays.asList(factories));
+            factoriesToAdd.addAll(Arrays.asList(factories));
         }
-        this.factories.add(AnnotationStringConverterFactory.INSTANCE);
-        if (includeJdkConverters) {
-            this.factories.add(EnumStringConverterFactory.INSTANCE);
-            this.factories.add(TypeStringConverterFactory.INSTANCE);
+        factoriesToAdd.add(AnnotationStringConverterFactory.INSTANCE);
+        if (includeStandardConverters) {
+            factoriesToAdd.addAll(StringConvertInit.INSTANCE.factories);
         }
-    }
-
-    /**
-     * Tries to register the Guava converters class.
-     */
-    private void tryRegisterGuava() {
-        try {
-            // Guava is not a direct dependency, which is significant in the Java 9 module system
-            // to access Guava this module must add a read edge to the module graph
-            // but since this code is written for Java 6, we have to do this by reflection
-            // yuck
-            Class<?> moduleClass = Class.class.getMethod("getModule").getReturnType();
-            Object convertModule = Class.class.getMethod("getModule").invoke(StringConvert.class);
-            Object layer = convertModule.getClass().getMethod("getLayer").invoke(convertModule);
-            if (layer != null) {
-                Object optGuava = layer.getClass().getMethod("findModule", String.class).invoke(layer, "com.google.common");
-                boolean found = (Boolean) optGuava.getClass().getMethod("isPresent").invoke(optGuava);
-                if (found) {
-                    Object guavaModule = optGuava.getClass().getMethod("get").invoke(optGuava);
-                    moduleClass.getMethod("addReads", moduleClass).invoke(convertModule, guavaModule);
-                }
-            }
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterGuava1: " + ex);
-            }
-        }
-        try {
-            // can now check for Guava
-            // if we have created a read edge, or if we are on the classpath, this will succeed
-            loadType("com.google.common.reflect.TypeToken");
-            @SuppressWarnings("unchecked")
-            Class<?> cls = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.TypeTokenStringConverter");
-            TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
-            registered.put(conv.getEffectiveType(), conv);
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterGuava2: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register the Java 8 optional classes.
-     */
-    private void tryRegisterJava8Optionals() {
-        try {
-            loadType("java.util.OptionalInt");
-            @SuppressWarnings("unchecked")
-            Class<?> cls1 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalIntStringConverter");
-            TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.getDeclaredConstructor().newInstance();
-            registered.put(conv1.getEffectiveType(), conv1);
-
-            @SuppressWarnings("unchecked")
-            Class<?> cls2 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalLongStringConverter");
-            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
-            registered.put(conv2.getEffectiveType(), conv2);
-
-            @SuppressWarnings("unchecked")
-            Class<?> cls3 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalDoubleStringConverter");
-            TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.getDeclaredConstructor().newInstance();
-            registered.put(conv3.getEffectiveType(), conv3);
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterOptionals: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register the subclasses of TimeZone.
-     * Try various things, doesn't matter if the map entry gets overwritten.
-     */
-    private void tryRegisterTimeZone() {
-        try {
-            registered.put(SimpleTimeZone.class, JDKStringConverter.TIME_ZONE);
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterTimeZone1: " + ex);
-            }
-        }
-        try {
-            TimeZone zone = TimeZone.getDefault();
-            registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterTimeZone2: " + ex);
-            }
-        }
-        try {
-            TimeZone zone = TimeZone.getTimeZone("Europe/London");
-            registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterTimeZone3: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register Java 8 classes.
-     */
-    private void tryRegisterJava8() {
-        try {
-            tryRegister("java.time.Instant", "parse");
-            tryRegister("java.time.Duration", "parse");
-            tryRegister("java.time.LocalDate", "parse");
-            tryRegister("java.time.LocalTime", "parse");
-            tryRegister("java.time.LocalDateTime", "parse");
-            tryRegister("java.time.OffsetTime", "parse");
-            tryRegister("java.time.OffsetDateTime", "parse");
-            tryRegister("java.time.ZonedDateTime", "parse");
-            tryRegister("java.time.Year", "parse");
-            tryRegister("java.time.YearMonth", "parse");
-            tryRegister("java.time.MonthDay", "parse");
-            tryRegister("java.time.Period", "parse");
-            tryRegister("java.time.ZoneOffset", "of");
-            tryRegister("java.time.ZoneId", "of");
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterJava8: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register ThreeTen backport classes.
-     */
-    private void tryRegisterThreeTenBackport() {
-        try {
-            tryRegister("org.threeten.bp.Instant", "parse");
-            tryRegister("org.threeten.bp.Duration", "parse");
-            tryRegister("org.threeten.bp.LocalDate", "parse");
-            tryRegister("org.threeten.bp.LocalTime", "parse");
-            tryRegister("org.threeten.bp.LocalDateTime", "parse");
-            tryRegister("org.threeten.bp.OffsetTime", "parse");
-            tryRegister("org.threeten.bp.OffsetDateTime", "parse");
-            tryRegister("org.threeten.bp.ZonedDateTime", "parse");
-            tryRegister("org.threeten.bp.Year", "parse");
-            tryRegister("org.threeten.bp.YearMonth", "parse");
-            tryRegister("org.threeten.bp.MonthDay", "parse");
-            tryRegister("org.threeten.bp.Period", "parse");
-            tryRegister("org.threeten.bp.ZoneOffset", "of");
-            tryRegister("org.threeten.bp.ZoneId", "of");
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterThreeTenBackport: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register ThreeTen ThreeTen/JSR-310 classes v0.6.3 and beyond.
-     */
-    private void tryRegisterThreeTenOld() {
-        try {
-            tryRegister("javax.time.Instant", "parse");
-            tryRegister("javax.time.Duration", "parse");
-            tryRegister("javax.time.calendar.LocalDate", "parse");
-            tryRegister("javax.time.calendar.LocalTime", "parse");
-            tryRegister("javax.time.calendar.LocalDateTime", "parse");
-            tryRegister("javax.time.calendar.OffsetDate", "parse");
-            tryRegister("javax.time.calendar.OffsetTime", "parse");
-            tryRegister("javax.time.calendar.OffsetDateTime", "parse");
-            tryRegister("javax.time.calendar.ZonedDateTime", "parse");
-            tryRegister("javax.time.calendar.Year", "parse");
-            tryRegister("javax.time.calendar.YearMonth", "parse");
-            tryRegister("javax.time.calendar.MonthDay", "parse");
-            tryRegister("javax.time.calendar.Period", "parse");
-            tryRegister("javax.time.calendar.ZoneOffset", "of");
-            tryRegister("javax.time.calendar.ZoneId", "of");
-            tryRegister("javax.time.calendar.TimeZone", "of");
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterThreeTenOld: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register a class using the standard toString/parse pattern.
-     * 
-     * @param className  the class name, not null
-     * @throws ClassNotFoundException if the class does not exist
-     */
-    private void tryRegister(String className, String fromStringMethodName) throws ClassNotFoundException {
-        Class<?> cls = loadType(className);
-        registerMethods(cls, "toString", fromStringMethodName);
+        this.factories.addAll(factoriesToAdd);
     }
 
     //-----------------------------------------------------------------------
@@ -744,8 +527,8 @@ public final class StringConvert {
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
-        Method toString = findToStringMethod(cls, toStringMethodName);
-        Method fromString = findFromStringMethod(cls, fromStringMethodName);
+        Method toString = StringConvertInit.findToStringMethod(cls, toStringMethodName);
+        Method fromString = StringConvertInit.findFromStringMethod(cls, fromStringMethodName);
         MethodsStringConverter<T> converter = new MethodsStringConverter<T>(cls, toString, fromString, cls);
         registered.putIfAbsent(cls, converter);
     }
@@ -778,54 +561,10 @@ public final class StringConvert {
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
-        Method toString = findToStringMethod(cls, toStringMethodName);
+        Method toString = StringConvertInit.findToStringMethod(cls, toStringMethodName);
         Constructor<T> fromString = findFromStringConstructorByType(cls);
         MethodConstructorStringConverter<T> converter = new MethodConstructorStringConverter<T>(cls, toString, fromString);
         registered.putIfAbsent(cls, converter);
-    }
-
-    /**
-     * Finds the conversion method.
-     * 
-     * @param cls  the class to find a method for, not null
-     * @param methodName  the name of the method to find, not null
-     * @return the method to call, null means use {@code toString}
-     */
-    private Method findToStringMethod(Class<?> cls, String methodName) {
-        Method m;
-        try {
-            m = cls.getMethod(methodName);
-        } catch (NoSuchMethodException ex) {
-            throw new IllegalArgumentException(ex);
-        }
-        if (Modifier.isStatic(m.getModifiers())) {
-            throw new IllegalArgumentException("Method must not be static: " + methodName);
-        }
-        return m;
-    }
-
-    /**
-     * Finds the conversion method.
-     * 
-     * @param cls  the class to find a method for, not null
-     * @param methodName  the name of the method to find, not null
-     * @return the method to call, null means use {@code toString}
-     */
-    private Method findFromStringMethod(Class<?> cls, String methodName) {
-        Method m;
-        try {
-            m = cls.getMethod(methodName, String.class);
-        } catch (NoSuchMethodException ex) {
-            try {
-                m = cls.getMethod(methodName, CharSequence.class);
-            } catch (NoSuchMethodException ex2) {
-                throw new IllegalArgumentException("Method not found", ex2);
-            }
-        }
-        if (Modifier.isStatic(m.getModifiers()) == false) {
-            throw new IllegalArgumentException("Method must be static: " + methodName);
-        }
-        return m;
     }
 
     /**
