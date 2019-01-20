@@ -198,6 +198,11 @@ For open source projects, a key point is that adding the annotations is a compil
 The Joda-Convert jar file is not needed by your users unless they want to use conversion.
 If they don't want to use Joda-Convert then the annotations are effectively ignored.
 
-[Joda-Time](https://www.joda.org/joda-time/) v2.0 and [Joda-Money](https://www.joda.org/joda-money/) contain these annotations.
-In both cases, the dependency is optional at runtime for users of the projects.
+The following projects are supported by Joda-Convert annotations:
+
+* [Joda-Time](https://www.joda.org/joda-time/)
+* [Joda-Money](https://www.joda.org/joda-money/)
+* [ThreeTen-Extra](https://www.threeten.org/threeten-extra/)
+
+The Joda-Convert dependency is optional at runtime for users of the projects.
 (Note that Scala does not honour the optional behaviour.)
