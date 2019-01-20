@@ -34,7 +34,7 @@ Various documentation is available:
 
 ## <i></i> Why Joda Convert?
 
-Joda-Convert is a small, highly-focussed library, tackling a problem that the JDK should solve -
+Joda-Convert is a small, highly-focussed [library](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/StringConvert.html), tackling a problem that the JDK should solve -
 providing round-trip conversion between Objects and Strings.
 
 ```
@@ -46,13 +46,15 @@ providing round-trip conversion between Objects and Strings.
 ```
 
 Joda-Convert supports two mechanisms of extending the list of supported conversions.
-The first is to write your own converter implementing an interface.
+The first is to write your own [converter](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/TypedStringConverter.html) implementing an interface.
 The second is to use annotations.
 
 The ability of Joda-Convert to use annotations to define the conversion methods is a key difference from other projects.
 For example, most value classes, like `Currency` or `TimeZone`, already have methods
 to convert to and from a standard format String.
-Consider a `Distance` class:
+Consider a `Distance` class annotated with
+[`FromString`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/FromString.html) and
+[`ToString`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/ToString.html):
 
 ```
   public class Distance {
@@ -66,7 +68,7 @@ Consider a `Distance` class:
 ```
 
 As shown, the two methods may have any name. They must simply fulfil the required method signatures for conversion.
-The <code>FromString</code> annotation may also be applied to a constructor.
+The `FromString` annotation may also be applied to a constructor.
 
 When Joda-Convert is asked to convert between an object and a String, if there is no registered converter
 then the annotations are checked. If they are found, then the methods are called by reflection.
