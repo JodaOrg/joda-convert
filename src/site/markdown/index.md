@@ -34,38 +34,35 @@ Various documentation is available:
 
 ## <i></i> Why Joda Convert?
 
-Joda-Convert is a small, highly-focussed [library](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/StringConvert.html), tackling a problem that the JDK should solve -
+Joda-Convert is a small, highly-focussed library, tackling a problem that the JDK should solve -
 providing round-trip conversion between Objects and Strings.
 
-```
+<pre>
   // conversion to String
-  String str = StringConvert.INSTANCE.convertToString(foo);
+  <b>String str = <a href="apidocs/org.joda.convert/org/joda/convert/StringConvert.html">StringConvert</a>.INSTANCE.convertToString(foo);</b>
 
   // conversion from String
-  Foo bar = StringConvert.INSTANCE.convertFromString(Foo.class, str);
-```
+  <b>Foo bar = StringConvert.INSTANCE.convertFromString(Foo.class, str);</b>
+</pre>
 
 Joda-Convert supports two mechanisms of extending the list of supported conversions.
-The first is to write your own [converter](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/TypedStringConverter.html) implementing an interface.
+The first is to write your own [converter](apidocs/org.joda.convert/org/joda/convert/TypedStringConverter.html) implementing an interface.
 The second is to use annotations.
 
 The ability of Joda-Convert to use annotations to define the conversion methods is a key difference from other projects.
 For example, most value classes, like `Currency` or `TimeZone`, already have methods
 to convert to and from a standard format String.
-Consider a `Distance` class annotated with
-[`FromString`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/FromString.html) and
-[`ToString`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/ToString.html):
+Consider a `Distance` class:
 
-```
-  public class Distance {
+<pre>
+  <b>public class Distance {</b>
+    <b><a href="apidocs/org.joda.convert/org/joda/convert/FromString.html">@FromString</a></b>
+    <b>public static Distance parse(String str) { ... }</b>
 
-    @FromString
-    public static Distance parse(String str) { ... }
-
-    @ToString
-    public String getStandardOutput() { ... }
-  }
-```
+    <b><a href="apidocs/org.joda.convert/org/joda/convert/ToString.html">@ToString</a></b>
+    <b>public String getStandardOutput() { ... }</b>
+  <b>}</b>
+</pre>
 
 As shown, the two methods may have any name. They must simply fulfil the required method signatures for conversion.
 The `FromString` annotation may also be applied to a constructor.

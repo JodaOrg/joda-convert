@@ -7,7 +7,7 @@ This is a common problem, particularly when communicating over textual protocols
 ## Basic usage
 
 Using Joda-Convert is easy at the simplest level.
-The main access is via the class [`StringConvert`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/StringConvert.html).
+The main access is via the class [`StringConvert`](apidocs/org.joda.convert/org/joda/convert/StringConvert.html).
 
 The easiest way to use the conversion is via the global constant:
 
@@ -90,7 +90,7 @@ Note that the JSR-310 date types are supported in three different package namesp
 'java.time', 'javax.time' and 'org.threeten.bp'.
 
 Each `StringConvert` instance, other than the global singleton, may have additional converters registered manually.
-Each converter implements the [`StringConverter`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/StringConverter.html) interface, which is self explanatory.
+Each converter implements the [`StringConverter`](apidocs/org.joda.convert/org/joda/convert/StringConverter.html) interface, which is self explanatory.
 
 Converters may also be manually added by method name.
 This is equivalent to using annotations, but suitable when you don't own the code to add them.
@@ -100,7 +100,7 @@ See `StringConvert.registerMethods` and `StringConvert.registerMethodConstructor
 ## Factories
 
 In addition to manual registration of individual converters, each instance of `StringConvert`
-has a list of factories to use. The [`StringConverterFactory`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/StringConverterFactory.html) interface defines the factory.
+has a list of factories to use. The [`StringConverterFactory`](apidocs/org.joda.convert/org/joda/convert/StringConverterFactory.html) interface defines the factory.
 This allows either bulk registration or dynamic lookup of converters.
 
 A factory is provided to allow numeric arrays to be converted to/from a comma separated list.
@@ -117,8 +117,8 @@ static method is used, which defines an "extended" converter with the factories 
 ## Annotation based conversion
 
 If there is no registered converter for a type, then a search by annotation is performed.
-This will search for the [`ToString`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/ToString.html) and
-[`FromString`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/FromString.html) annotation on the type.
+This will search for the [`ToString`](apidocs/org.joda.convert/org/joda/convert/ToString.html) and
+[`FromString`](apidocs/org.joda.convert/org/joda/convert/FromString.html) annotation on the type.
 These annotations will indicate which method should be called to perform the conversion.
 
 ```
@@ -168,7 +168,7 @@ public class DistanceFactory {
 }
 ```
 
-The [`FromStringFactory`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/FromStringFactory.html)
+The [`FromStringFactory`](apidocs/org.joda.convert/org/joda/convert/FromStringFactory.html)
 annotation points at the factory class that will provide the factory method.
 Although intended for use with interfaces, it can also be used on the target class or any superclass.
 Note that only the immediate parent interfaces of a class will be searched.
@@ -184,7 +184,7 @@ off the public API.
 ## Rename handler
 
 Most large bodies of code will end up renaming classes and enum constants at some point.
-The [`RenameHandler`](https://www.joda.org/joda-convert/apidocs/org.joda.convert/org/joda/convert/RenameHandler.html)
+The [`RenameHandler`](apidocs/org.joda.convert/org/joda/convert/RenameHandler.html)
 class provides a convenient central place to track this.
 
 If the `RenameHandler` is setup with details of a rename, then an old class name
