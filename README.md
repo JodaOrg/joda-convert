@@ -62,7 +62,7 @@ It depends on Java SE 6 or later.
 
 Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav)
 
-![Tidelift dependency check](https://tidelift.com/badges/github/JodaOrg/joda-beans)
+![Tidelift dependency check](https://tidelift.com/badges/github/JodaOrg/joda-convert)
 
 
 ### Support
