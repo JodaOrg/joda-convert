@@ -75,7 +75,7 @@ then the annotations are checked. If they are found, then the methods are called
 
 ## <i></i> Releases
 
-[Release 2.2.0](download.html) is the current latest release.
+[Release 2.2.1](download.html) is the current latest release.
 This release is considered stable and worthy of the 2.x tag.
 The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
 
@@ -87,7 +87,7 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-convert</artifactId>
-  <version>2.2.0</version>
+  <version>2.2.1</version>
 </dependency>
 ```
 
@@ -98,7 +98,7 @@ If you have problems with this, there is a "classic" variant you can use instead
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-convert</artifactId>
-  <version>2.2.0</version>
+  <version>2.2.1</version>
   <classifier>classic</classifier>
 </dependency>
 ```
