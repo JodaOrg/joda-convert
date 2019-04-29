@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="2.2.1" date="2019-04-29" description="Version 2.2.1">
+      <action dev="jodastephen" type="fix">
+        Ensure `ZoneRegion` is correctly converted.
+      </action>
+    </release>
     <release version="2.2.0" date="2019-01-16" description="Version 2.2.0">
       <action dev="jodastephen" type="add">
         Avoid circular loops in dynamic registration of converters.

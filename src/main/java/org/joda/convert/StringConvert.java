@@ -312,6 +312,7 @@ public final class StringConvert {
             tryRegister("java.time.Period", "parse");
             tryRegister("java.time.ZoneOffset", "of");
             tryRegister("java.time.ZoneId", "of");
+            tryRegister("java.time.ZoneRegion", "of");
 
         } catch (Throwable ex) {
             if (LOG) {
@@ -339,6 +340,7 @@ public final class StringConvert {
             tryRegister("org.threeten.bp.Period", "parse");
             tryRegister("org.threeten.bp.ZoneOffset", "of");
             tryRegister("org.threeten.bp.ZoneId", "of");
+            tryRegister("org.threeten.bp.ZoneRegion", "of");
 
         } catch (Throwable ex) {
             if (LOG) {
