@@ -275,6 +275,14 @@ public class TestJDKStringConverters {
         doTest(test, Class.class, void.class, "void");
     }
 
+    @Test
+    public void test_Class_array() {
+        JDKStringConverter test = JDKStringConverter.CLASS;
+        doTest(test, Class.class, byte[].class, "[B");
+        doTest(test, Class.class, FromString[].class, "[Lorg.joda.convert.FromString;");
+        doTest(test, Class.class, FromString[][].class, "[[Lorg.joda.convert.FromString;");
+    }
+
     @Test(expected=RuntimeException.class)
     public void test_Class_fail() {
         JDKStringConverter.CLASS.convertFromString(Class.class, "RUBBISH");

@@ -7,6 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="2.2.2" date="2021-12-15" description="Version 2.2.2">
+      <action dev="jodastephen" type="fix">
+        Fix deserialization of array classes.
+        Fixes #30
+      </action>
+    </release>
     <release version="2.2.1" date="2019-04-29" description="Version 2.2.1">
       <action dev="jodastephen" type="fix">
         Ensure `ZoneRegion` is correctly converted.

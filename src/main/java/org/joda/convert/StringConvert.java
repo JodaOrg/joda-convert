@@ -854,7 +854,7 @@ public final class StringConvert {
     static Class<?> loadType(String fullName) throws ClassNotFoundException {
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            return loader != null ? loader.loadClass(fullName) : Class.forName(fullName);
+            return loader != null && !fullName.startsWith("[") ? loader.loadClass(fullName) : Class.forName(fullName);
         } catch (ClassNotFoundException ex) {
             return loadPrimitiveType(fullName, ex);
         }
