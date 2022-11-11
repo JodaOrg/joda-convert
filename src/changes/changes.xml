@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="2.2.3" date="SNAPSHOT" description="Version 2.2.3">
+      <action dev="jodastephen" type="update">
+        Switch LGTM to CodeQL.
+      </action>
+    </release>
     <release version="2.2.2" date="2021-12-15" description="Version 2.2.2">
       <action dev="jodastephen" type="fix">
         Fix deserialization of array classes.
