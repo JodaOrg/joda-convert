@@ -24,7 +24,7 @@ package org.joda.convert;
  * @param <T>  the type of the converter
  * @since 1.7
  */
-public interface TypedStringConverter<T> extends StringConverter<T> {
+public interface TypedStringConverter<T> extends StringConverter<T>, TypedFromStringConverter<T> {
 
     /**
      * Gets the effective type that the converter works on.
@@ -35,6 +35,7 @@ public interface TypedStringConverter<T> extends StringConverter<T> {
      * 
      * @return the effective type
      */
+    @Override
     Class<?> getEffectiveType();
 
 }

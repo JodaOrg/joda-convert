@@ -526,6 +526,14 @@ public class TestStringConvert {
 
     //-----------------------------------------------------------------------
     @Test
+    public void test_convertFromString_annotatedFromStringNoToString() {
+        StringConvert test = new StringConvert();
+        DistanceFromStringNoToString result = test.convertFromString(DistanceFromStringNoToString.class, "2m");
+        assertEquals(new DistanceFromStringNoToString(2), result);
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     public void test_convert_Enum_overrideDefaultWithConverter() {
         StringConvert test = new StringConvert();
         test.register(Validity.class, ValidityStringConverter.INSTANCE);

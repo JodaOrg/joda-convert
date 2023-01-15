@@ -92,6 +92,10 @@ public final class StringConvert {
      * The cache of converters.
      */
     private final ConcurrentMap<Class<?>, TypedStringConverter<?>> registered = new ConcurrentHashMap<Class<?>, TypedStringConverter<?>>();
+    /**
+     * The cache of from-strings.
+     */
+    private final ConcurrentMap<Class<?>, FromStringConverter<?>> fromStrings = new ConcurrentHashMap<Class<?>, FromStringConverter<?>>();
 
     //-----------------------------------------------------------------------
     /**
@@ -430,7 +434,7 @@ public final class StringConvert {
     /**
      * Converts the specified object from a {@code String}.
      * <p>
-     * This uses {@link #findConverter} to provide the converter.
+     * This uses {@link #findFromStringConverter} to provide the converter.
      * 
      * @param <T>  the type to convert to
      * @param cls  the class to convert to, not null
@@ -442,7 +446,7 @@ public final class StringConvert {
         if (str == null) {
             return null;
         }
-        StringConverter<T> conv = findConverter(cls);
+        FromStringConverter<T> conv = findFromStringConverter(cls);
         return conv.convertFromString(cls, str);
     }
 
@@ -576,13 +580,31 @@ public final class StringConvert {
     }
 
     /**
-     * Finds a converter searching registered and annotated.
+     * Finds a suitable from-string converter for the type.
+     * <p>
+     * This returns an instance of {@code FromStringConverter} for the specified class.
+     * In most cases this is identical to {@link #findConverter(Class)}.
+     * However, it is permitted to have a {@code FromString} annotation without a {@code ToString} annotation,
+     * and this method catches that use case.
      * 
      * @param <T>  the type of the converter
-     * @param cls  the class to find a method for, not null
-     * @return the converter, null if no converter
-     * @throws RuntimeException if invalid
+     * @param cls  the class to find a converter for, not null
+     * @return the converter, not null
+     * @throws RuntimeException (or subclass) if no converter found
      */
+    @SuppressWarnings("unchecked")
+    public <T> FromStringConverter<T> findFromStringConverter(final Class<T> cls) {
+        TypedStringConverter<T> converter = findConverterQuiet(cls);
+        if (converter == null) {
+            FromStringConverter<T> fromStringConverter = (FromStringConverter<T>) fromStrings.get(cls);
+            if (fromStringConverter == null) {
+                throw new IllegalStateException("No registered converter found: " + cls);
+            }
+            return fromStringConverter;
+        }
+        return converter;
+    }
+
     @SuppressWarnings("unchecked")
     private <T> TypedStringConverter<T> findConverterQuiet(final Class<T> cls) {
         if (cls == null) {
@@ -601,6 +623,11 @@ public final class StringConvert {
             }
             if (conv == null) {
                 registered.putIfAbsent(cls, CACHED_NULL);
+                // search for from-string only converters now, so that our cache is accurate for all kinds of converter
+                TypedFromStringConverter<T> fromString = AnnotationStringConverterFactory.INSTANCE.findFromStringConverter(cls);
+                if (fromString != null) {
+                    fromStrings.put(cls, fromString);
+                }
                 return null;
             }
             registered.putIfAbsent(cls, conv);

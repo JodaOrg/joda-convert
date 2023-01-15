@@ -30,7 +30,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
     /**
      * Singleton instance.
      */
-    static final StringConverterFactory INSTANCE = new AnnotationStringConverterFactory();
+    static final AnnotationStringConverterFactory INSTANCE = new AnnotationStringConverterFactory();
 
     /**
      * Restricted constructor.
@@ -69,6 +69,18 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             throw new IllegalStateException("Class annotated with @ToString but not with @FromString: " + cls.getName());
         }
         return new ReflectionStringConverter<T>(cls, toString, fromString);
+    }
+
+    /**
+     * Finds a from-string converter by type.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the type to lookup, not null
+     * @return the converter, null if not found
+     * @throws RuntimeException (or subclass) if source code is invalid
+     */
+    <T> TypedFromStringConverter<T> findFromStringConverter(Class<T> cls) {
+        return findAnnotatedFromStringConverter(cls);  // capture generics
     }
 
     /**
