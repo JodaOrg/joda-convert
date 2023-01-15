@@ -221,7 +221,7 @@ public final class StringConvert {
             // if we have created a read edge, or if we are on the classpath, this will succeed
             loadType("com.google.common.reflect.TypeToken");
             @SuppressWarnings("unchecked")
-            Class<?> cls = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.TypeTokenStringConverter");
+            Class<?> cls = loadType("org.joda.convert.TypeTokenStringConverter");
             TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
             registered.put(conv.getEffectiveType(), conv);
 
@@ -239,17 +239,17 @@ public final class StringConvert {
         try {
             loadType("java.util.OptionalInt");
             @SuppressWarnings("unchecked")
-            Class<?> cls1 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalIntStringConverter");
+            Class<?> cls1 = loadType("org.joda.convert.OptionalIntStringConverter");
             TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.getDeclaredConstructor().newInstance();
             registered.put(conv1.getEffectiveType(), conv1);
 
             @SuppressWarnings("unchecked")
-            Class<?> cls2 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalLongStringConverter");
+            Class<?> cls2 = loadType("org.joda.convert.OptionalLongStringConverter");
             TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
 
             @SuppressWarnings("unchecked")
-            Class<?> cls3 = (Class<TypedStringConverter<?>>) loadType("org.joda.convert.OptionalDoubleStringConverter");
+            Class<?> cls3 = loadType("org.joda.convert.OptionalDoubleStringConverter");
             TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.getDeclaredConstructor().newInstance();
             registered.put(conv3.getEffectiveType(), conv3);
 
@@ -594,7 +594,7 @@ public final class StringConvert {
         }
         if (conv == null) {
             try {
-                conv = findAnyConverter(cls);
+                conv = lookupConverter(cls);
             } catch (RuntimeException ex) {
                 registered.putIfAbsent(cls, CACHED_NULL);
                 throw ex;
@@ -609,7 +609,7 @@ public final class StringConvert {
     }
 
     /**
-     * Finds a converter searching registered and annotated.
+     * Lookup a converter searching registered and annotated.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
@@ -617,7 +617,7 @@ public final class StringConvert {
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
-    private <T> TypedStringConverter<T> findAnyConverter(final Class<T> cls) {
+    private <T> TypedStringConverter<T> lookupConverter(final Class<T> cls) {
         // check factories
         for (StringConverterFactory factory : factories) {
             StringConverter<T> factoryConv = (StringConverter<T>) factory.findConverter(cls);
@@ -748,7 +748,8 @@ public final class StringConvert {
         }
         Method toString = findToStringMethod(cls, toStringMethodName);
         Method fromString = findFromStringMethod(cls, fromStringMethodName);
-        MethodsStringConverter<T> converter = new MethodsStringConverter<T>(cls, toString, fromString, cls);
+        TypedFromStringConverter<T> fromStringConverter = new MethodFromStringConverter<T>(cls, fromString, cls);
+        ReflectionStringConverter<T> converter = new ReflectionStringConverter<T>(cls, toString, fromStringConverter);
         registered.putIfAbsent(cls, converter);
     }
 
@@ -782,7 +783,8 @@ public final class StringConvert {
         }
         Method toString = findToStringMethod(cls, toStringMethodName);
         Constructor<T> fromString = findFromStringConstructorByType(cls);
-        MethodConstructorStringConverter<T> converter = new MethodConstructorStringConverter<T>(cls, toString, fromString);
+        TypedFromStringConverter<T> fromStringConverter = new ConstructorFromStringConverter<T>(cls, fromString);
+        ReflectionStringConverter<T> converter = new ReflectionStringConverter<T>(cls, toString, fromStringConverter);
         registered.putIfAbsent(cls, converter);
     }
 

@@ -59,22 +59,36 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the converter, not null
      * @throws RuntimeException if none found
      */
-    private <T> StringConverter<T> findAnnotatedConverter(final Class<T> cls) {
+    private <T> StringConverter<T> findAnnotatedConverter(Class<T> cls) {
         Method toString = findToStringMethod(cls);  // checks superclasses
         if (toString == null) {
             return null;
         }
-        MethodConstructorStringConverter<T> con = findFromStringConstructor(cls, toString);
-        MethodsStringConverter<T> mth = findFromStringMethod(cls, toString, con == null);  // optionally checks superclasses
-        if (con == null && mth == null) {
+        TypedFromStringConverter<T> fromString = findAnnotatedFromStringConverter(cls);
+        if (fromString == null) {
             throw new IllegalStateException("Class annotated with @ToString but not with @FromString: " + cls.getName());
         }
+        return new ReflectionStringConverter<T>(cls, toString, fromString);
+    }
+
+    /**
+     * Finds a from-string converter.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a method for, not null
+     * @return the converter, null if not found
+     * @throws RuntimeException if none found
+     */
+    private <T> TypedFromStringConverter<T> findAnnotatedFromStringConverter(Class<T> cls) {
+        TypedFromStringConverter<T> con = findFromStringConstructor(cls);
+        TypedFromStringConverter<T> mth = findFromStringMethod(cls, con == null);  // optionally checks superclasses
         if (con != null && mth != null) {
             throw new IllegalStateException("Both method and constructor are annotated with @FromString: " + cls.getName());
         }
         return (con != null ? con : mth);
     }
 
+    //-------------------------------------------------------------------------
     /**
      * Finds the conversion method.
      * 
@@ -121,16 +135,16 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         return matched;
     }
 
+    //-------------------------------------------------------------------------
     /**
      * Finds the conversion method.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @param toString  the toString method, not null
      * @return the method to call, null means none found
      * @throws RuntimeException if invalid
      */
-    private <T> MethodConstructorStringConverter<T> findFromStringConstructor(Class<T> cls, Method toString) {
+    private <T> TypedFromStringConverter<T> findFromStringConstructor(Class<T> cls) {
         Constructor<T> con;
         try {
             con = cls.getDeclaredConstructor(String.class);
@@ -145,25 +159,24 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         if (fromString == null) {
             return null;
         }
-        return new MethodConstructorStringConverter<T>(cls, toString, con);
+        return new ConstructorFromStringConverter<T>(cls, con);
     }
 
     /**
      * Finds the conversion method.
      * 
      * @param cls  the class to find a method for, not null
-     * @param toString  the toString method, not null
      * @param searchSuperclasses  whether to search superclasses
      * @return the method to call, null means not found
      * @throws RuntimeException if invalid
      */
-    private <T> MethodsStringConverter<T> findFromStringMethod(Class<T> cls, Method toString, boolean searchSuperclasses) {
+    private <T> TypedFromStringConverter<T> findFromStringMethod(Class<T> cls, boolean searchSuperclasses) {
         // find in superclass hierarchy
         Class<?> loopCls = cls;
         while (loopCls != null) {
             Method fromString = findFromString(loopCls);
             if (fromString != null) {
-                return new MethodsStringConverter<T>(cls, toString, fromString, loopCls);
+                return new MethodFromStringConverter<T>(cls, fromString, loopCls);
             }
             if (searchSuperclasses == false) {
                 break;
@@ -171,7 +184,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             loopCls = loopCls.getSuperclass();
         }
         // find in immediate parent interfaces
-        MethodsStringConverter<T> matched = null;
+        TypedFromStringConverter<T> matched = null;
         if (searchSuperclasses) {
             for (Class<?> loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
                 Method fromString = findFromString(loopIfc);
@@ -180,7 +193,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
                         throw new IllegalStateException("Two different interfaces are annotated with " +
                             "@FromString or @FromStringFactory: " + cls.getName());
                     }
-                    matched = new MethodsStringConverter<T>(cls, toString, fromString, loopIfc);
+                    matched = new MethodFromStringConverter<T>(cls, fromString, loopIfc);
                 }
             }
         }
