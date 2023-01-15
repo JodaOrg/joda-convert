@@ -29,12 +29,22 @@ public class DistanceFromStringNoToString {
 
     @FromString
     public DistanceFromStringNoToString(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        this.amount = Integer.parseInt(amount);
+        this.amount = Integer.parseInt(amount.substring(0, amount.length() - 1));
     }
 
     public String print() {
         return amount + "m";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DistanceFromStringNoToString &&
+                ((DistanceFromStringNoToString) obj).amount == amount;
+    }
+
+    @Override
+    public int hashCode() {
+        return amount;
     }
 
     @Override
