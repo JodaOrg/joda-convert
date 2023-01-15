@@ -21,10 +21,6 @@ jobs:
     permissions:
       security-events: write  # for github/codeql-action
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [8, 11]
-    
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -32,7 +28,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 11
         distribution: 'temurin'
         cache: 'maven'
 
@@ -44,7 +40,6 @@ jobs:
         mkdir -p target
 
     - name: Initialize CodeQL
-      if: matrix.java == '11'
       uses: github/codeql-action/init@v2
       with:
         languages: java
@@ -54,11 +49,10 @@ jobs:
         mvn install site
 
     - name: Perform CodeQL Analysis
-      if: matrix.java == '11'
       uses: github/codeql-action/analyze@v2
     
     - name: Website
-      if: matrix.java == '11' && github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
+      if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       run: |
