@@ -28,20 +28,24 @@ import java.lang.reflect.Method;
  * 
  * @param <T>  the type of the converter
  */
-abstract class ReflectionStringConverter<T> implements TypedStringConverter<T> {
+final class ReflectionStringConverter<T> implements TypedStringConverter<T> {
 
     /** The converted class. */
     private final Class<T> cls;
     /** Conversion to a string. */
     private final Method toString;
+    /** Conversion from a string, package-scoped for testing. */
+    final TypedFromStringConverter<T> fromString;
 
     /**
      * Creates an instance using two methods.
-     * @param cls  the class this converts for, not null
+     * 
+     * @param cls  the class this converts for, null creates a from-string converter
      * @param toString  the toString method, not null
+     * @param fromString  the fromString converter, not null
      * @throws RuntimeException (or subclass) if the method signatures are invalid
      */
-    ReflectionStringConverter(Class<T> cls, Method toString) {
+    ReflectionStringConverter(Class<T> cls, Method toString, TypedFromStringConverter<T> fromString) {
         if (toString.getParameterTypes().length != 0) {
             throw new IllegalStateException("ToString method must have no parameters: " + toString);
         }
@@ -50,14 +54,10 @@ abstract class ReflectionStringConverter<T> implements TypedStringConverter<T> {
         }
         this.cls = cls;
         this.toString = toString;
+        this.fromString = fromString;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts the object to a {@code String}.
-     * @param object  the object to convert, not null
-     * @return the converted string, may be null but generally not
-     */
     @Override
     public String convertToString(T object) {
         try {
@@ -70,6 +70,16 @@ abstract class ReflectionStringConverter<T> implements TypedStringConverter<T> {
             }
             throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
+    }
+
+    @Override
+    public T convertFromString(Class<? extends T> cls, String str) {
+        return fromString.convertFromString(cls, str);
+    }
+
+    @Override
+    public Class<?> getEffectiveType() {
+        return fromString.getEffectiveType();
     }
 
     //-----------------------------------------------------------------------
