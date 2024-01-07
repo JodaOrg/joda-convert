@@ -19,6 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -200,19 +201,10 @@ public final class StringConvert {
         try {
             // Guava is not a direct dependency, which is significant in the Java 9 module system
             // to access Guava this module must add a read edge to the module graph
-            // but since this code is written for Java 6, we have to do this by reflection
-            // yuck
-            var moduleClass = Class.class.getMethod("getModule").getReturnType();
-            var convertModule = Class.class.getMethod("getModule").invoke(StringConvert.class);
-            var layer = convertModule.getClass().getMethod("getLayer").invoke(convertModule);
-            if (layer != null) {
-                var optGuava = layer.getClass().getMethod("findModule", String.class).invoke(layer, "com.google.common");
-                boolean found = (Boolean) optGuava.getClass().getMethod("isPresent").invoke(optGuava);
-                if (found) {
-                    var guavaModule = optGuava.getClass().getMethod("get").invoke(optGuava);
-                    moduleClass.getMethod("addReads", moduleClass).invoke(convertModule, guavaModule);
-                }
-            }
+            var convertModule = StringConvert.class.getModule();
+            Optional.ofNullable(convertModule.getLayer())
+                    .flatMap(layer -> layer.findModule("com.google.common"))
+                    .ifPresent(guava -> convertModule.addReads(guava));
 
         } catch (Throwable ex) {
             if (LOG) {
@@ -223,9 +215,8 @@ public final class StringConvert {
             // can now check for Guava
             // if we have created a read edge, or if we are on the classpath, this will succeed
             loadType("com.google.common.reflect.TypeToken");
-            @SuppressWarnings("unchecked")
             var cls = loadType("org.joda.convert.TypeTokenStringConverter");
-            TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
+            var conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
             registered.put(conv.getEffectiveType(), conv);
 
         } catch (Throwable ex) {
