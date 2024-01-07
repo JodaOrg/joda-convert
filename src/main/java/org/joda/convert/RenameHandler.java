@@ -19,9 +19,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -79,7 +78,7 @@ public final class RenameHandler {
     // this is a method to aid IDE debugging of class initialization
     private static RenameHandler createInstance() {
         // log errors to System.err, as problems in static initializers can be troublesome to diagnose
-        RenameHandler instance = create(false);
+        var instance = create(false);
         try {
             // calling loadFromClasspath() is the best option even though it mutates INSTANCE
             // only serious errors will be caught here, most errors will log from parseRenameFile()
@@ -102,13 +101,11 @@ public final class RenameHandler {
     /**
      * The type renames.
      */
-    private final ConcurrentHashMap<String, Class<?>> typeRenames =
-                    new ConcurrentHashMap<String, Class<?>>(16, 0.75f, 2);
+    private final ConcurrentHashMap<String, Class<?>> typeRenames = new ConcurrentHashMap<>(16, 0.75f, 2);
     /**
      * The enum renames.
      */
-    private final ConcurrentHashMap<Class<?>, Map<String, Enum<?>>> enumRenames =
-                    new ConcurrentHashMap<Class<?>, Map<String, Enum<?>>>(16, 0.75f, 2);
+    private final ConcurrentHashMap<Class<?>, Map<String, Enum<?>>> enumRenames = new ConcurrentHashMap<>(16, 0.75f, 2);
 
     //-----------------------------------------------------------------------
     /**
@@ -133,7 +130,7 @@ public final class RenameHandler {
      * @return a new instance, not null
      */
     public static RenameHandler create(boolean loadFromClasspath) {
-        RenameHandler handler = new RenameHandler();
+        var handler = new RenameHandler();
         if (loadFromClasspath) {
             handler.loadFromClasspath();
         }
@@ -178,7 +175,7 @@ public final class RenameHandler {
      * @return a copy of the set of enum types with renames, not null
      */
     public Map<String, Class<?>> getTypeRenames() {
-        return new HashMap<String, Class<?>>(typeRenames);
+        return new HashMap<>(typeRenames);
     }
 
     /**
@@ -192,7 +189,7 @@ public final class RenameHandler {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        Class<?> type = typeRenames.get(name);
+        var type = typeRenames.get(name);
         if (type == null) {
             type = StringConvert.loadType(name);
         }
@@ -216,10 +213,10 @@ public final class RenameHandler {
             throw new IllegalArgumentException("currentValue must not be null");
         }
         checkNotLocked();
-        Class<?> enumType = currentValue.getDeclaringClass();
-        Map<String, Enum<?>> perClass = enumRenames.get(enumType);
+        var enumType = currentValue.getDeclaringClass();
+        var perClass = enumRenames.get(enumType);
         if (perClass == null) {
-            enumRenames.putIfAbsent(enumType, new ConcurrentHashMap<String, Enum<?>>(16, 0.75f, 2));
+            enumRenames.putIfAbsent(enumType, new ConcurrentHashMap<>(16, 0.75f, 2));
             perClass = enumRenames.get(enumType);
         }
         perClass.put(oldName, currentValue);
@@ -233,7 +230,7 @@ public final class RenameHandler {
      * @return a copy of the set of enum types with renames, not null
      */
     public Set<Class<?>> getEnumTypesWithRenames() {
-        return new HashSet<Class<?>>(enumRenames.keySet());
+        return new HashSet<>(enumRenames.keySet());
     }
 
     /**
@@ -248,11 +245,11 @@ public final class RenameHandler {
         if (type == null) {
             throw new IllegalArgumentException("type must not be null");
         }
-        Map<String, Enum<?>> map = enumRenames.get(type);
+        var map = enumRenames.get(type);
         if (map == null) {
-            return new HashMap<String, Enum<?>>();
+            return new HashMap<>();
         }
-        return new HashMap<String, Enum<?>>(map);
+        return new HashMap<>(map);
     }
 
     /**
@@ -271,8 +268,8 @@ public final class RenameHandler {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        Map<String, Enum<?>> map = getEnumRenames(type);
-        Enum<?> value = map.get(name);
+        var map = getEnumRenames(type);
+        var value = map.get(name);
         if (value != null) {
             return type.cast(value);
         }
@@ -304,20 +301,20 @@ public final class RenameHandler {
         URL url = null;
         try {
             // this is the new location of the file, working on Java 8, Java 9 class path and Java 9 module path
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            var loader = Thread.currentThread().getContextClassLoader();
             if (loader == null) {
                 loader = RenameHandler.class.getClassLoader();
             }
             if (LOG) {
                 System.err.println("Loading from classpath: " + loader);
             }
-            Enumeration<URL> en = loader.getResources("META-INF/org/joda/convert/Renamed.ini");
+            var en = loader.getResources("META-INF/org/joda/convert/Renamed.ini");
             while (en.hasMoreElements()) {
                 url = en.nextElement();
                 if (LOG) {
                     System.err.println("Loading file: " + url);
                 }
-                List<String> lines = loadRenameFile(url);
+                var lines = loadRenameFile(url);
                 parseRenameFile(lines, url);
             }
         } catch (Exception ex) {
@@ -330,18 +327,15 @@ public final class RenameHandler {
 
     // loads a single rename file
     private List<String> loadRenameFile(URL url) throws IOException {
-        List<String> lines = new ArrayList<String>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), Charset.forName("UTF-8")));
-        try {
+        var lines = new ArrayList<String>();
+        try (var reader = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String trimmed = line.trim();
+                var trimmed = line.trim();
                 if (!trimmed.isEmpty() && !trimmed.startsWith("#")) {
                     lines.add(trimmed);
                 }
             }
-        } finally {
-            reader.close();
         }
         return lines;
     }
@@ -349,9 +343,9 @@ public final class RenameHandler {
     // parses a single rename file
     private void parseRenameFile(List<String> lines, URL url) {
         // format allows multiple [types] and [enums] so file can be merged
-        boolean types = false;
-        boolean enums = false;
-        for (String line : lines) {
+        var types = false;
+        var enums = false;
+        for (var line : lines) {
             try {
                 if (line.equals("[types]")) {
                     types = true;
@@ -360,13 +354,13 @@ public final class RenameHandler {
                     types = false;
                     enums = true;
                 } else if (types) {
-                    int equalsPos = line.indexOf('=');
+                    var equalsPos = line.indexOf('=');
                     if (equalsPos < 0) {
                         throw new IllegalArgumentException(
                                 "Renamed.ini type line must be formatted as 'oldClassName = newClassName'");
                     }
-                    String oldName = line.substring(0, equalsPos).trim();
-                    String newName = line.substring(equalsPos + 1).trim();
+                    var oldName = line.substring(0, equalsPos).trim();
+                    var newName = line.substring(equalsPos + 1).trim();
                     Class<?> newClass = null;
                     try {
                         newClass = StringConvert.loadType(newName);
@@ -379,19 +373,19 @@ public final class RenameHandler {
                     }
                     renamedType(oldName, newClass);
                 } else if (enums) {
-                    int equalsPos = line.indexOf('=');
-                    int lastDotPos = line.lastIndexOf('.');
+                    var equalsPos = line.indexOf('=');
+                    var lastDotPos = line.lastIndexOf('.');
                     if (equalsPos < 0 || lastDotPos < 0 || lastDotPos < equalsPos) {
                         throw new IllegalArgumentException(
                                 "Renamed.ini enum line must be formatted as 'oldEnumConstantName = enumClassName.newEnumConstantName'");
                     }
-                    String oldName = line.substring(0, equalsPos).trim();
-                    String enumClassName = line.substring(equalsPos + 1, lastDotPos).trim();
-                    String enumConstantName = line.substring(lastDotPos + 1).trim();
+                    var oldName = line.substring(0, equalsPos).trim();
+                    var enumClassName = line.substring(equalsPos + 1, lastDotPos).trim();
+                    var enumConstantName = line.substring(lastDotPos + 1).trim();
                     @SuppressWarnings("rawtypes")
-                    Class<? extends Enum> enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
+                    var enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
                     @SuppressWarnings("unchecked")
-                    Enum<?> newEnum = Enum.valueOf(enumClass, enumConstantName);
+                    var newEnum = Enum.valueOf(enumClass, enumConstantName);
                     renamedEnum(oldName, newEnum);
                 } else {
                     throw new IllegalArgumentException("Renamed.ini must start with [types] or [enums]");

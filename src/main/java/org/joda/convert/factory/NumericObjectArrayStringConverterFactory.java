@@ -88,9 +88,9 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
+                var buf = new StringBuilder(array.length * 8);
                 buf.append(array[0] != null ? array[0] : "-");
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
@@ -100,17 +100,17 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                Long[] array = new Long[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new Long[str.length() / 2 + 1];
                 while (sep >= 0) {
-                    String split = str.substring(base, sep);
+                    var split = str.substring(base, sep);
                     array[count++] = split.equals("-") ? null : Long.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                String split = str.substring(base, str.length());
+                var split = str.substring(base, str.length());
                 array[count++] = split.equals("-") ? null : Long.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -130,9 +130,9 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 6);
+                var buf = new StringBuilder(array.length * 6);
                 buf.append(array[0] != null ? array[0] : "-");
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
@@ -142,17 +142,17 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                Integer[] array = new Integer[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new Integer[str.length() / 2 + 1];
                 while (sep >= 0) {
-                    String split = str.substring(base, sep);
+                    var split = str.substring(base, sep);
                     array[count++] = split.equals("-") ? null : Integer.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                String split = str.substring(base, str.length());
+                var split = str.substring(base, str.length());
                 array[count++] = split.equals("-") ? null : Integer.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -172,9 +172,9 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 3);
+                var buf = new StringBuilder(array.length * 3);
                 buf.append(array[0] != null ? array[0] : "-");
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
@@ -184,17 +184,17 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                Short[] array = new Short[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new Short[str.length() / 2 + 1];
                 while (sep >= 0) {
-                    String split = str.substring(base, sep);
+                    var split = str.substring(base, sep);
                     array[count++] = split.equals("-") ? null : Short.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                String split = str.substring(base, str.length());
+                var split = str.substring(base, str.length());
                 array[count++] = split.equals("-") ? null : Short.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -214,9 +214,9 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
+                var buf = new StringBuilder(array.length * 8);
                 buf.append(array[0] != null ? array[0] : "-");
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
@@ -226,17 +226,17 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                Double[] array = new Double[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new Double[str.length() / 2 + 1];
                 while (sep >= 0) {
-                    String split = str.substring(base, sep);
+                    var split = str.substring(base, sep);
                     array[count++] = split.equals("-") ? null : Double.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                String split = str.substring(base, str.length());
+                var split = str.substring(base, str.length());
                 array[count++] = split.equals("-") ? null : Double.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -256,9 +256,9 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
+                var buf = new StringBuilder(array.length * 8);
                 buf.append(array[0] != null ? array[0] : "-");
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i] != null ? array[i] : "-");
                 }
                 return buf.toString();
@@ -268,17 +268,17 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                Float[] array = new Float[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new Float[str.length() / 2 + 1];
                 while (sep >= 0) {
-                    String split = str.substring(base, sep);
+                    var split = str.substring(base, sep);
                     array[count++] = split.equals("-") ? null : Float.valueOf(split);
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                String split = str.substring(base, str.length());
+                var split = str.substring(base, str.length());
                 array[count++] = split.equals("-") ? null : Float.valueOf(split);
                 return Arrays.copyOf(array, count);
             }

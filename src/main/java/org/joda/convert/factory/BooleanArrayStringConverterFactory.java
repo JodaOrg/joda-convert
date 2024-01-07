@@ -74,9 +74,9 @@ public final class BooleanArrayStringConverterFactory implements StringConverter
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length);
-                for (int i = 0; i < array.length; i++) {
-                    buf.append(array[i] ? 'T' : 'F');
+                var buf = new StringBuilder(array.length);
+                for (var element : array) {
+                    buf.append(element ? 'T' : 'F');
                 }
                 return buf.toString();
             }
@@ -85,9 +85,9 @@ public final class BooleanArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                boolean[] array = new boolean[str.length()];
-                for (int i = 0; i < array.length; i++) {
-                    char ch = str.charAt(i);
+                var array = new boolean[str.length()];
+                for (var i = 0; i < array.length; i++) {
+                    var ch = str.charAt(i);
                     if (ch == 'T') {
                         array[i] = true;
                     } else if (ch == 'F') {

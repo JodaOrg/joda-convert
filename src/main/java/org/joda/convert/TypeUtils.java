@@ -44,7 +44,7 @@ final class TypeUtils {
     // primitive types
     private static final Map<String, Class<?>> PRIMITIVES;
     static {
-        Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+        var map = new HashMap<String, Class<?>>();
         map.put("byte", byte.class);
         map.put("short", short.class);
         map.put("int", int.class);
@@ -80,37 +80,37 @@ final class TypeUtils {
 
     // parse an element
     private static Type doParse(String str) throws Exception {
-        Class<?> token = PRIMITIVES.get(str);
+        var token = PRIMITIVES.get(str);
         if (token != null) {
             return token;
         }
-        int first = str.indexOf('<');
+        var first = str.indexOf('<');
         if (first < 0) {
             return StringConvert.loadType(str);
         }
-        int last = str.lastIndexOf('>');
-        String baseStr = str.substring(0, first);
-        Class<?> base = StringConvert.loadType(baseStr);
-        String argsStr = str.substring(first + 1, last);
-        List<String> splitArgs = split(argsStr);
-        List<Type> types = new ArrayList<Type>();
-        for (String splitArg : splitArgs) {
+        var last = str.lastIndexOf('>');
+        var baseStr = str.substring(0, first);
+        var base = StringConvert.loadType(baseStr);
+        var argsStr = str.substring(first + 1, last);
+        var splitArgs = split(argsStr);
+        var types = new ArrayList<Type>();
+        for (var splitArg : splitArgs) {
             Type argType;
             if (splitArg.startsWith(EXTENDS)) {
-                String remainder = splitArg.substring(EXTENDS.length());
+                var remainder = splitArg.substring(EXTENDS.length());
                 argType = wildExtendsType(doParse(remainder));
             } else if (splitArg.startsWith(SUPER)) {
-                String remainder = splitArg.substring(SUPER.length());
+                var remainder = splitArg.substring(SUPER.length());
                 argType = wildSuperType(doParse(remainder));
             } else if (splitArg.equals("?")) {
                 argType = wildExtendsType(Object.class);
             } else if (splitArg.endsWith("[]")) {
-                String componentStr = splitArg.substring(0, splitArg.length() - 2);
-                Class<?> componentCls = StringConvert.loadType(componentStr);
+                var componentStr = splitArg.substring(0, splitArg.length() - 2);
+                var componentCls = StringConvert.loadType(componentStr);
                 argType = Array.newInstance(componentCls, 0).getClass();
             } else if (splitArg.startsWith("[L") && splitArg.endsWith(";")) {
-                String componentStr = splitArg.substring(2, splitArg.length() - 1);
-                Class<?> componentCls = StringConvert.loadType(componentStr);
+                var componentStr = splitArg.substring(2, splitArg.length() - 1);
+                var componentCls = StringConvert.loadType(componentStr);
                 argType = Array.newInstance(componentCls, 0).getClass();
             } else {
                 argType = doParse(splitArg);
@@ -122,10 +122,10 @@ final class TypeUtils {
 
     // split by comma, handling nested generified types
     private static List<String> split(String str) {
-        List<String> result = new ArrayList<String>();
-        int genericCount = 0;
-        int startPos = 0;
-        for (int i = 0; i < str.length(); i++) {
+        var result = new ArrayList<String>();
+        var genericCount = 0;
+        var startPos = 0;
+        for (var i = 0; i < str.length(); i++) {
             if (str.charAt(i) == ',' && genericCount == 0) {
                 result.add(str.substring(startPos, i).trim());
                 startPos = i + 1;

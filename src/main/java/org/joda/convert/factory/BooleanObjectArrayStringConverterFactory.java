@@ -74,9 +74,9 @@ public final class BooleanObjectArrayStringConverterFactory implements StringCon
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length);
-                for (int i = 0; i < array.length; i++) {
-                    buf.append(array[i] == null ? '-' : (array[i].booleanValue() ? 'T' : 'F'));
+                var buf = new StringBuilder(array.length);
+                for (var element : array) {
+                    buf.append(element == null ? '-' : (element.booleanValue() ? 'T' : 'F'));
                 }
                 return buf.toString();
             }
@@ -85,9 +85,9 @@ public final class BooleanObjectArrayStringConverterFactory implements StringCon
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                Boolean[] array = new Boolean[str.length()];
-                for (int i = 0; i < array.length; i++) {
-                    char ch = str.charAt(i);
+                var array = new Boolean[str.length()];
+                for (var i = 0; i < array.length; i++) {
+                    var ch = str.charAt(i);
                     if (ch == 'T') {
                         array[i] = Boolean.TRUE;
                     } else if (ch == 'F') {

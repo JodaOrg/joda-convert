@@ -88,9 +88,9 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
+                var buf = new StringBuilder(array.length * 8);
                 buf.append(array[0]);
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i]);
                 }
                 return buf.toString();
@@ -100,10 +100,10 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                long[] array = new long[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new long[str.length() / 2 + 1];
                 while (sep >= 0) {
                     array[count++] = Long.parseLong(str.substring(base, sep));
                     base = sep + 1;
@@ -128,9 +128,9 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 6);
+                var buf = new StringBuilder(array.length * 6);
                 buf.append(array[0]);
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i]);
                 }
                 return buf.toString();
@@ -140,10 +140,10 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                int[] array = new int[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new int[str.length() / 2 + 1];
                 while (sep >= 0) {
                     array[count++] = Integer.parseInt(str.substring(base, sep));
                     base = sep + 1;
@@ -168,9 +168,9 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 3);
+                var buf = new StringBuilder(array.length * 3);
                 buf.append(array[0]);
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i]);
                 }
                 return buf.toString();
@@ -180,10 +180,10 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                short[] array = new short[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new short[str.length() / 2 + 1];
                 while (sep >= 0) {
                     array[count++] = Short.parseShort(str.substring(base, sep));
                     base = sep + 1;
@@ -208,9 +208,9 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
+                var buf = new StringBuilder(array.length * 8);
                 buf.append(array[0]);
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i]);
                 }
                 return buf.toString();
@@ -220,10 +220,10 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                double[] array = new double[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new double[str.length() / 2 + 1];
                 while (sep >= 0) {
                     array[count++] = Double.parseDouble(str.substring(base, sep));
                     base = sep + 1;
@@ -248,9 +248,9 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
+                var buf = new StringBuilder(array.length * 8);
                 buf.append(array[0]);
-                for (int i = 1; i < array.length; i++) {
+                for (var i = 1; i < array.length; i++) {
                     buf.append(',').append(array[i]);
                 }
                 return buf.toString();
@@ -260,10 +260,10 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                int count = 0;
-                int base = 0;
-                int sep = str.indexOf(',');
-                float[] array = new float[str.length() / 2 + 1];
+                var count = 0;
+                var base = 0;
+                var sep = str.indexOf(',');
+                var array = new float[str.length() / 2 + 1];
                 while (sep >= 0) {
                     array[count++] = Float.parseFloat(str.substring(base, sep));
                     base = sep + 1;

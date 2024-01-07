@@ -62,7 +62,7 @@ public final class StringConvert {
     /**
      * The cached null object. Ensure this is above public constants.
      */
-    private static final TypedStringConverter<?> CACHED_NULL = new TypedStringConverter<Object>() {
+    private static final TypedStringConverter<?> CACHED_NULL = new TypedStringConverter<>() {
         @Override
         public String convertToString(Object object) {
             return null;
@@ -87,15 +87,15 @@ public final class StringConvert {
     /**
      * The list of factories.
      */
-    private final CopyOnWriteArrayList<StringConverterFactory> factories = new CopyOnWriteArrayList<StringConverterFactory>();
+    private final CopyOnWriteArrayList<StringConverterFactory> factories = new CopyOnWriteArrayList<>();
     /**
      * The cache of converters.
      */
-    private final ConcurrentMap<Class<?>, TypedStringConverter<?>> registered = new ConcurrentHashMap<Class<?>, TypedStringConverter<?>>();
+    private final ConcurrentMap<Class<?>, TypedStringConverter<?>> registered = new ConcurrentHashMap<>();
     /**
      * The cache of from-strings.
      */
-    private final ConcurrentMap<Class<?>, FromStringConverter<?>> fromStrings = new ConcurrentHashMap<Class<?>, FromStringConverter<?>>();
+    private final ConcurrentMap<Class<?>, FromStringConverter<?>> fromStrings = new ConcurrentHashMap<>();
 
     //-----------------------------------------------------------------------
     /**
@@ -160,13 +160,13 @@ public final class StringConvert {
         if (factories == null) {
             throw new IllegalArgumentException("StringConverterFactory array must not be null");
         }
-        for (int i = 0; i < factories.length; i++) {
-            if (factories[i] == null) {
+        for (var factory : factories) {
+            if (factory == null) {
                 throw new IllegalArgumentException("StringConverterFactory array must not contain a null element");
             }
         }
         if (includeJdkConverters) {
-            for (JDKStringConverter conv : JDKStringConverter.values()) {
+            for (var conv : JDKStringConverter.values()) {
                 registered.put(conv.getType(), conv);
             }
             registered.put(Boolean.TYPE, JDKStringConverter.BOOLEAN);
@@ -203,14 +203,14 @@ public final class StringConvert {
             // to access Guava this module must add a read edge to the module graph
             // but since this code is written for Java 6, we have to do this by reflection
             // yuck
-            Class<?> moduleClass = Class.class.getMethod("getModule").getReturnType();
-            Object convertModule = Class.class.getMethod("getModule").invoke(StringConvert.class);
-            Object layer = convertModule.getClass().getMethod("getLayer").invoke(convertModule);
+            var moduleClass = Class.class.getMethod("getModule").getReturnType();
+            var convertModule = Class.class.getMethod("getModule").invoke(StringConvert.class);
+            var layer = convertModule.getClass().getMethod("getLayer").invoke(convertModule);
             if (layer != null) {
-                Object optGuava = layer.getClass().getMethod("findModule", String.class).invoke(layer, "com.google.common");
+                var optGuava = layer.getClass().getMethod("findModule", String.class).invoke(layer, "com.google.common");
                 boolean found = (Boolean) optGuava.getClass().getMethod("isPresent").invoke(optGuava);
                 if (found) {
-                    Object guavaModule = optGuava.getClass().getMethod("get").invoke(optGuava);
+                    var guavaModule = optGuava.getClass().getMethod("get").invoke(optGuava);
                     moduleClass.getMethod("addReads", moduleClass).invoke(convertModule, guavaModule);
                 }
             }
@@ -225,7 +225,7 @@ public final class StringConvert {
             // if we have created a read edge, or if we are on the classpath, this will succeed
             loadType("com.google.common.reflect.TypeToken");
             @SuppressWarnings("unchecked")
-            Class<?> cls = loadType("org.joda.convert.TypeTokenStringConverter");
+            var cls = loadType("org.joda.convert.TypeTokenStringConverter");
             TypedStringConverter<?> conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
             registered.put(conv.getEffectiveType(), conv);
 
@@ -243,17 +243,17 @@ public final class StringConvert {
         try {
             loadType("java.util.OptionalInt");
             @SuppressWarnings("unchecked")
-            Class<?> cls1 = loadType("org.joda.convert.OptionalIntStringConverter");
+            var cls1 = loadType("org.joda.convert.OptionalIntStringConverter");
             TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.getDeclaredConstructor().newInstance();
             registered.put(conv1.getEffectiveType(), conv1);
 
             @SuppressWarnings("unchecked")
-            Class<?> cls2 = loadType("org.joda.convert.OptionalLongStringConverter");
+            var cls2 = loadType("org.joda.convert.OptionalLongStringConverter");
             TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
             registered.put(conv2.getEffectiveType(), conv2);
 
             @SuppressWarnings("unchecked")
-            Class<?> cls3 = loadType("org.joda.convert.OptionalDoubleStringConverter");
+            var cls3 = loadType("org.joda.convert.OptionalDoubleStringConverter");
             TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.getDeclaredConstructor().newInstance();
             registered.put(conv3.getEffectiveType(), conv3);
 
@@ -278,7 +278,7 @@ public final class StringConvert {
             }
         }
         try {
-            TimeZone zone = TimeZone.getDefault();
+            var zone = TimeZone.getDefault();
             registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
 
         } catch (Throwable ex) {
@@ -287,7 +287,7 @@ public final class StringConvert {
             }
         }
         try {
-            TimeZone zone = TimeZone.getTimeZone("Europe/London");
+            var zone = TimeZone.getTimeZone("Europe/London");
             registered.put(zone.getClass(), JDKStringConverter.TIME_ZONE);
 
         } catch (Throwable ex) {
@@ -389,7 +389,7 @@ public final class StringConvert {
      * @throws ClassNotFoundException if the class does not exist
      */
     private void tryRegister(String className, String fromStringMethodName) throws ClassNotFoundException {
-        Class<?> cls = loadType(className);
+        var cls = loadType(className);
         registerMethods(cls, "toString", fromStringMethodName);
     }
 
@@ -407,8 +407,8 @@ public final class StringConvert {
         if (object == null) {
             return null;
         }
-        Class<?> cls = object.getClass();
-        StringConverter<Object> conv = findConverterNoGenerics(cls);
+        var cls = object.getClass();
+        var conv = findConverterNoGenerics(cls);
         return conv.convertToString(object);
     }
 
@@ -427,7 +427,7 @@ public final class StringConvert {
         if (object == null) {
             return null;
         }
-        StringConverter<Object> conv = findConverterNoGenerics(cls);
+        var conv = findConverterNoGenerics(cls);
         return conv.convertToString(object);
     }
 
@@ -446,7 +446,7 @@ public final class StringConvert {
         if (str == null) {
             return null;
         }
-        FromStringConverter<T> conv = findFromStringConverter(cls);
+        var conv = findFromStringConverter(cls);
         return conv.convertFromString(cls, str);
     }
 
@@ -538,7 +538,7 @@ public final class StringConvert {
      * @since 1.7
      */
     public <T> TypedStringConverter<T> findTypedConverter(final Class<T> cls) {
-        TypedStringConverter<T> conv = findConverterQuiet(cls);
+        var conv = findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
         }
@@ -572,7 +572,7 @@ public final class StringConvert {
      */
     @SuppressWarnings("unchecked")
     public TypedStringConverter<Object> findTypedConverterNoGenerics(final Class<?> cls) {
-        TypedStringConverter<Object> conv = (TypedStringConverter<Object>) findConverterQuiet(cls);
+        var conv = (TypedStringConverter<Object>) findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
         }
@@ -594,9 +594,9 @@ public final class StringConvert {
      */
     @SuppressWarnings("unchecked")
     public <T> FromStringConverter<T> findFromStringConverter(final Class<T> cls) {
-        TypedStringConverter<T> converter = findConverterQuiet(cls);
+        var converter = findConverterQuiet(cls);
         if (converter == null) {
-            FromStringConverter<T> fromStringConverter = (FromStringConverter<T>) fromStrings.get(cls);
+            var fromStringConverter = (FromStringConverter<T>) fromStrings.get(cls);
             if (fromStringConverter == null) {
                 throw new IllegalStateException("No registered converter found: " + cls);
             }
@@ -610,7 +610,7 @@ public final class StringConvert {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
-        TypedStringConverter<T> conv = (TypedStringConverter<T>) registered.get(cls);
+        var conv = (TypedStringConverter<T>) registered.get(cls);
         if (conv == CACHED_NULL) {
             return null;
         }
@@ -624,7 +624,7 @@ public final class StringConvert {
             if (conv == null) {
                 registered.putIfAbsent(cls, CACHED_NULL);
                 // search for from-string only converters now, so that our cache is accurate for all kinds of converter
-                TypedFromStringConverter<T> fromString = AnnotationStringConverterFactory.INSTANCE.findFromStringConverter(cls);
+                var fromString = AnnotationStringConverterFactory.INSTANCE.findFromStringConverter(cls);
                 if (fromString != null) {
                     fromStrings.put(cls, fromString);
                 }
@@ -646,8 +646,8 @@ public final class StringConvert {
     @SuppressWarnings("unchecked")
     private <T> TypedStringConverter<T> lookupConverter(final Class<T> cls) {
         // check factories
-        for (StringConverterFactory factory : factories) {
-            StringConverter<T> factoryConv = (StringConverter<T>) factory.findConverter(cls);
+        for (var factory : factories) {
+            var factoryConv = (StringConverter<T>) factory.findConverter(cls);
             if (factoryConv != null) {
                 return TypedAdapter.adapt(cls, factoryConv);
             }
@@ -773,10 +773,10 @@ public final class StringConvert {
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
-        Method toString = findToStringMethod(cls, toStringMethodName);
-        Method fromString = findFromStringMethod(cls, fromStringMethodName);
-        TypedFromStringConverter<T> fromStringConverter = new MethodFromStringConverter<T>(cls, fromString, cls);
-        ReflectionStringConverter<T> converter = new ReflectionStringConverter<T>(cls, toString, fromStringConverter);
+        var toString = findToStringMethod(cls, toStringMethodName);
+        var fromString = findFromStringMethod(cls, fromStringMethodName);
+        var fromStringConverter = new MethodFromStringConverter<>(cls, fromString, cls);
+        var converter = new ReflectionStringConverter<>(cls, toString, fromStringConverter);
         registered.putIfAbsent(cls, converter);
     }
 
@@ -808,10 +808,10 @@ public final class StringConvert {
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
-        Method toString = findToStringMethod(cls, toStringMethodName);
-        Constructor<T> fromString = findFromStringConstructorByType(cls);
-        TypedFromStringConverter<T> fromStringConverter = new ConstructorFromStringConverter<T>(cls, fromString);
-        ReflectionStringConverter<T> converter = new ReflectionStringConverter<T>(cls, toString, fromStringConverter);
+        var toString = findToStringMethod(cls, toStringMethodName);
+        var fromString = findFromStringConstructorByType(cls);
+        var fromStringConverter = new ConstructorFromStringConverter<>(cls, fromString);
+        var converter = new ReflectionStringConverter<>(cls, toString, fromStringConverter);
         registered.putIfAbsent(cls, converter);
     }
 
@@ -823,16 +823,15 @@ public final class StringConvert {
      * @return the method to call, null means use {@code toString}
      */
     private Method findToStringMethod(Class<?> cls, String methodName) {
-        Method m;
         try {
-            m = cls.getMethod(methodName);
+            var m = cls.getMethod(methodName);
+            if (Modifier.isStatic(m.getModifiers())) {
+                throw new IllegalArgumentException("Method must not be static: " + methodName);
+            }
+            return m;
         } catch (NoSuchMethodException ex) {
             throw new IllegalArgumentException(ex);
         }
-        if (Modifier.isStatic(m.getModifiers())) {
-            throw new IllegalArgumentException("Method must not be static: " + methodName);
-        }
-        return m;
     }
 
     /**
@@ -882,7 +881,7 @@ public final class StringConvert {
     // loads a type avoiding nulls, context class loader if available
     static Class<?> loadType(String fullName) throws ClassNotFoundException {
         try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            var loader = Thread.currentThread().getContextClassLoader();
             return loader != null && !fullName.startsWith("[") ? loader.loadClass(fullName) : Class.forName(fullName);
         } catch (ClassNotFoundException ex) {
             return loadPrimitiveType(fullName, ex);

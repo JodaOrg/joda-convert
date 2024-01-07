@@ -77,12 +77,12 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length * 8);
-                for (int i = 0; i < array.length; i++) {
-                    if (array[i] == null) {
+                var buf = new StringBuilder(array.length * 8);
+                for (var element : array) {
+                    if (element == null) {
                         buf.append("\\-");
                     } else {
-                        char ch = array[i].charValue();
+                        var ch = element.charValue();
                         if (ch == '\\') {
                             buf.append("\\\\");
                         } else {
@@ -97,12 +97,12 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
                 if (str.length() == 0) {
                     return EMPTY;
                 }
-                String adjusted = str;
-                Character[] array = new Character[adjusted.length()];
-                int arrayPos = 0;
+                var adjusted = str;
+                var array = new Character[adjusted.length()];
+                var arrayPos = 0;
                 int pos;
                 while ((pos = adjusted.indexOf('\\')) >= 0) {
-                    for (int i = 0; i < pos; i++) {
+                    for (var i = 0; i < pos; i++) {
                         array[arrayPos++] = adjusted.charAt(i);
                     }
                     if (adjusted.charAt(pos + 1) == '\\') {
@@ -114,7 +114,7 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
                     }
                     adjusted = adjusted.substring(pos + 2);
                 }
-                for (int i = 0; i < adjusted.length(); i++) {
+                for (var i = 0; i < adjusted.length(); i++) {
                     array[arrayPos++] = adjusted.charAt(i);
                 }
                 return Arrays.copyOf(array, arrayPos);

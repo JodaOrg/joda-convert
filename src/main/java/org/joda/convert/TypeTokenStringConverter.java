@@ -53,7 +53,7 @@ final class TypeTokenStringConverter
 
     @Override
     public Object convertFromString(Class<?> cls, String str) {
-        Type parsed = TypeUtils.parse(str);
+        var parsed = TypeUtils.parse(str);
         try {
             return TYPE_TOKEN_METHOD_OF.invoke(null, parsed);
         } catch (Exception ex) {

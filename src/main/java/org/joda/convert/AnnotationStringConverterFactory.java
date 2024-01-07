@@ -60,7 +60,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @throws RuntimeException if none found
      */
     private <T> StringConverter<T> findAnnotatedConverter(Class<T> cls) {
-        Method toString = findToStringMethod(cls);  // checks superclasses
+        var toString = findToStringMethod(cls);  // checks superclasses
         if (toString == null) {
             return null;
         }
@@ -68,7 +68,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         if (fromString == null) {
             throw new IllegalStateException("Class annotated with @ToString but not with @FromString: " + cls.getName());
         }
-        return new ReflectionStringConverter<T>(cls, toString, fromString);
+        return new ReflectionStringConverter<>(cls, toString, fromString);
     }
 
     /**
@@ -92,8 +92,8 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @throws RuntimeException if none found
      */
     private <T> TypedFromStringConverter<T> findAnnotatedFromStringConverter(Class<T> cls) {
-        TypedFromStringConverter<T> con = findFromStringConstructor(cls);
-        TypedFromStringConverter<T> mth = findFromStringMethod(cls, con == null);  // optionally checks superclasses
+        var con = findFromStringConstructor(cls);
+        var mth = findFromStringMethod(cls, con == null);  // optionally checks superclasses
         if (con != null && mth != null) {
             throw new IllegalStateException("Both method and constructor are annotated with @FromString: " + cls.getName());
         }
@@ -113,10 +113,10 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         // find in superclass hierarchy
         Class<?> loopCls = cls;
         while (loopCls != null && matched == null) {
-            Method[] methods = loopCls.getDeclaredMethods();
-            for (Method method : methods) {
+            var methods = loopCls.getDeclaredMethods();
+            for (var method : methods) {
                 if (!method.isBridge() && !method.isSynthetic()) {
-                    ToString toString = method.getAnnotation(ToString.class);
+                    var toString = method.getAnnotation(ToString.class);
                     if (toString != null) {
                         if (matched != null) {
                             throw new IllegalStateException("Two methods are annotated with @ToString: " + cls.getName());
@@ -129,11 +129,11 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         }
         // find in immediate parent interfaces
         if (matched == null) {
-            for (Class<?> loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
-                Method[] methods = loopIfc.getDeclaredMethods();
-                for (Method method : methods) {
+            for (var loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
+                var methods = loopIfc.getDeclaredMethods();
+                for (var method : methods) {
                     if (!method.isBridge() && !method.isSynthetic()) {
-                        ToString toString = method.getAnnotation(ToString.class);
+                        var toString = method.getAnnotation(ToString.class);
                         if (toString != null) {
                             if (matched != null) {
                                 throw new IllegalStateException("Two methods are annotated with @ToString on interfaces: " + cls.getName());
@@ -167,11 +167,11 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
                 return null;
             }
         }
-        FromString fromString = con.getAnnotation(FromString.class);
+        var fromString = con.getAnnotation(FromString.class);
         if (fromString == null) {
             return null;
         }
-        return new ConstructorFromStringConverter<T>(cls, con);
+        return new ConstructorFromStringConverter<>(cls, con);
     }
 
     /**
@@ -186,9 +186,9 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         // find in superclass hierarchy
         Class<?> loopCls = cls;
         while (loopCls != null) {
-            Method fromString = findFromString(loopCls);
+            var fromString = findFromString(loopCls);
             if (fromString != null) {
-                return new MethodFromStringConverter<T>(cls, fromString, loopCls);
+                return new MethodFromStringConverter<>(cls, fromString, loopCls);
             }
             if (searchSuperclasses == false) {
                 break;
@@ -198,14 +198,14 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
         // find in immediate parent interfaces
         TypedFromStringConverter<T> matched = null;
         if (searchSuperclasses) {
-            for (Class<?> loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
-                Method fromString = findFromString(loopIfc);
+            for (var loopIfc : eliminateEnumSubclass(cls).getInterfaces()) {
+                var fromString = findFromString(loopIfc);
                 if (fromString != null) {
                     if (matched != null) {
                         throw new IllegalStateException("Two different interfaces are annotated with " +
                             "@FromString or @FromStringFactory: " + cls.getName());
                     }
-                    matched = new MethodFromStringConverter<T>(cls, fromString, loopIfc);
+                    matched = new MethodFromStringConverter<>(cls, fromString, loopIfc);
                 }
             }
         }
@@ -222,11 +222,11 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      */
     private Method findFromString(Class<?> cls) {
         // find in declared methods
-        Method[] methods = cls.getDeclaredMethods();
+        var methods = cls.getDeclaredMethods();
         Method matched = null;
-        for (Method method : methods) {
+        for (var method : methods) {
             if (!method.isBridge() && !method.isSynthetic()) {
-                FromString fromString = method.getAnnotation(FromString.class);
+                var fromString = method.getAnnotation(FromString.class);
                 if (fromString != null) {
                     if (matched != null) {
                         throw new IllegalStateException("Two methods are annotated with @FromString: " + cls.getName());
@@ -236,17 +236,17 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             }
         }
         // check for factory
-        FromStringFactory factory = cls.getAnnotation(FromStringFactory.class);
+        var factory = cls.getAnnotation(FromStringFactory.class);
         if (factory != null) {
             if (matched != null) {
                 throw new IllegalStateException("Class annotated with @FromString and @FromStringFactory: " + cls.getName());
             }
-            Method[] factoryMethods = factory.factory().getDeclaredMethods();
-            for (Method method : factoryMethods) {
+            var factoryMethods = factory.factory().getDeclaredMethods();
+            for (var method : factoryMethods) {
                 if (!method.isBridge() && !method.isSynthetic()) {
                     // handle factory containing multiple FromString for different types
                     if (cls.isAssignableFrom(method.getReturnType())) {
-                        FromString fromString = method.getAnnotation(FromString.class);
+                        var fromString = method.getAnnotation(FromString.class);
                         if (fromString != null) {
                             if (matched != null) {
                                 throw new IllegalStateException("Two methods are annotated with @FromString on the factory: " + factory.factory().getName());
@@ -262,7 +262,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
 
     // eliminates enum subclass as they are pesky
     private Class<?> eliminateEnumSubclass(Class<?> cls) {
-        Class<?> sup = cls.getSuperclass();
+        var sup = cls.getSuperclass();
         if (sup != null && sup.getSuperclass() == Enum.class) {
             return sup;
         }

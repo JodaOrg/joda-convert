@@ -211,7 +211,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     ATOMIC_LONG(AtomicLong.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            long val = Long.parseLong(str);
+            var val = Long.parseLong(str);
             return new AtomicLong(val);
         }
     },
@@ -221,7 +221,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     ATOMIC_INTEGER(AtomicInteger.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            int val = Integer.parseInt(str);
+            var val = Integer.parseInt(str);
             return new AtomicInteger(val);
         }
     },
@@ -246,7 +246,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     LOCALE(Locale.class) {
         @Override
         public Object convertFromString(Class<?> cls, String str) {
-            String[] split = str.split("_", 3);
+            var split = str.split("_", 3);
             switch (split.length) {
                 case 1:
                     return new Locale(split[0]);
@@ -373,8 +373,8 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     DATE(Date.class) {
         @Override
         public String convertToString(Object object) {
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            String str = f.format(object);
+            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            var str = format.format(object);
             return str.substring(0, 26) + ":" + str.substring(26);
         }
         @Override
@@ -382,10 +382,10 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             if (str.length() != 29) {
                 throw new IllegalArgumentException("Unable to parse date: " + str);
             }
-            String str2 = str.substring(0, 26) + str.substring(27);
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            var str2 = str.substring(0, 26) + str.substring(27);
+            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             try {
-                return f.parseObject(str2);
+                return format.parseObject(str2);
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
@@ -400,10 +400,10 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             if (object instanceof GregorianCalendar == false) {
                 throw new RuntimeException("Unable to convert calendar as it is not a GregorianCalendar");
             }
-            GregorianCalendar cal = (GregorianCalendar) object;
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            f.setCalendar(cal);
-            String str = f.format(cal.getTime());
+            var cal = (GregorianCalendar) object;
+            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            format.setCalendar(cal);
+            var str = format.format(cal.getTime());
             return str.substring(0, 26) + ":" + str.substring(26) + "[" + cal.getTimeZone().getID() + "]";
         }
         @Override
@@ -412,15 +412,15 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
                     || str.charAt(29) != '[' || str.charAt(str.length() - 1) != ']') {
                 throw new IllegalArgumentException("Unable to parse date: " + str);
             }
-            TimeZone zone = TimeZone.getTimeZone(str.substring(30, str.length() - 1));
-            String str2 = str.substring(0, 26) + str.substring(27, 29);
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            GregorianCalendar cal = new GregorianCalendar(zone);
+            var zone = TimeZone.getTimeZone(str.substring(30, str.length() - 1));
+            var str2 = str.substring(0, 26) + str.substring(27, 29);
+            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            var cal = new GregorianCalendar(zone);
             cal.setTimeInMillis(0);
-            f.setCalendar(cal);
+            format.setCalendar(cal);
             try {
-                f.parseObject(str2);
-                return f.getCalendar();
+                format.parseObject(str2);
+                return format.getCalendar();
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
@@ -469,25 +469,25 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     private static final int MASK_6BIT = 0x3f;
 
     private static String printBase64Binary(byte[] array) {
-        int len = array.length;
-        char[] buf = new char[((len + 2) / 3) * 4];
-        int pos = 0;
-        for (int i = 0; i < len; i += 3) {
-            int remaining = len - i;
+        var len = array.length;
+        var buf = new char[((len + 2) / 3) * 4];
+        var pos = 0;
+        for (var i = 0; i < len; i += 3) {
+            var remaining = len - i;
             if (remaining >= 3) {
-                int bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8 | (array[i + 2] & MASK_8BIT);
+                var bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8 | (array[i + 2] & MASK_8BIT);
                 buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
                 buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
                 buf[pos++] = base64Array[(bits >>> 6) & MASK_6BIT];
                 buf[pos++] = base64Array[bits & MASK_6BIT];
             } else if (remaining == 2) {
-                int bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8;
+                var bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8;
                 buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
                 buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
                 buf[pos++] = base64Array[(bits >>> 6) & MASK_6BIT];
                 buf[pos++] = '=';
             } else {
-                int bits = (array[i] & MASK_8BIT) << 16;
+                var bits = (array[i] & MASK_8BIT) << 16;
                 buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
                 buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
                 buf[pos++] = '=';
@@ -503,12 +503,12 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             throw new IllegalArgumentException("Invalid Base64 string");
         }
         // base64Str has 65 characters, with '=' at the end which is masked away
-        int parsedLen = (str.length() * 3) / 4;
-        byte[] decoded = new byte[parsedLen];
-        char[] inChars = str.toCharArray();
-        int pos = 0;
-        for (int i = 0; i < inChars.length; ) {
-            int bits = (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 18 |
+        var parsedLen = (str.length() * 3) / 4;
+        var decoded = new byte[parsedLen];
+        var inChars = str.toCharArray();
+        var pos = 0;
+        for (var i = 0; i < inChars.length; ) {
+            var bits = (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 18 |
                             (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 12 |
                             (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 6 |
                             (base64Str.indexOf(inChars[i++]) & MASK_6BIT);
@@ -518,11 +518,11 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         }
         // fixup avoiding Arrays.copyRange
         if (str.endsWith("==")) {
-            byte[] result = new byte[parsedLen - 2];
+            var result = new byte[parsedLen - 2];
             System.arraycopy(decoded, 0, result, 0, parsedLen - 2);
             return result;
         } else if (str.endsWith("=")) {
-            byte[] result = new byte[parsedLen - 1];
+            var result = new byte[parsedLen - 1];
             System.arraycopy(decoded, 0, result, 0, parsedLen - 1);
             return result;
         }

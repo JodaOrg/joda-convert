@@ -74,12 +74,12 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
                 if (array.length == 0) {
                     return "";
                 }
-                StringBuilder buf = new StringBuilder(array.length);
-                for (int i = 0; i < array.length; i++) {
-                    if (array[i] == null) {
+                var buf = new StringBuilder(array.length);
+                for (var element : array) {
+                    if (element == null) {
                         buf.append('-').append('-');
                     } else {
-                        int b = array[i].byteValue();
+                        int b = element.byteValue();
                         buf.append(HEX.charAt((b & 0xF0) >>> 4)).append(HEX.charAt(b & 0x0F));
                     }
                 }
@@ -93,9 +93,9 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
                 if (str.length() % 2 == 1) {
                     throw new IllegalArgumentException("Invalid Byte[] string");
                 }
-                Byte[] array = new Byte[str.length() / 2];
-                for (int i = 0; i < array.length; i++) {
-                    String in = str.substring(i * 2, i * 2 + 2);
+                var array = new Byte[str.length() / 2];
+                for (var i = 0; i < array.length; i++) {
+                    var in = str.substring(i * 2, i * 2 + 2);
                     if (in.equals("--")) {
                         array[i] = null;
                     } else {
