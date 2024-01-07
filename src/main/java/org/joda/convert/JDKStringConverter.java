@@ -30,6 +30,9 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -424,6 +427,51 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
+        }
+    },
+    /**
+     * OptionalInt converter.
+     */
+    OPTIONAL_INT(OptionalInt.class) {
+        @Override
+        public String convertToString(Object object) {
+            var optional = (OptionalInt) object;
+            return optional.isEmpty() ? "" : Integer.toString(optional.getAsInt());
+        }
+
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return "".equals(str) ? OptionalInt.empty() : OptionalInt.of(Integer.parseInt(str));
+        }
+    },
+    /**
+     * OptionalLong converter.
+     */
+    OPTIONAL_LONG(OptionalLong.class) {
+        @Override
+        public String convertToString(Object object) {
+            var optional = (OptionalLong) object;
+            return optional.isEmpty() ? "" : Long.toString(optional.getAsLong());
+        }
+
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return "".equals(str) ? OptionalLong.empty() : OptionalLong.of(Long.parseLong(str));
+        }
+    },
+    /**
+     * OptionalDouble converter.
+     */
+    OPTIONAL_DOUBLE(OptionalDouble.class) {
+        @Override
+        public String convertToString(Object object) {
+            var optional = (OptionalDouble) object;
+            return optional.isEmpty() ? "" : Double.toString(optional.getAsDouble());
+        }
+
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return "".equals(str) ? OptionalDouble.empty() : OptionalDouble.of(Double.parseDouble(str));
         }
     },
     ;

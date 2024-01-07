@@ -178,7 +178,6 @@ public final class StringConvert {
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
             tryRegisterGuava();
-            tryRegisterJava8Optionals();
             tryRegisterTimeZone();
             tryRegisterJava8();
             tryRegisterThreeTenBackport();
@@ -232,34 +231,6 @@ public final class StringConvert {
         } catch (Throwable ex) {
             if (LOG) {
                 System.err.println("tryRegisterGuava2: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register the Java 8 optional classes.
-     */
-    private void tryRegisterJava8Optionals() {
-        try {
-            loadType("java.util.OptionalInt");
-            @SuppressWarnings("unchecked")
-            var cls1 = loadType("org.joda.convert.OptionalIntStringConverter");
-            TypedStringConverter<?> conv1 = (TypedStringConverter<?>) cls1.getDeclaredConstructor().newInstance();
-            registered.put(conv1.getEffectiveType(), conv1);
-
-            @SuppressWarnings("unchecked")
-            var cls2 = loadType("org.joda.convert.OptionalLongStringConverter");
-            TypedStringConverter<?> conv2 = (TypedStringConverter<?>) cls2.getDeclaredConstructor().newInstance();
-            registered.put(conv2.getEffectiveType(), conv2);
-
-            @SuppressWarnings("unchecked")
-            var cls3 = loadType("org.joda.convert.OptionalDoubleStringConverter");
-            TypedStringConverter<?> conv3 = (TypedStringConverter<?>) cls3.getDeclaredConstructor().newInstance();
-            registered.put(conv3.getEffectiveType(), conv3);
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterOptionals: " + ex);
             }
         }
     }
