@@ -25,6 +25,20 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -427,6 +441,132 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
+        }
+    },
+    /**
+     * Instant converter.
+     */
+    INSTANT(Instant.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return Instant.parse(str);
+        }
+    },
+    /**
+     * Duration converter.
+     */
+    DURATION(Duration.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return Duration.parse(str);
+        }
+    },
+    /**
+     * LocalDate converter.
+     */
+    LOCAL_DATE(LocalDate.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return LocalDate.parse(str);
+        }
+    },
+    /**
+     * LocalTime converter.
+     */
+    LOCAL_TIME(LocalTime.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return LocalTime.parse(str);
+        }
+    },
+    /**
+     * LocalDateTime converter.
+     */
+    LOCAL_DATE_TIME(LocalDateTime.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return LocalDateTime.parse(str);
+        }
+    },
+    /**
+     * OffsetTime converter.
+     */
+    OFFSET_TIME(OffsetTime.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return OffsetTime.parse(str);
+        }
+    },
+    /**
+     * OffsetDateTime converter.
+     */
+    OFFSET_DATE_TIME(OffsetDateTime.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return OffsetDateTime.parse(str);
+        }
+    },
+    /**
+     * ZonedDateTime converter.
+     */
+    ZONED_DATE_TIME(ZonedDateTime.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return ZonedDateTime.parse(str);
+        }
+    },
+    /**
+     * Year converter.
+     */
+    YEAR(Year.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return Year.parse(str);
+        }
+    },
+    /**
+     * YearMonth converter.
+     */
+    YEAR_MONTH(YearMonth.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return YearMonth.parse(str);
+        }
+    },
+    /**
+     * MonthDay converter.
+     */
+    MONTH_DAY(MonthDay.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return MonthDay.parse(str);
+        }
+    },
+    /**
+     * Period converter.
+     */
+    PERIOD(Period.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return Period.parse(str);
+        }
+    },
+    /**
+     * ZoneOffset converter.
+     */
+    ZONE_OFFSET(ZoneOffset.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return ZoneOffset.of(str);
+        }
+    },
+    /**
+     * ZoneId converter.
+     */
+    ZONE_ID(ZoneId.class) {
+        @Override
+        public Object convertFromString(Class<?> cls, String str) {
+            return ZoneId.of(str);
         }
     },
     /**

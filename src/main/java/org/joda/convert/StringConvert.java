@@ -18,6 +18,7 @@ package org.joda.convert;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.SimpleTimeZone;
@@ -179,10 +180,8 @@ public final class StringConvert {
             registered.put(Double.TYPE, JDKStringConverter.DOUBLE);
             registered.put(Character.TYPE, JDKStringConverter.CHARACTER);
             tryRegisterGuava();
-            tryRegisterTimeZone();
-            tryRegisterJava8();
+            tryRegisterZoneSubclasses();
             tryRegisterThreeTenBackport();
-            tryRegisterThreeTenOld();
         }
         if (factories.length > 0) {
             this.factories.addAll(Arrays.asList(factories));
@@ -227,10 +226,10 @@ public final class StringConvert {
     }
 
     /**
-     * Tries to register the subclasses of TimeZone.
+     * Tries to register the subclasses of TimeZone and ZoneId.
      * Try various things, doesn't matter if the map entry gets overwritten.
      */
-    private void tryRegisterTimeZone() {
+    private void tryRegisterZoneSubclasses() {
         try {
             registered.put(SimpleTimeZone.class, JDKStringConverter.TIME_ZONE);
 
@@ -257,32 +256,13 @@ public final class StringConvert {
                 System.err.println("tryRegisterTimeZone3: " + ex);
             }
         }
-    }
-
-    /**
-     * Tries to register Java 8 classes.
-     */
-    private void tryRegisterJava8() {
         try {
-            tryRegister("java.time.Instant", "parse");
-            tryRegister("java.time.Duration", "parse");
-            tryRegister("java.time.LocalDate", "parse");
-            tryRegister("java.time.LocalTime", "parse");
-            tryRegister("java.time.LocalDateTime", "parse");
-            tryRegister("java.time.OffsetTime", "parse");
-            tryRegister("java.time.OffsetDateTime", "parse");
-            tryRegister("java.time.ZonedDateTime", "parse");
-            tryRegister("java.time.Year", "parse");
-            tryRegister("java.time.YearMonth", "parse");
-            tryRegister("java.time.MonthDay", "parse");
-            tryRegister("java.time.Period", "parse");
-            tryRegister("java.time.ZoneOffset", "of");
-            tryRegister("java.time.ZoneId", "of");
-            tryRegister("java.time.ZoneRegion", "of");
+            var zone = ZoneId.of("Europe/London");
+            registered.put(zone.getClass(), JDKStringConverter.ZONE_ID);
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterJava8: " + ex);
+                System.err.println("tryRegisterTimeZone4: " + ex);
             }
         }
     }
@@ -311,35 +291,6 @@ public final class StringConvert {
         } catch (Throwable ex) {
             if (LOG) {
                 System.err.println("tryRegisterThreeTenBackport: " + ex);
-            }
-        }
-    }
-
-    /**
-     * Tries to register ThreeTen ThreeTen/JSR-310 classes v0.6.3 and beyond.
-     */
-    private void tryRegisterThreeTenOld() {
-        try {
-            tryRegister("javax.time.Instant", "parse");
-            tryRegister("javax.time.Duration", "parse");
-            tryRegister("javax.time.calendar.LocalDate", "parse");
-            tryRegister("javax.time.calendar.LocalTime", "parse");
-            tryRegister("javax.time.calendar.LocalDateTime", "parse");
-            tryRegister("javax.time.calendar.OffsetDate", "parse");
-            tryRegister("javax.time.calendar.OffsetTime", "parse");
-            tryRegister("javax.time.calendar.OffsetDateTime", "parse");
-            tryRegister("javax.time.calendar.ZonedDateTime", "parse");
-            tryRegister("javax.time.calendar.Year", "parse");
-            tryRegister("javax.time.calendar.YearMonth", "parse");
-            tryRegister("javax.time.calendar.MonthDay", "parse");
-            tryRegister("javax.time.calendar.Period", "parse");
-            tryRegister("javax.time.calendar.ZoneOffset", "of");
-            tryRegister("javax.time.calendar.ZoneId", "of");
-            tryRegister("javax.time.calendar.TimeZone", "of");
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterThreeTenOld: " + ex);
             }
         }
     }
