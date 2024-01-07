@@ -791,7 +791,7 @@
     <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
@@ -810,16 +810,16 @@
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-    <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>3.0.0</maven-surefire-report-plugin.version>
+    <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.2.3</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
-    <github-api.version>1.308</github-api.version>
+    <github-api.version>1.318</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
-    <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <revapi-maven-plugin.version>0.11.1</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
-    <spotbugs-maven-plugin.version>4.7.3.4</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.8.2.0</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
