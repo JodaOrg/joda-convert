@@ -38,7 +38,7 @@ public class TestBooleanObjectArrayStringConverterFactory {
     }
 
     private void doTest(Boolean[] array, String str) {
-        StringConvert test = new StringConvert(true, BooleanObjectArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, BooleanObjectArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(Boolean[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(Boolean[].class, str)));

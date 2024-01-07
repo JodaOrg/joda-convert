@@ -44,6 +44,7 @@ import org.junit.Test;
  * Test JDKStringConverters.
  */
 public class TestJDKStringConverters {
+    // avoid var in this class, as precise type checks are useful
 
     @Test
     public void test_String() {
@@ -491,11 +492,11 @@ public class TestJDKStringConverters {
     }
 
     //-----------------------------------------------------------------------
-    public void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str) {
+    private void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str) {
         doTest(test, cls, obj, str, obj);
     }
 
-    public void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str, Object objFromStr) {
+    private void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str, Object objFromStr) {
         assertEquals(cls, test.getType());
         assertEquals(str, test.convertToString(obj));
         assertEquals(objFromStr, test.convertFromString(cls, str));

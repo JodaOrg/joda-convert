@@ -17,6 +17,14 @@ package org.joda.convert;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 import org.junit.Test;
 
 /**
@@ -26,23 +34,21 @@ public class TestJavaTime {
 
     @Test
     public void test_basics() throws ClassNotFoundException {
-        StringConvert test = StringConvert.INSTANCE;
-        // testing on Java 6 so code does not compile
-//        assertEquals("2019-06-30", test.convertToString(LocalDate.of(2019, 6, 30)));
-//        assertEquals("11:45", test.convertToString(LocalTime.of(11, 45)));
-//        assertEquals("2019-06-30T11:45", test.convertToString(LocalDateTime.of(2019, 6, 30, 11, 45)));
-//        assertEquals("2019-06-30T11:45+02:00",
-//                test.convertToString(OffsetDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneOffset.ofHours(2))));
-//        assertEquals("2019-06-30T11:45+02:00[Europe/Paris]",
-//                test.convertToString(ZonedDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneId.of("Europe/Paris"))));
-//        assertEquals("+02:00", test.convertToString(ZoneOffset.ofHours(2)));
-//        assertEquals("Europe/Paris", test.convertToString(ZoneId.of("Europe/Paris")));
-//        assertEquals(ZoneId.of("Europe/Paris"), test.convertFromString(ZoneId.class, "Europe/Paris"));
+        var test = StringConvert.INSTANCE;
+        assertEquals("2019-06-30", test.convertToString(LocalDate.of(2019, 6, 30)));
+        assertEquals("11:45", test.convertToString(LocalTime.of(11, 45)));
+        assertEquals("2019-06-30T11:45", test.convertToString(LocalDateTime.of(2019, 6, 30, 11, 45)));
+        assertEquals("2019-06-30T11:45+02:00",
+                test.convertToString(OffsetDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneOffset.ofHours(2))));
+        assertEquals("2019-06-30T11:45+02:00[Europe/Paris]",
+                test.convertToString(ZonedDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneId.of("Europe/Paris"))));
+        assertEquals("+02:00", test.convertToString(ZoneOffset.ofHours(2)));
+        assertEquals("Europe/Paris", test.convertToString(ZoneId.of("Europe/Paris")));
+        assertEquals(ZoneId.of("Europe/Paris"), test.convertFromString(ZoneId.class, "Europe/Paris"));
 
-        Class<?> zoneIdClass = Class.forName("java.time.ZoneId");
-        assertEquals("Europe/Paris", test.convertFromString(zoneIdClass, "Europe/Paris").toString());
+        assertEquals("Europe/Paris", test.convertFromString(ZoneId.class, "Europe/Paris").toString());
 
-        Class<?> zoneRegionClass = Class.forName("java.time.ZoneRegion");
+        var zoneRegionClass = ZoneId.of("Europe/Paris").getClass();  // ZoneRegion
         assertEquals("Europe/Paris", test.convertFromString(zoneRegionClass, "Europe/Paris").toString());
     }
 

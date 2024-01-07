@@ -38,6 +38,7 @@ import org.junit.Test;
  * Test StringConvert.
  */
 public class TestStringConvert {
+    // avoid var in this class, as precise type checks are useful
 
     @Test
     public void test_constructor() {

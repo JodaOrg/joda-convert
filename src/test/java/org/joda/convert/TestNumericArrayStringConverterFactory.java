@@ -37,7 +37,7 @@ public class TestNumericArrayStringConverterFactory {
     }
 
     private void doTest(long[] array, String str) {
-        StringConvert test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(long[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(long[].class, str)));
@@ -52,7 +52,7 @@ public class TestNumericArrayStringConverterFactory {
     }
 
     private void doTest(int[] array, String str) {
-        StringConvert test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(int[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(int[].class, str)));
@@ -67,7 +67,7 @@ public class TestNumericArrayStringConverterFactory {
     }
 
     private void doTest(short[] array, String str) {
-        StringConvert test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(short[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(short[].class, str)));
@@ -85,7 +85,7 @@ public class TestNumericArrayStringConverterFactory {
     }
 
     private void doTest(double[] array, String str) {
-        StringConvert test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(double[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(double[].class, str)));
@@ -103,7 +103,7 @@ public class TestNumericArrayStringConverterFactory {
     }
 
     private void doTest(float[] array, String str) {
-        StringConvert test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, NumericArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(float[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(float[].class, str)));

@@ -37,7 +37,7 @@ public class TestByteObjectArrayStringConverterFactory {
     }
 
     private void doTest(Byte[] array, String str) {
-        StringConvert test = new StringConvert(true, ByteObjectArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, ByteObjectArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(Byte[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(Byte[].class, str)));

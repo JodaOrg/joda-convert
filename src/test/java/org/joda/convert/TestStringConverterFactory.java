@@ -26,7 +26,7 @@ public class TestStringConverterFactory {
 
     @Test
     public void test_constructor() {
-        StringConvert test = new StringConvert(true, new Factory1());
+        var test = new StringConvert(true, new Factory1());
         assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
@@ -42,14 +42,14 @@ public class TestStringConverterFactory {
 
     @Test
     public void test_registerFactory() {
-        StringConvert test = new StringConvert();
+        var test = new StringConvert();
         test.registerFactory(new Factory1());
         assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void test_registerFactory_null() {
-        StringConvert test = new StringConvert();
+        var test = new StringConvert();
         test.registerFactory(null);
     }
 

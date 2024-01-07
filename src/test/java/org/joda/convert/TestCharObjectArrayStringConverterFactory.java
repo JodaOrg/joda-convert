@@ -40,7 +40,7 @@ public class TestCharObjectArrayStringConverterFactory {
     }
 
     private void doTest(Character[] array, String str) {
-        StringConvert test = new StringConvert(true, CharObjectArrayStringConverterFactory.INSTANCE);
+        var test = new StringConvert(true, CharObjectArrayStringConverterFactory.INSTANCE);
         assertEquals(str, test.convertToString(array));
         assertEquals(str, test.convertToString(Character[].class, array));
         assertTrue(Arrays.equals(array, test.convertFromString(Character[].class, str)));
