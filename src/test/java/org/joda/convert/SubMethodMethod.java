@@ -22,8 +22,8 @@ public class SubMethodMethod extends DistanceMethodMethod {
 
     @FromString
     public static SubMethodMethod parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new SubMethodMethod(Integer.parseInt(amount));
+        String amt = amount.substring(0, amount.length() - 1);
+        return new SubMethodMethod(Integer.parseInt(amt));
     }
 
     public SubMethodMethod(int amount) {

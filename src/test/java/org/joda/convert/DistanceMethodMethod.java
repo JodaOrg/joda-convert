@@ -25,8 +25,8 @@ public class DistanceMethodMethod {
 
     @FromString
     public static DistanceMethodMethod parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new DistanceMethodMethod(Integer.parseInt(amount));
+        String amt = amount.substring(0, amount.length() - 1);
+        return new DistanceMethodMethod(Integer.parseInt(amt));
     }
 
     public DistanceMethodMethod(int amount) {

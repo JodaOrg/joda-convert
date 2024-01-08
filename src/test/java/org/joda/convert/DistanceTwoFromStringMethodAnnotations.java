@@ -29,19 +29,19 @@ public class DistanceTwoFromStringMethodAnnotations {
 
     @FromString
     public static DistanceTwoFromStringMethodAnnotations parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new DistanceTwoFromStringMethodAnnotations(Integer.parseInt(amount));
+        String amt = amount.substring(0, amount.length() - 1);
+        return new DistanceTwoFromStringMethodAnnotations(Integer.parseInt(amt));
     }
 
     @FromString
     public static DistanceTwoFromStringMethodAnnotations parse2(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new DistanceTwoFromStringMethodAnnotations(Integer.parseInt(amount));
+        String amt = amount.substring(0, amount.length() - 1);
+        return new DistanceTwoFromStringMethodAnnotations(Integer.parseInt(amt));
     }
 
     public DistanceTwoFromStringMethodAnnotations(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        this.amount = Integer.parseInt(amount);
+        String amt = amount.substring(0, amount.length() - 1);
+        this.amount = Integer.parseInt(amt);
     }
 
     @ToString

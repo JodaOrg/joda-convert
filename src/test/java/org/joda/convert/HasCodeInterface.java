@@ -17,6 +17,8 @@ package org.joda.convert;
 
 /**
  * A generic interface, for testing.
+ * 
+ * @param <C> the generic type
  */
 public interface HasCodeInterface<C> {
 

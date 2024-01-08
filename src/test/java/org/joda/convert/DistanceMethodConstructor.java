@@ -29,8 +29,8 @@ public class DistanceMethodConstructor {
 
     @FromString
     public DistanceMethodConstructor(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        this.amount = Integer.parseInt(amount);
+        String amt = amount.substring(0, amount.length() - 1);
+        this.amount = Integer.parseInt(amt);
     }
 
     @ToString

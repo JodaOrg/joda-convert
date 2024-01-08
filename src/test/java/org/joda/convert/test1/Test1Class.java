@@ -27,8 +27,8 @@ public class Test1Class implements Test1Interface {
 
     @FromString
     public static Test1Class parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new Test1Class(Integer.parseInt(amount));
+        String amt = amount.substring(0, amount.length() - 1);
+        return new Test1Class(Integer.parseInt(amt));
     }
 
     public Test1Class(int amount) {

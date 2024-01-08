@@ -25,8 +25,8 @@ public abstract class Test3SuperClass {
 
     @FromString
     public static Test3SuperClass parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new Test3Class(Integer.parseInt(amount));
+        String amt = amount.substring(0, amount.length() - 1);
+        return new Test3Class(Integer.parseInt(amt));
     }
 
     @ToString
