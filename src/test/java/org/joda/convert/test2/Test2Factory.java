@@ -24,8 +24,8 @@ public class Test2Factory {
 
     @FromString
     public static Test2Class parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new Test2Class(Integer.parseInt(amount));
+        var amt = amount.substring(0, amount.length() - 1);
+        return new Test2Class(Integer.parseInt(amt));
     }
 
 }

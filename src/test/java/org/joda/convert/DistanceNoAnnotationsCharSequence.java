@@ -32,7 +32,7 @@ public class DistanceNoAnnotationsCharSequence {
     }
 
     public DistanceNoAnnotationsCharSequence(CharSequence amount) {
-        String amt = amount.toString().substring(0, amount.length() - 1);
+        var amt = amount.toString().substring(0, amount.length() - 1);
         this.amount = Integer.parseInt(amt);
     }
 

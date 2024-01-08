@@ -27,8 +27,8 @@ public class DistanceToStringException {
 
     @FromString
     public static DistanceToStringException parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new DistanceToStringException(Integer.parseInt(amount));
+        var amt = amount.substring(0, amount.length() - 1);
+        return new DistanceToStringException(Integer.parseInt(amt));
     }
 
     public DistanceToStringException(int amount) {

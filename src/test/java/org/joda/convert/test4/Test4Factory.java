@@ -24,14 +24,14 @@ public class Test4Factory {
 
     @FromString
     public static Test4Interface parseInterface(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new Test4Class(Integer.parseInt(amount));
+        var amt = amount.substring(0, amount.length() - 1);
+        return new Test4Class(Integer.parseInt(amt));
     }
 
     @FromString
     public static Test4Class parseClass(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new Test4Class(Integer.parseInt(amount));
+        var amt = amount.substring(0, amount.length() - 1);
+        return new Test4Class(Integer.parseInt(amt));
     }
 
 }

@@ -22,8 +22,8 @@ public class DistanceWithFactoryFactory {
 
     @FromString
     public static DistanceWithFactory parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new DistanceWithFactory(Integer.parseInt(amount));
+        var amt = amount.substring(0, amount.length() - 1);
+        return new DistanceWithFactory(Integer.parseInt(amt));
     }
 
 }

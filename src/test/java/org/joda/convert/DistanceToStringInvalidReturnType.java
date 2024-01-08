@@ -29,8 +29,8 @@ public class DistanceToStringInvalidReturnType {
 
     @FromString
     public DistanceToStringInvalidReturnType(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        this.amount = Integer.parseInt(amount);
+        var amt = amount.substring(0, amount.length() - 1);
+        this.amount = Integer.parseInt(amt);
     }
 
     @ToString

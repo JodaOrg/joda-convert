@@ -25,8 +25,8 @@ public class DistanceMethodAndConstructorAnnotations {
 
     @FromString
     public static DistanceMethodAndConstructorAnnotations parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        return new DistanceMethodAndConstructorAnnotations(Integer.parseInt(amount));
+        var amt = amount.substring(0, amount.length() - 1);
+        return new DistanceMethodAndConstructorAnnotations(Integer.parseInt(amt));
     }
 
     public DistanceMethodAndConstructorAnnotations(int amount) {
@@ -35,8 +35,8 @@ public class DistanceMethodAndConstructorAnnotations {
 
     @FromString
     public DistanceMethodAndConstructorAnnotations(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        this.amount = Integer.parseInt(amount);
+        var amt = amount.substring(0, amount.length() - 1);
+        this.amount = Integer.parseInt(amt);
     }
 
     @ToString

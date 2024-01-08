@@ -25,8 +25,8 @@ public class SuperFactorySuper {
 
     @FromString
     public static SuperFactorySuper parse(String amount) {
-        amount = amount.substring(0, amount.length() - 1);
-        int i = Integer.parseInt(amount);
+        var amt = amount.substring(0, amount.length() - 1);
+        var i = Integer.parseInt(amt);
         return i > 10 ? new SuperFactorySuper(i) : new SuperFactorySub(i);
     }
 

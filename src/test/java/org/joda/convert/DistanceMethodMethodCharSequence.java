@@ -25,7 +25,7 @@ public class DistanceMethodMethodCharSequence {
 
     @FromString
     public static DistanceMethodMethodCharSequence parse(CharSequence amount) {
-        String amt = amount.toString().substring(0, amount.length() - 1);
+        var amt = amount.toString().substring(0, amount.length() - 1);
         return new DistanceMethodMethodCharSequence(Integer.parseInt(amt));
     }
 
