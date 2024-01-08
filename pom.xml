@@ -100,33 +100,11 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Hack to extract dependencies for Surefire plugin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-              <overWriteReleases>true</overWriteReleases>
-              <overWriteIfNewer>true</overWriteIfNewer>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Surefire plugin is broken, https://issues.apache.org/jira/browse/SUREFIRE-1501 -->
-      <!-- Setup surefire to test with Guava not present -->
+      <!-- Setup surefire to test with Guava/ThreeTen-Backport not present (on classpath) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>--add-modules org.joda.convert --module-path ${project.build.directory}/dependencies ${argLine}</argLine>
-        </configuration>
         <executions>
           <!-- execute all suitable tests with guava not present -->
           <execution>
@@ -144,9 +122,39 @@
                 <include>**/TestBooleanObjectArrayStringConverterFactory.java</include>
                 <include>**/TestByteObjectArrayStringConverterFactory.java</include>
                 <include>**/TestCharObjectArrayStringConverterFactory.java</include>
+                <include>**/TestJavaTime.java</include>
                 <include>**/TestJDKStringConverters.java</include>
                 <include>**/TestNumericArrayStringConverterFactory.java</include>
                 <include>**/TestNumericObjectArrayStringConverterFactory.java</include>
+                <include>**/TestRenameHandler.java</include>
+                <include>**/TestStringConvert.java</include>
+                <include>**/TestStringConverterFactory.java</include>
+                <include>**/TestThreeTenBackport.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <!-- execute all suitable tests with threeten-backport not present -->
+          <execution>
+            <id>no-threetenbp</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <classpathDependencyExcludes>
+                <classpathDependencyExclude>org.threeten.bp:threetenbp</classpathDependencyExclude>
+              </classpathDependencyExcludes>
+              <includes>
+                <include>**/TestBooleanArrayStringConverterFactory.java</include>
+                <include>**/TestBooleanObjectArrayStringConverterFactory.java</include>
+                <include>**/TestByteObjectArrayStringConverterFactory.java</include>
+                <include>**/TestCharObjectArrayStringConverterFactory.java</include>
+                <include>**/TestGuavaTypeTokenStringConverter.java</include>
+                <include>**/TestJavaTime.java</include>
+                <include>**/TestJDKStringConverters.java</include>
+                <include>**/TestNumericArrayStringConverterFactory.java</include>
+                <include>**/TestNumericObjectArrayStringConverterFactory.java</include>
+                <include>**/TestRenameHandler.java</include>
                 <include>**/TestStringConvert.java</include>
                 <include>**/TestStringConverterFactory.java</include>
               </includes>
@@ -486,12 +494,17 @@
 
   <!-- ==================================================================== -->
   <dependencies>
-    <!-- The Guava dependency is accessed by reflection, so only needed for tests -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>33.0.0-jre</version>
-      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.threeten</groupId>
+      <artifactId>threetenbp</artifactId>
+      <version>1.6.8</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

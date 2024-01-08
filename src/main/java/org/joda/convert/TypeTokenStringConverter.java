@@ -15,13 +15,12 @@
  */
 package org.joda.convert;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import com.google.common.reflect.TypeToken;
 
 /**
  * Parse the string format of Guava TypeToken.
  * <p>
- * This is loaded by reflection only when Guava is on the classpath.
+ * This is loaded in a try-catch block, handling Guava as an optional dependency.
  * It relies on internal methods in Guava that could change in any release.
  * <p>
  * This parser is incomplete, but handles common cases.
@@ -29,19 +28,6 @@ import java.lang.reflect.Type;
  */
 final class TypeTokenStringConverter
         implements TypedStringConverter<Object> {
-
-    static final Class<?> TYPE_TOKEN_CLASS;
-    static final Method TYPE_TOKEN_METHOD_OF;
-    static {
-        try {
-            // see StringConvert, which adds the necessary read edge for Java 9
-            TYPE_TOKEN_CLASS = Class.forName("com.google.common.reflect.TypeToken");
-            TYPE_TOKEN_METHOD_OF = TYPE_TOKEN_CLASS.getDeclaredMethod("of", Type.class);
-
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
 
     TypeTokenStringConverter() {
     }
@@ -55,7 +41,7 @@ final class TypeTokenStringConverter
     public Object convertFromString(Class<?> cls, String str) {
         var parsed = TypeUtils.parse(str);
         try {
-            return TYPE_TOKEN_METHOD_OF.invoke(null, parsed);
+            return TypeToken.of(parsed);
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -63,7 +49,7 @@ final class TypeTokenStringConverter
 
     @Override
     public Class<?> getEffectiveType() {
-        return TYPE_TOKEN_CLASS;
+        return TypeToken.class;
     }
 
 }

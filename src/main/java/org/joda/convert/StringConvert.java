@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -198,29 +197,12 @@ public final class StringConvert {
      */
     private void tryRegisterGuava() {
         try {
-            // Guava is not a direct dependency, which is significant in the Java 9 module system
-            // to access Guava this module must add a read edge to the module graph
-            var convertModule = StringConvert.class.getModule();
-            Optional.ofNullable(convertModule.getLayer())
-                    .flatMap(layer -> layer.findModule("com.google.common"))
-                    .ifPresent(guava -> convertModule.addReads(guava));
-
-        } catch (Throwable ex) {
-            if (LOG) {
-                System.err.println("tryRegisterGuava1: " + ex);
-            }
-        }
-        try {
-            // can now check for Guava
-            // if we have created a read edge, or if we are on the classpath, this will succeed
-            loadType("com.google.common.reflect.TypeToken");
-            var cls = loadType("org.joda.convert.TypeTokenStringConverter");
-            var conv = (TypedStringConverter<?>) cls.getDeclaredConstructor().newInstance();
+            var conv = new TypeTokenStringConverter();
             registered.put(conv.getEffectiveType(), conv);
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterGuava2: " + ex);
+                System.err.println("Joda-Convert: Unable to register Guava: " + ex);
             }
         }
     }
@@ -235,7 +217,7 @@ public final class StringConvert {
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterTimeZone1: " + ex);
+                System.err.println("Joda-Convert: Error registering SimpleTimeZone: " + ex);
             }
         }
         try {
@@ -244,7 +226,7 @@ public final class StringConvert {
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterTimeZone2: " + ex);
+                System.err.println("Joda-Convert: Error registering TimeZone.getDefault(): " + ex);
             }
         }
         try {
@@ -253,7 +235,7 @@ public final class StringConvert {
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterTimeZone3: " + ex);
+                System.err.println("Joda-Convert: Error registering TimeZone.getTimeZone(zoneId): " + ex);
             }
         }
         try {
@@ -262,48 +244,27 @@ public final class StringConvert {
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterTimeZone4: " + ex);
+                System.err.println("Joda-Convert: Error registering ZoneId.of(zoneId): " + ex);
             }
         }
     }
 
     /**
-     * Tries to register ThreeTen backport classes.
+     * Tries to register ThreeTen-Backport classes.
      */
     private void tryRegisterThreeTenBackport() {
         try {
-            tryRegister("org.threeten.bp.Instant", "parse");
-            tryRegister("org.threeten.bp.Duration", "parse");
-            tryRegister("org.threeten.bp.LocalDate", "parse");
-            tryRegister("org.threeten.bp.LocalTime", "parse");
-            tryRegister("org.threeten.bp.LocalDateTime", "parse");
-            tryRegister("org.threeten.bp.OffsetTime", "parse");
-            tryRegister("org.threeten.bp.OffsetDateTime", "parse");
-            tryRegister("org.threeten.bp.ZonedDateTime", "parse");
-            tryRegister("org.threeten.bp.Year", "parse");
-            tryRegister("org.threeten.bp.YearMonth", "parse");
-            tryRegister("org.threeten.bp.MonthDay", "parse");
-            tryRegister("org.threeten.bp.Period", "parse");
-            tryRegister("org.threeten.bp.ZoneOffset", "of");
-            tryRegister("org.threeten.bp.ZoneId", "of");
-            tryRegister("org.threeten.bp.ZoneRegion", "of");
+            for (var conv : ThreeTenBpStringConverter.values()) {
+                registered.put(conv.getEffectiveType(), conv);
+            }
+            var zone = org.threeten.bp.ZoneId.of("Europe/London");
+            registered.put(zone.getClass(), ThreeTenBpStringConverter.ZONE_ID);
 
         } catch (Throwable ex) {
             if (LOG) {
-                System.err.println("tryRegisterThreeTenBackport: " + ex);
+                System.err.println("Joda-Convert: Unable to register ThreeTen-Backport: " + ex);
             }
         }
-    }
-
-    /**
-     * Tries to register a class using the standard toString/parse pattern.
-     * 
-     * @param className  the class name, not null
-     * @throws ClassNotFoundException if the class does not exist
-     */
-    private void tryRegister(String className, String fromStringMethodName) throws ClassNotFoundException {
-        var cls = loadType(className);
-        registerMethods(cls, "toString", fromStringMethodName);
     }
 
     //-----------------------------------------------------------------------

@@ -28,9 +28,9 @@
  */
 module org.joda.convert {
 
-    // no direct dependency on Guava
-    // the code will adapt and add a read edge dynamically if Guava is visible
-    // from the module layer that Joda-Convert is loaded in
+    // optional dependencies
+    requires static com.google.common;
+    requires static org.threeten.bp;
 
     // export all packages
     exports org.joda.convert;
