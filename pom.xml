@@ -9,7 +9,7 @@
   <artifactId>joda-convert</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Convert</name>
-  <version>2.2.4-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <description>Library to convert Objects to and from String</description>
   <url>https://www.joda.org/joda-convert/</url>
 
@@ -99,36 +99,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <!-- Compile twice -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <!-- compile first with module-info for Java 9 -->
-          <execution>
-            <id>default-compile</id>
-            <configuration>
-              <release>9</release>
-            </configuration>
-          </execution>
-          <!-- then compile without module-info for Java 8 -->
-          <execution>
-            <id>base-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-        <!-- setup defaults for compile and testCompile -->
-        <configuration>
-          <release>8</release>
-        </configuration>
       </plugin>
       <!-- Hack to extract dependencies for Surefire plugin -->
       <plugin>
@@ -669,31 +639,6 @@
       </activation>
       <build>
         <plugins>
-          <!-- Additional jar file for systems too dozy to handle Java 9 -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>classic</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classifier>classic</classifier>
-                  <archive>
-                    <manifestEntries>
-                      <Automatic-Module-Name>org.joda.convert</Automatic-Module-Name>
-                    </manifestEntries>
-                  </archive>
-                  <excludes>
-                    <exclude>module-info*</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <!-- Create dist files -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -822,9 +767,10 @@
     <spotbugs-maven-plugin.version>4.8.2.0</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
 
     <!-- Properties for maven-javadoc-plugin -->
@@ -833,7 +779,7 @@
     <doclint>none</doclint>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>8.45.1</checkstyle.version>
+    <checkstyle.version>10.12.7</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 

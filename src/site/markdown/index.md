@@ -75,31 +75,24 @@ then the annotations are checked. If they are found, then the methods are called
 
 ## <i></i> Releases
 
-[Release 2.2.3](download.html) is the current latest release.
-This release is considered stable and worthy of the 2.x tag.
-The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
+The 3.x branch is compatible with Java SE 11 or later.
 
-Joda-Convert requires Java SE 6 or later and has [no dependencies](dependencies.html).
+The 2.x branch is compatible with Java SE 6 or later.
 
-Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav).
+v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
+v3.x releases are compatible with v2.x releases, however the `module-info.class` file is always present,
+and the oldest development pre-release of JSR-310 is not recognized.
 
-```xml
-<dependency>
-  <groupId>org.joda</groupId>
-  <artifactId>joda-convert</artifactId>
-  <version>2.2.3</version>
-</dependency>
-```
+Joda-Convert has [no dependencies](dependencies.html).
 
-The main jar file is based on Java 6 but contains a `module-info.class` file for Java 9 and later.
-If you have problems with this, there is a "classic" variant you can use instead:
+Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav).
+[GitHub release bundles](https://github.com/JodaOrg/joda-convert/releases).
 
 ```xml
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-convert</artifactId>
-  <version>2.2.3</version>
-  <classifier>classic</classifier>
+  <version>...</version>
 </dependency>
 ```
 

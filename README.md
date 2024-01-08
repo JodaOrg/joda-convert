@@ -55,12 +55,18 @@ Various documentation is available:
 
 
 ### Releases
-[Release 2.2.3](https://www.joda.org/joda-convert/download.html) is the current latest release.
-This release is considered stable and worthy of the 2.x tag.
-The v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
-It depends on Java SE 6 or later.
+The 3.x branch is compatible with Java SE 11 or later.
 
-Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav)
+The 2.x branch is compatible with Java SE 6 or later.
+
+v2.x releases are compatible with v1.x releases, with the exception that the direct Guava dependency is removed.
+v3.x releases are compatible with v2.x releases, however the `module-info.class` file is always present,
+and the oldest development pre-release of JSR-310 is not recognized.
+
+Joda-Convert has [no dependencies](dependencies.html).
+
+Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav).
+[GitHub release bundles](https://github.com/JodaOrg/joda-convert/releases).
 
 ![Tidelift dependency check](https://tidelift.com/badges/github/JodaOrg/joda-convert)
 
@@ -88,7 +94,7 @@ Tidelift will coordinate the fix and disclosure.
 
 ### Release process
 
-* Update version (README.md, index.md, changes.xml)
+* Update info (changes.xml)
 * Commit and push
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`

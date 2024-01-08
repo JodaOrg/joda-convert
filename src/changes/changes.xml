@@ -7,6 +7,12 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="3.0.0" date="SNAPSHOT" description="Version 3.0.0">
+      <action dev="jodastephen" type="add">
+        Major version based on Java SE 11.
+        Intended to be effectively compatible with v2.x.
+      </action>
+    </release>
     <release version="2.2.3" date="2023-01-15" description="Version 2.2.3">
       <action dev="jodastephen" type="add">
         Support classes that define `@FromString` but not `@ToString`.
