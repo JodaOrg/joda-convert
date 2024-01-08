@@ -11,6 +11,8 @@
       <action dev="jodastephen" type="add">
         Major version based on Java SE 11.
         Intended to be effectively compatible with v2.x.
+        Optional dependencies are now resolved via Maven and the Java Module System, not reflection.
+        The ancient `javax.time` package (used during development of JSR-310, note the 'x' suffix) is no longer supported.
       </action>
     </release>
     <release version="2.2.3" date="2023-01-15" description="Version 2.2.3">
