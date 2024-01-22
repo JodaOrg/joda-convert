@@ -52,6 +52,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 /**
  * Conversion between JDK classes and a {@code String}.
@@ -61,578 +62,214 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     /**
      * String converter.
      */
-    STRING(String.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return str;
-        }
-    },
+    STRING(String.class, str -> str),
     /**
      * CharSequence converter.
      */
-    CHAR_SEQUENCE(CharSequence.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return str;
-        }
-    },
+    CHAR_SEQUENCE(CharSequence.class, str -> str),
     /**
      * StringBuffer converter.
      */
-    STRING_BUFFER(StringBuffer.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return new StringBuffer(str);
-        }
-    },
+    STRING_BUFFER(StringBuffer.class, StringBuffer::new),
     /**
      * StringBuilder converter.
      */
-    STRING_BUILDER(StringBuilder.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return new StringBuilder(str);
-        }
-    },
+    STRING_BUILDER(StringBuilder.class, StringBuilder::new),
     /**
      * Long converter.
      */
-    LONG(Long.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Long.valueOf(str);
-        }
-    },
-
+    LONG(Long.class, Long::valueOf),
     /**
      * Integer converter.
      */
-    INTEGER(Integer.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Integer.valueOf(str);
-        }
-    },
-
+    INTEGER(Integer.class, Integer::valueOf),
     /**
      * Short converter.
      */
-    SHORT(Short.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Short.valueOf(str);
-        }
-    },
-
+    SHORT(Short.class, Short::valueOf),
     /**
      * Byte converter.
      */
-    BYTE(Byte.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Byte.valueOf(str);
-        }
-    },
+    BYTE(Byte.class, Byte::valueOf),
     /**
      * String converter.
      */
-    BYTE_ARRAY(byte[].class) {
-        @Override
-        public String convertToString(Object object) {
-            return printBase64Binary((byte[]) object);
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return parseBase64Binary(str);
-        }
-    },
+    BYTE_ARRAY(byte[].class, JDKStringConverter::printBase64Binary, JDKStringConverter::parseBase64Binary),
     /**
      * Character converter.
      */
-    CHARACTER(Character.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            if (str.length() != 1) {
-                throw new IllegalArgumentException("Character value must be a string length 1");
-            }
-            return Character.valueOf(str.charAt(0));
-        }
-    },
+    CHARACTER(Character.class, JDKStringConverter::parseCharacter),
     /**
      * String converter.
      */
-    CHAR_ARRAY(char[].class) {
-        @Override
-        public String convertToString(Object object) {
-            return new String((char[]) object);
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return str.toCharArray();
-        }
-    },
+    CHAR_ARRAY(char[].class, JDKStringConverter::printCharArray, String::toCharArray),
     /**
      * Boolean converter.
      */
-    BOOLEAN(Boolean.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            if ("true".equalsIgnoreCase(str)) {
-                return Boolean.TRUE;
-            }
-            if ("false".equalsIgnoreCase(str)) {
-                return Boolean.FALSE;
-            }
-            throw new IllegalArgumentException("Boolean value must be 'true' or 'false', case insensitive");
-        }
-    },
+    BOOLEAN(Boolean.class, JDKStringConverter::parseBoolean),
     /**
      * Double converter.
      */
-    DOUBLE(Double.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Double.valueOf(str);
-        }
-    },
+    DOUBLE(Double.class, Double::valueOf),
     /**
      * Float converter.
      */
-    FLOAT(Float.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Float.valueOf(str);
-        }
-    },
+    FLOAT(Float.class, Float::valueOf),
     /**
      * BigInteger converter.
      */
-    BIG_INTEGER(BigInteger.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return new BigInteger(str);
-        }
-    },
+    BIG_INTEGER(BigInteger.class, BigInteger::new),
     /**
      * BigDecimal converter.
      */
-    BIG_DECIMAL(BigDecimal.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return new BigDecimal(str);
-        }
-    },
+    BIG_DECIMAL(BigDecimal.class, BigDecimal::new),
     /**
      * AtomicLong converter.
      */
-    ATOMIC_LONG(AtomicLong.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            var val = Long.parseLong(str);
-            return new AtomicLong(val);
-        }
-    },
+    ATOMIC_LONG(AtomicLong.class, str -> new AtomicLong(Long.parseLong(str))),
     /**
      * AtomicLong converter.
      */
-    ATOMIC_INTEGER(AtomicInteger.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            var val = Integer.parseInt(str);
-            return new AtomicInteger(val);
-        }
-    },
+    ATOMIC_INTEGER(AtomicInteger.class, str -> new AtomicInteger(Integer.parseInt(str))),
     /**
      * AtomicBoolean converter.
      */
-    ATOMIC_BOOLEAN(AtomicBoolean.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            if ("true".equalsIgnoreCase(str)) {
-                return new AtomicBoolean(true);
-            }
-            if ("false".equalsIgnoreCase(str)) {
-                return new AtomicBoolean(false);
-            }
-            throw new IllegalArgumentException("Boolean value must be 'true' or 'false', case insensitive");
-        }
-    },
+    ATOMIC_BOOLEAN(AtomicBoolean.class, JDKStringConverter::parseAtomicBoolean),
     /**
      * Locale converter.
      */
-    LOCALE(Locale.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            var split = str.split("_", 3);
-            switch (split.length) {
-                case 1:
-                    return new Locale(split[0]);
-                case 2:
-                    return new Locale(split[0], split[1]);
-                case 3:
-                    return new Locale(split[0], split[1], split[2]);
-            }
-            throw new IllegalArgumentException("Unable to parse Locale: " + str);
-        }
-    },
+    LOCALE(Locale.class, JDKStringConverter::parseLocale),
     /**
      * Class converter.
      */
-    CLASS(Class.class) {
-        @Override
-        public String convertToString(Object object) {
-            return ((Class<?>) object).getName();
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            try {
-                return RenameHandler.INSTANCE.lookupType(str);
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException("Unable to create type: " + str, ex);
-            }
-        }
-    },
+    CLASS(Class.class, JDKStringConverter::printClass, JDKStringConverter::parseClass),
     /**
      * Package converter.
      */
-    PACKAGE(Package.class) {
-        @Override
-        public String convertToString(Object object) {
-            return ((Package) object).getName();
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Package.getPackage(str);
-        }
-    },
+    PACKAGE(Package.class, JDKStringConverter::printPackage, Package::getPackage),
     /**
      * Currency converter.
      */
-    CURRENCY(Currency.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Currency.getInstance(str);
-        }
-    },
+    CURRENCY(Currency.class, Currency::getInstance),
     /**
      * TimeZone converter.
      */
-    TIME_ZONE(TimeZone.class) {
-        @Override
-        public String convertToString(Object object) {
-            return ((TimeZone) object).getID();
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return TimeZone.getTimeZone(str);
-        }
-    },
+    TIME_ZONE(TimeZone.class, JDKStringConverter::printTimeZone, TimeZone::getTimeZone),
     /**
      * UUID converter.
      */
-    UUID(UUID.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return java.util.UUID.fromString(str);
-        }
-    },
+    UUID(UUID.class, java.util.UUID::fromString),
     /**
      * URL converter.
      */
-    URL(URL.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            try {
-                return new URL(str);
-            } catch (MalformedURLException ex) {
-                throw new RuntimeException(ex.getMessage(), ex);
-            }
-        }
-    },
+    URL(URL.class, JDKStringConverter::parseURL),
     /**
      * URI converter.
      */
-    URI(URI.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return java.net.URI.create(str);
-        }
-    },
+    URI(URI.class, java.net.URI::create),
     /**
      * InetAddress converter.
      */
-    INET_ADDRESS(InetAddress.class) {
-        @Override
-        public String convertToString(Object object) {
-            return ((InetAddress) object).getHostAddress();
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            try {
-                return InetAddress.getByName(str);
-            } catch (UnknownHostException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    },
+    INET_ADDRESS(InetAddress.class, JDKStringConverter::printInetAddress, JDKStringConverter::parseInetAddress),
     /**
      * File converter.
      */
-    FILE(File.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return new File(str);
-        }
-    },
+    FILE(File.class, File::new),
     /**
      * Date converter.
      */
-    DATE(Date.class) {
-        @Override
-        public String convertToString(Object object) {
-            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            var str = format.format(object);
-            return str.substring(0, 26) + ":" + str.substring(26);
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            if (str.length() != 29) {
-                throw new IllegalArgumentException("Unable to parse date: " + str);
-            }
-            var str2 = str.substring(0, 26) + str.substring(27);
-            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            try {
-                return format.parseObject(str2);
-            } catch (ParseException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    },
+    DATE(Date.class, JDKStringConverter::printDate, JDKStringConverter::parseDate),
     /**
      * Calendar converter.
      */
-    CALENDAR(Calendar.class) {
-        @Override
-        public String convertToString(Object object) {
-            if (object instanceof GregorianCalendar == false) {
-                throw new RuntimeException("Unable to convert calendar as it is not a GregorianCalendar");
-            }
-            var cal = (GregorianCalendar) object;
-            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            format.setCalendar(cal);
-            var str = format.format(cal.getTime());
-            return str.substring(0, 26) + ":" + str.substring(26) + "[" + cal.getTimeZone().getID() + "]";
-        }
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            if (str.length() < 31 || str.charAt(26) != ':'
-                    || str.charAt(29) != '[' || str.charAt(str.length() - 1) != ']') {
-                throw new IllegalArgumentException("Unable to parse date: " + str);
-            }
-            var zone = TimeZone.getTimeZone(str.substring(30, str.length() - 1));
-            var str2 = str.substring(0, 26) + str.substring(27, 29);
-            var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            var cal = new GregorianCalendar(zone);
-            cal.setTimeInMillis(0);
-            format.setCalendar(cal);
-            try {
-                format.parseObject(str2);
-                return format.getCalendar();
-            } catch (ParseException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    },
+    CALENDAR(Calendar.class, JDKStringConverter::printCalendar, JDKStringConverter::parseCalendar),
     /**
      * Instant converter.
      */
-    INSTANT(Instant.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Instant.parse(str);
-        }
-    },
+    INSTANT(Instant.class, Instant::parse),
     /**
      * Duration converter.
      */
-    DURATION(Duration.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Duration.parse(str);
-        }
-    },
+    DURATION(Duration.class, Duration::parse),
     /**
      * LocalDate converter.
      */
-    LOCAL_DATE(LocalDate.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return LocalDate.parse(str);
-        }
-    },
+    LOCAL_DATE(LocalDate.class, LocalDate::parse),
     /**
      * LocalTime converter.
      */
-    LOCAL_TIME(LocalTime.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return LocalTime.parse(str);
-        }
-    },
+    LOCAL_TIME(LocalTime.class, LocalTime::parse),
     /**
      * LocalDateTime converter.
      */
-    LOCAL_DATE_TIME(LocalDateTime.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return LocalDateTime.parse(str);
-        }
-    },
+    LOCAL_DATE_TIME(LocalDateTime.class, LocalDateTime::parse),
     /**
      * OffsetTime converter.
      */
-    OFFSET_TIME(OffsetTime.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return OffsetTime.parse(str);
-        }
-    },
+    OFFSET_TIME(OffsetTime.class, OffsetTime::parse),
     /**
      * OffsetDateTime converter.
      */
-    OFFSET_DATE_TIME(OffsetDateTime.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return OffsetDateTime.parse(str);
-        }
-    },
+    OFFSET_DATE_TIME(OffsetDateTime.class, OffsetDateTime::parse),
     /**
      * ZonedDateTime converter.
      */
-    ZONED_DATE_TIME(ZonedDateTime.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return ZonedDateTime.parse(str);
-        }
-    },
+    ZONED_DATE_TIME(ZonedDateTime.class, ZonedDateTime::parse),
     /**
      * Year converter.
      */
-    YEAR(Year.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Year.parse(str);
-        }
-    },
+    YEAR(Year.class, Year::parse),
     /**
      * YearMonth converter.
      */
-    YEAR_MONTH(YearMonth.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return YearMonth.parse(str);
-        }
-    },
+    YEAR_MONTH(YearMonth.class, YearMonth::parse),
     /**
      * MonthDay converter.
      */
-    MONTH_DAY(MonthDay.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return MonthDay.parse(str);
-        }
-    },
+    MONTH_DAY(MonthDay.class, MonthDay::parse),
     /**
      * Period converter.
      */
-    PERIOD(Period.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return Period.parse(str);
-        }
-    },
+    PERIOD(Period.class, Period::parse),
     /**
      * ZoneOffset converter.
      */
-    ZONE_OFFSET(ZoneOffset.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return ZoneOffset.of(str);
-        }
-    },
+    ZONE_OFFSET(ZoneOffset.class, ZoneOffset::of),
     /**
      * ZoneId converter.
      */
-    ZONE_ID(ZoneId.class) {
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return ZoneId.of(str);
-        }
-    },
+    ZONE_ID(ZoneId.class, ZoneId::of),
     /**
      * OptionalInt converter.
      */
-    OPTIONAL_INT(OptionalInt.class) {
-        @Override
-        public String convertToString(Object object) {
-            var optional = (OptionalInt) object;
-            return optional.isEmpty() ? "" : Integer.toString(optional.getAsInt());
-        }
-
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return "".equals(str) ? OptionalInt.empty() : OptionalInt.of(Integer.parseInt(str));
-        }
-    },
+    OPTIONAL_INT(OptionalInt.class, JDKStringConverter::printOptionalInt, JDKStringConverter::parseOptionalInt),
     /**
      * OptionalLong converter.
      */
-    OPTIONAL_LONG(OptionalLong.class) {
-        @Override
-        public String convertToString(Object object) {
-            var optional = (OptionalLong) object;
-            return optional.isEmpty() ? "" : Long.toString(optional.getAsLong());
-        }
-
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return "".equals(str) ? OptionalLong.empty() : OptionalLong.of(Long.parseLong(str));
-        }
-    },
+    OPTIONAL_LONG(OptionalLong.class, JDKStringConverter::printOptionalLong, JDKStringConverter::parseOptionalLong),
     /**
      * OptionalDouble converter.
      */
-    OPTIONAL_DOUBLE(OptionalDouble.class) {
-        @Override
-        public String convertToString(Object object) {
-            var optional = (OptionalDouble) object;
-            return optional.isEmpty() ? "" : Double.toString(optional.getAsDouble());
-        }
-
-        @Override
-        public Object convertFromString(Class<?> cls, String str) {
-            return "".equals(str) ? OptionalDouble.empty() : OptionalDouble.of(Double.parseDouble(str));
-        }
-    },
+    OPTIONAL_DOUBLE(OptionalDouble.class, JDKStringConverter::printOptionalDouble, JDKStringConverter::parseOptionalDouble),
     ;
 
-    /** The type. */
     private Class<?> type;
+    private Function<Object, String> toStringFn;
+    private Function<String, Object> fromStringFn;
 
-    /**
-     * Creates an enum.
-     * @param type  the type, not null
-     */
-    JDKStringConverter(Class<?> type) {
+    private JDKStringConverter(Class<?> type, Function<String, Object> fromStringFn) {
         this.type = type;
+        this.toStringFn = Object::toString;
+        this.fromStringFn = fromStringFn;
     }
 
-    /**
-     * Gets the type of the converter.
-     * @return the type, not null
-     */
-    Class<?> getType() {
-        return type;
+    private JDKStringConverter(
+            Class<?> type,
+            Function<Object, String> toStringFn,
+            Function<String, Object> fromStringFn) {
+        this.type = type;
+        this.toStringFn = toStringFn;
+        this.fromStringFn = fromStringFn;
     }
 
     /**
@@ -647,7 +284,12 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     //-----------------------------------------------------------------------
     @Override
     public String convertToString(Object object) {
-        return object.toString();
+        return toStringFn.apply(object);
+    }
+
+    @Override
+    public Object convertFromString(Class<? extends Object> cls, String str) {
+        return fromStringFn.apply(str);
     }
 
     //-----------------------------------------------------------------------
@@ -656,7 +298,8 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     private static final int MASK_8BIT = 0xff;
     private static final int MASK_6BIT = 0x3f;
 
-    private static String printBase64Binary(byte[] array) {
+    private static String printBase64Binary(Object obj) {
+        var array = (byte[]) obj;
         var len = array.length;
         var buf = new char[((len + 2) / 3) * 4];
         var pos = 0;
@@ -715,6 +358,165 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             return result;
         }
         return decoded;
+    }
+
+    private static Character parseCharacter(String str) {
+        if (str.length() != 1) {
+            throw new IllegalArgumentException("Character value must be a string length 1");
+        }
+        return Character.valueOf(str.charAt(0));
+    }
+
+    private static String printCharArray(Object obj) {
+        return new String((char[]) obj);
+    }
+
+    private static Boolean parseBoolean(String str) {
+        if ("true".equalsIgnoreCase(str)) {
+            return Boolean.TRUE;
+        }
+        if ("false".equalsIgnoreCase(str)) {
+            return Boolean.FALSE;
+        }
+        throw new IllegalArgumentException("Boolean value must be 'true' or 'false', case insensitive");
+    }
+
+    private static AtomicBoolean parseAtomicBoolean(String str) {
+        if ("true".equalsIgnoreCase(str)) {
+            return new AtomicBoolean(true);
+        }
+        if ("false".equalsIgnoreCase(str)) {
+            return new AtomicBoolean(false);
+        }
+        throw new IllegalArgumentException("Boolean value must be 'true' or 'false', case insensitive");
+    }
+
+    private static Locale parseLocale(String str) {
+        var split = str.split("_", 3);
+        switch (split.length) {
+            case 1:
+                return new Locale(split[0]);
+            case 2:
+                return new Locale(split[0], split[1]);
+            case 3:
+                return new Locale(split[0], split[1], split[2]);
+        }
+        throw new IllegalArgumentException("Unable to parse Locale: " + str);
+    }
+
+    private static String printClass(Object obj) {
+        return ((Class<?>) obj).getName();
+    }
+
+    private static Class<?> parseClass(String str) {
+        try {
+            return RenameHandler.INSTANCE.lookupType(str);
+        } catch (ClassNotFoundException ex) {
+            throw new RuntimeException("Unable to create type: " + str, ex);
+        }
+    }
+
+    private static String printPackage(Object obj) {
+        return ((Package) obj).getName();
+    }
+
+    private static String printTimeZone(Object obj) {
+        return ((TimeZone) obj).getID();
+    }
+
+    private static URL parseURL(String str) {
+        try {
+            return new URL(str);
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
+    private static String printInetAddress(Object obj) {
+        return ((InetAddress) obj).getHostAddress();
+    }
+
+    private static InetAddress parseInetAddress(String str) {
+        try {
+            return InetAddress.getByName(str);
+        } catch (UnknownHostException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static String printDate(Object obj) {
+        var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        var str = format.format(obj);
+        return str.substring(0, 26) + ":" + str.substring(26);
+    }
+
+    private static Date parseDate(String str) {
+        if (str.length() != 29) {
+            throw new IllegalArgumentException("Unable to parse date: " + str);
+        }
+        var str2 = str.substring(0, 26) + str.substring(27);
+        var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        try {
+            return format.parse(str2);
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static String printCalendar(Object obj) {
+        if (obj instanceof GregorianCalendar == false) {
+            throw new RuntimeException("Unable to convert calendar as it is not a GregorianCalendar");
+        }
+        var cal = (GregorianCalendar) obj;
+        var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        format.setCalendar(cal);
+        var str = format.format(cal.getTime());
+        return str.substring(0, 26) + ":" + str.substring(26) + "[" + cal.getTimeZone().getID() + "]";
+    }
+
+    private static Calendar parseCalendar(String str) {
+        if (str.length() < 31 || str.charAt(26) != ':' || str.charAt(29) != '[' || str.charAt(str.length() - 1) != ']') {
+            throw new IllegalArgumentException("Unable to parse date: " + str);
+        }
+        var zone = TimeZone.getTimeZone(str.substring(30, str.length() - 1));
+        var str2 = str.substring(0, 26) + str.substring(27, 29);
+        var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        var cal = new GregorianCalendar(zone);
+        cal.setTimeInMillis(0);
+        format.setCalendar(cal);
+        try {
+            format.parseObject(str2);
+            return format.getCalendar();
+        } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static String printOptionalInt(Object obj) {
+        var optional = (OptionalInt) obj;
+        return optional.isEmpty() ? "" : Integer.toString(optional.getAsInt());
+    }
+
+    private static OptionalInt parseOptionalInt(String str) {
+        return "".equals(str) ? OptionalInt.empty() : OptionalInt.of(Integer.parseInt(str));
+    }
+
+    private static String printOptionalLong(Object obj) {
+        var optional = (OptionalLong) obj;
+        return optional.isEmpty() ? "" : Long.toString(optional.getAsLong());
+    }
+
+    private static OptionalLong parseOptionalLong(String str) {
+        return "".equals(str) ? OptionalLong.empty() : OptionalLong.of(Long.parseLong(str));
+    }
+
+    private static String printOptionalDouble(Object obj) {
+        var optional = (OptionalDouble) obj;
+        return optional.isEmpty() ? "" : Double.toString(optional.getAsDouble());
+    }
+
+    private static OptionalDouble parseOptionalDouble(String str) {
+        return "".equals(str) ? OptionalDouble.empty() : OptionalDouble.of(Double.parseDouble(str));
     }
 
 }

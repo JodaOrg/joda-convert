@@ -168,7 +168,7 @@ public final class StringConvert {
         }
         if (includeJdkConverters) {
             for (var conv : JDKStringConverter.values()) {
-                registered.put(conv.getType(), conv);
+                registered.put(conv.getEffectiveType(), conv);
             }
             registered.put(Boolean.TYPE, JDKStringConverter.BOOLEAN);
             registered.put(Byte.TYPE, JDKStringConverter.BYTE);

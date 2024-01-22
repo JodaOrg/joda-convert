@@ -98,15 +98,10 @@ enum ThreeTenBpStringConverter implements TypedStringConverter<Object> {
     ZONE_ID(ZoneId.class, ZoneId::of),
     ;
 
-    /** The type. */
     private Class<?> type;
     private Function<String, Object> fromStringFn;
 
-    /**
-     * Creates an enum.
-     * @param type  the type, not null
-     */
-    ThreeTenBpStringConverter(Class<?> type, Function<String, Object> fromStringFn) {
+    private ThreeTenBpStringConverter(Class<?> type, Function<String, Object> fromStringFn) {
         this.type = type;
         this.fromStringFn = fromStringFn;
     }

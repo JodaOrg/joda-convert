@@ -32,6 +32,9 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -56,7 +59,7 @@ public class TestJDKStringConverters {
     public void test_StringBuffer() {
         JDKStringConverter test = JDKStringConverter.STRING_BUFFER;
         Object obj = new StringBuffer("Hello");
-        assertEquals(StringBuffer.class, test.getType());
+        assertEquals(StringBuffer.class, test.getEffectiveType());
         assertEquals("Hello", test.convertToString(obj));
         StringBuffer back = (StringBuffer) test.convertFromString(StringBuffer.class, "Hello");
         assertEquals("Hello", back.toString());
@@ -66,7 +69,7 @@ public class TestJDKStringConverters {
     public void test_StringBuilder() {
         JDKStringConverter test = JDKStringConverter.STRING_BUILDER;
         Object obj = new StringBuilder("Hello");
-        assertEquals(StringBuilder.class, test.getType());
+        assertEquals(StringBuilder.class, test.getEffectiveType());
         assertEquals("Hello", test.convertToString(obj));
         StringBuilder back = (StringBuilder) test.convertFromString(StringBuilder.class, "Hello");
         assertEquals("Hello", back.toString());
@@ -115,7 +118,7 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.CHAR_ARRAY;
         char[] array = new char[] {'M', 'a', 'p'};
         String str = "Map";
-        assertEquals(char[].class, test.getType());
+        assertEquals(char[].class, test.getEffectiveType());
         assertEquals(str, test.convertToString(array));
         assertTrue(Arrays.equals(array, (char[]) test.convertFromString(char[].class, str)));
     }
@@ -131,7 +134,7 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {77, 97, 112};
         String str = "TWFw";
-        assertEquals(byte[].class, test.getType());
+        assertEquals(byte[].class, test.getEffectiveType());
         assertEquals(str, test.convertToString(array));
         assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
     }
@@ -141,7 +144,7 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {77, 97};
         String str = "TWE=";
-        assertEquals(byte[].class, test.getType());
+        assertEquals(byte[].class, test.getEffectiveType());
         assertEquals(str, test.convertToString(array));
         assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
     }
@@ -151,7 +154,7 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {77};
         String str = "TQ==";
-        assertEquals(byte[].class, test.getType());
+        assertEquals(byte[].class, test.getEffectiveType());
         assertEquals(str, test.convertToString(array));
         assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
     }
@@ -161,7 +164,7 @@ public class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {73, 97, 112, 77};
         String str = "SWFwTQ==";
-        assertEquals(byte[].class, test.getType());
+        assertEquals(byte[].class, test.getEffectiveType());
         assertEquals(str, test.convertToString(array));
         assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
     }
@@ -206,7 +209,7 @@ public class TestJDKStringConverters {
     public void test_AtomicLong() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_LONG;
         AtomicLong obj = new AtomicLong(12);
-        assertEquals(AtomicLong.class, test.getType());
+        assertEquals(AtomicLong.class, test.getEffectiveType());
         assertEquals("12", test.convertToString(obj));
         AtomicLong back = (AtomicLong) test.convertFromString(AtomicLong.class, "12");
         assertEquals(12, back.get());
@@ -216,7 +219,7 @@ public class TestJDKStringConverters {
     public void test_AtomicInteger() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_INTEGER;
         AtomicInteger obj = new AtomicInteger(12);
-        assertEquals(AtomicInteger.class, test.getType());
+        assertEquals(AtomicInteger.class, test.getEffectiveType());
         assertEquals("12", test.convertToString(obj));
         AtomicInteger back = (AtomicInteger) test.convertFromString(AtomicInteger.class, "12");
         assertEquals(12, back.get());
@@ -226,7 +229,7 @@ public class TestJDKStringConverters {
     public void test_AtomicBoolean_true() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
         AtomicBoolean obj = new AtomicBoolean(true);
-        assertEquals(AtomicBoolean.class, test.getType());
+        assertEquals(AtomicBoolean.class, test.getEffectiveType());
         assertEquals("true", test.convertToString(obj));
         AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "true");
         assertEquals(true, back.get());
@@ -236,7 +239,7 @@ public class TestJDKStringConverters {
     public void test_AtomicBoolean_false() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
         AtomicBoolean obj = new AtomicBoolean(false);
-        assertEquals(AtomicBoolean.class, test.getType());
+        assertEquals(AtomicBoolean.class, test.getEffectiveType());
         assertEquals("false", test.convertToString(obj));
         AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "false");
         assertEquals(false, back.get());
@@ -491,13 +494,34 @@ public class TestJDKStringConverters {
         assertEquals(Status.INVALID, test.convertFromString(Status.class, "INVALID"));
     }
 
+    @Test
+    public void test_OptionalInt() {
+        JDKStringConverter test = JDKStringConverter.OPTIONAL_INT;
+        doTest(test, OptionalInt.class, OptionalInt.of(2), "2");
+        doTest(test, OptionalInt.class, OptionalInt.empty(), "");
+    }
+
+    @Test
+    public void test_OptionalLong() {
+        JDKStringConverter test = JDKStringConverter.OPTIONAL_LONG;
+        doTest(test, OptionalLong.class, OptionalLong.of(2), "2");
+        doTest(test, OptionalLong.class, OptionalLong.empty(), "");
+    }
+
+    @Test
+    public void test_OptionalDouble() {
+        JDKStringConverter test = JDKStringConverter.OPTIONAL_DOUBLE;
+        doTest(test, OptionalDouble.class, OptionalDouble.of(2.3), "2.3");
+        doTest(test, OptionalDouble.class, OptionalDouble.empty(), "");
+    }
+
     //-----------------------------------------------------------------------
     private void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str) {
         doTest(test, cls, obj, str, obj);
     }
 
     private void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str, Object objFromStr) {
-        assertEquals(cls, test.getType());
+        assertEquals(cls, test.getEffectiveType());
         assertEquals(str, test.convertToString(obj));
         assertEquals(objFromStr, test.convertFromString(cls, str));
     }
