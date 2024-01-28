@@ -27,9 +27,10 @@ public interface ToStringConverter<T> {
 
     /**
      * Converts the specified object to a {@code String}.
+     * 
      * @param object  the object to convert, not null
      * @return the converted string, may be null but generally not
      */
-    String convertToString(T object);
+    public abstract String convertToString(T object);
 
 }

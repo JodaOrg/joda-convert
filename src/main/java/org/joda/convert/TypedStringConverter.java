@@ -29,13 +29,13 @@ public interface TypedStringConverter<T> extends StringConverter<T>, TypedFromSt
     /**
      * Gets the effective type that the converter works on.
      * <p>
-     * For example, if a class declares the {@code FromString} and  {@code ToString}
+     * For example, if a class declares the {@code FromString} and {@code ToString}
      * then the effective type of the converter is that class. If a subclass is
      * queried for a converter, then the effective type is that of the superclass.
      * 
      * @return the effective type
      */
     @Override
-    Class<?> getEffectiveType();
+    public abstract Class<?> getEffectiveType();
 
 }

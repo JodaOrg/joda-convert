@@ -35,6 +35,6 @@ interface TypedFromStringConverter<T> extends FromStringConverter<T> {
      * 
      * @return the effective type
      */
-    Class<?> getEffectiveType();
+    public abstract Class<?> getEffectiveType();
 
 }

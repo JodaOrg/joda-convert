@@ -27,11 +27,15 @@ public interface StringConverterFactory {
 
     /**
      * Finds a converter by type.
+     * <p>
+     * If the converter is not found, the implementation should return null.
+     * This method should only throw an exception if there is a problem that the developer must be made aware of.
+     * For example, the annotation-based factory throws an exception if the annotations are used incorrectly.
      * 
      * @param cls  the type to lookup, not null
      * @return the converter, null if not found
-     * @throws RuntimeException (or subclass) if source code is invalid
+     * @throws RuntimeException (or subclass) if there a developer error is found during lookup
      */
-    StringConverter<?> findConverter(Class<?> cls);
+    public abstract StringConverter<?> findConverter(Class<?> cls);
 
 }

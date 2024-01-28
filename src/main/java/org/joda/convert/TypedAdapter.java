@@ -30,7 +30,7 @@ final class TypedAdapter<T> implements TypedStringConverter<T> {
         if (converter instanceof TypedStringConverter) {
             return (TypedStringConverter<R>) converter;
         } else {
-            return new TypedAdapter<R>(converter, cls);
+            return new TypedAdapter<>(converter, cls);
         }
     }
 

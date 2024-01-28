@@ -41,8 +41,7 @@ public @interface FromStringFactory {
 
     /**
      * The factory class containing the static method.
-     * The static method must have a return type of the type that declares
-     * the factory annotation.
+     * The static method must have a return type of the type that declares the factory annotation.
      * 
      * @return the factory type
      */

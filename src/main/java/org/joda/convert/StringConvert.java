@@ -337,7 +337,7 @@ public final class StringConvert {
      * @return true if convertible
      * @since 1.5
      */
-    public boolean isConvertible(final Class<?> cls) {
+    public boolean isConvertible(Class<?> cls) {
         try {
             return cls != null && findConverterQuiet(cls) != null;
         } catch (RuntimeException ex) {
@@ -361,7 +361,7 @@ public final class StringConvert {
      * @return the converter, not null
      * @throws RuntimeException (or subclass) if no converter found
      */
-    public <T> StringConverter<T> findConverter(final Class<T> cls) {
+    public <T> StringConverter<T> findConverter(Class<T> cls) {
         return findTypedConverter(cls);
     }
 
@@ -383,7 +383,7 @@ public final class StringConvert {
      * @throws RuntimeException (or subclass) if no converter found
      * @since 1.5
      */
-    public StringConverter<Object> findConverterNoGenerics(final Class<?> cls) {
+    public StringConverter<Object> findConverterNoGenerics(Class<?> cls) {
         return findTypedConverterNoGenerics(cls);
     }
 
@@ -411,7 +411,7 @@ public final class StringConvert {
      * @throws RuntimeException (or subclass) if no converter found
      * @since 1.7
      */
-    public <T> TypedStringConverter<T> findTypedConverter(final Class<T> cls) {
+    public <T> TypedStringConverter<T> findTypedConverter(Class<T> cls) {
         var conv = findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
@@ -445,7 +445,7 @@ public final class StringConvert {
      * @since 1.7
      */
     @SuppressWarnings("unchecked")
-    public TypedStringConverter<Object> findTypedConverterNoGenerics(final Class<?> cls) {
+    public TypedStringConverter<Object> findTypedConverterNoGenerics(Class<?> cls) {
         var conv = (TypedStringConverter<Object>) findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
@@ -459,7 +459,7 @@ public final class StringConvert {
      * This returns an instance of {@code FromStringConverter} for the specified class.
      * In most cases this is identical to {@link #findConverter(Class)}.
      * However, it is permitted to have a {@code FromString} annotation without a {@code ToString} annotation,
-     * and this method catches that use case.
+     * and this method handles that use case.
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a converter for, not null
@@ -467,7 +467,7 @@ public final class StringConvert {
      * @throws RuntimeException (or subclass) if no converter found
      */
     @SuppressWarnings("unchecked")
-    public <T> FromStringConverter<T> findFromStringConverter(final Class<T> cls) {
+    public <T> FromStringConverter<T> findFromStringConverter(Class<T> cls) {
         var converter = findConverterQuiet(cls);
         if (converter == null) {
             var fromStringConverter = (FromStringConverter<T>) fromStrings.get(cls);
@@ -483,7 +483,7 @@ public final class StringConvert {
     // the result is a full-featured converter
     // if the class only has a from-string converter, the fromStrings map is updated
     @SuppressWarnings("unchecked")
-    private <T> TypedStringConverter<T> findConverterQuiet(final Class<T> cls) {
+    private <T> TypedStringConverter<T> findConverterQuiet(Class<T> cls) {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
@@ -523,7 +523,7 @@ public final class StringConvert {
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
-    private <T> TypedStringConverter<T> lookupConverter(final Class<T> cls) {
+    private <T> TypedStringConverter<T> lookupConverter(Class<T> cls) {
         // check factories
         for (var factory : factories) {
             var factoryConv = (StringConverter<T>) factory.findConverter(cls);
@@ -546,7 +546,7 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      * @since 1.5
      */
-    public void registerFactory(final StringConverterFactory factory) {
+    public void registerFactory(StringConverterFactory factory) {
         if (factory == null) {
             throw new IllegalArgumentException("Factory must not be null");
         }
@@ -570,7 +570,7 @@ public final class StringConvert {
      * @throws IllegalArgumentException if the class or converter are null
      * @throws IllegalStateException if trying to alter the global singleton
      */
-    public <T> void register(final Class<T> cls, StringConverter<T> converter) {
+    public <T> void register(Class<T> cls, StringConverter<T> converter) {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
@@ -603,7 +603,7 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      * @since 1.3
      */
-    public <T> void register(final Class<T> cls, final ToStringConverter<T> toString, final FromStringConverter<T> fromString) {
+    public <T> void register(Class<T> cls, ToStringConverter<T> toString, FromStringConverter<T> fromString) {
         if (fromString == null || toString == null) {
             throw new IllegalArgumentException("Converters must not be null");
         }
@@ -642,7 +642,7 @@ public final class StringConvert {
      * @throws IllegalArgumentException if the class or method name are null or invalid
      * @throws IllegalStateException if trying to alter the global singleton
      */
-    public <T> void registerMethods(final Class<T> cls, String toStringMethodName, String fromStringMethodName) {
+    public <T> void registerMethods(Class<T> cls, String toStringMethodName, String fromStringMethodName) {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }
@@ -677,7 +677,7 @@ public final class StringConvert {
      * @throws IllegalArgumentException if the class or method name are null or invalid
      * @throws IllegalStateException if trying to alter the global singleton
      */
-    public <T> void registerMethodConstructor(final Class<T> cls, String toStringMethodName) {
+    public <T> void registerMethodConstructor(Class<T> cls, String toStringMethodName) {
         if (cls == null) {
             throw new IllegalArgumentException("Class must not be null");
         }

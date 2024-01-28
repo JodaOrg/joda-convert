@@ -573,13 +573,13 @@ public class TestStringConvert {
     }
 
     //-------------------------------------------------------------------------
-    ToStringConverter<DistanceNoAnnotations> DISTANCE_TO_STRING_CONVERTER = new ToStringConverter<DistanceNoAnnotations>() {
+    ToStringConverter<DistanceNoAnnotations> DISTANCE_TO_STRING_CONVERTER = new ToStringConverter<>() {
         @Override
         public String convertToString(DistanceNoAnnotations object) {
             return object.toString();
         }
     };
-    FromStringConverter<DistanceNoAnnotations> DISTANCE_FROM_STRING_CONVERTER = new FromStringConverter<DistanceNoAnnotations>() {
+    FromStringConverter<DistanceNoAnnotations> DISTANCE_FROM_STRING_CONVERTER = new FromStringConverter<>() {
         @Override
         public DistanceNoAnnotations convertFromString(Class<? extends DistanceNoAnnotations> cls, String str) {
             return DistanceNoAnnotations.parse(str);
