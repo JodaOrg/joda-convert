@@ -178,6 +178,43 @@ class TestStringConvert {
 
     //-----------------------------------------------------------------------
     @Test
+    void test_converterFor() {
+        Class<Integer> cls = Integer.class;
+        TypedStringConverter<Integer> conv = StringConvert.INSTANCE.converterFor(cls).orElseThrow();
+        assertThat(conv.convertFromString(cls, "12")).isEqualTo(12);
+        assertThat(conv.convertToString(12)).isEqualTo("12");
+    }
+
+    @Test
+    void test_converterFor_null() {
+        assertThatIllegalArgumentException().isThrownBy(() -> StringConvert.INSTANCE.converterFor(null));
+    }
+
+    @Test
+    void test_converterFor_Object() {
+        assertThat(StringConvert.INSTANCE.converterFor(Object.class)).isEmpty();
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    void test_fromStringConverterFor() {
+        Class<Integer> cls = Integer.class;
+        TypedFromStringConverter<Integer> conv = StringConvert.INSTANCE.fromStringConverterFor(cls).orElseThrow();
+        assertThat(conv.convertFromString(cls, "12")).isEqualTo(12);
+    }
+
+    @Test
+    void test_fromStringConverterFor_null() {
+        assertThatIllegalArgumentException().isThrownBy(() -> StringConvert.INSTANCE.fromStringConverterFor(null));
+    }
+
+    @Test
+    void test_fromStringConverterFor_Object() {
+        assertThat(StringConvert.INSTANCE.fromStringConverterFor(Object.class)).isEmpty();
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
     void test_findConverter() {
         Class<Integer> cls = Integer.class;
         StringConverter<Integer> conv = StringConvert.INSTANCE.findConverter(cls);

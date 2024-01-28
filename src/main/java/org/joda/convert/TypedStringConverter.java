@@ -38,4 +38,18 @@ public interface TypedStringConverter<T> extends StringConverter<T>, TypedFromSt
     @Override
     public abstract Class<?> getEffectiveType();
 
+    /**
+     * Returns this converter with the generics removed.
+     * <p>
+     * This returns {@code this} cast to remove the generics.
+     * This is designed for framework usage where the generics are unknown'?'.
+     * The returned type is declared with {@code Object} instead of '?' to allow the {@link ToStringConverter} to be invoked.
+     * 
+     * @return this converter, with a different type signature
+     */
+    @SuppressWarnings("unchecked")
+    public default TypedStringConverter<Object> withoutGenerics() {
+        return (TypedStringConverter<Object>) this;
+    }
+
 }

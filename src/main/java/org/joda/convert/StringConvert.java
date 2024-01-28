@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -96,7 +97,7 @@ public final class StringConvert {
     /**
      * The cache of from-strings.
      */
-    private final ConcurrentMap<Class<?>, FromStringConverter<?>> fromStrings = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, TypedFromStringConverter<?>> fromStrings = new ConcurrentHashMap<>();
 
     //-----------------------------------------------------------------------
     /**
@@ -348,6 +349,66 @@ public final class StringConvert {
     /**
      * Finds a suitable converter for the type.
      * <p>
+     * This returns an instance of {@code TypedStringConverter} for the specified class.
+     * This is designed for user code where the {@code Class} object generics is known.
+     * <p>
+     * The search algorithm first searches the registered converters.
+     * It then searches for {@code ToString} and {@code FromString} annotations on the
+     * specified class, class hierarchy or immediate parent interfaces.
+     * Finally, it handles {@code Enum} instances.
+     * <p>
+     * The returned converter may be queried for the effective type of the conversion.
+     * This can be used to find the best type to send in a serialized form.
+     * <p>
+     * Unusually for a method returning {@code Optional}, the method can also throw an exception.
+     * An empty result indicates that there is no converter for the specified class.
+     * An exception indicates there is a developer error in one of the converter factories.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a converter for, not null
+     * @return the converter, empty if not found
+     * @throws IllegalArgumentException if the input class is null
+     * @throws RuntimeException (or subclass) if there is a developer error in one of the converter factories
+     * @since 3.0
+     */
+    public <T> Optional<TypedStringConverter<T>> converterFor(Class<T> cls) {
+        // NOTE: ideally this method would have been called findConverter(), but that method name is already in use
+        return Optional.ofNullable(findConverterQuiet(cls));
+    }
+
+    /**
+     * Finds a suitable from-string converter for the type.
+     * <p>
+     * This returns an instance of {@code FromStringConverter} for the specified class.
+     * In most cases this is identical to {@link #findConverter(Class)}.
+     * However, it is permitted to have a {@code FromString} annotation without a {@code ToString} annotation,
+     * and this method handles that use case.
+     * <p>
+     * Unusually for a method returning {@code Optional}, the method can also throw an exception.
+     * An empty result indicates that there is no converter for the specified class.
+     * An exception indicates there is a developer error in one of the converter factories.
+     * 
+     * @param <T>  the type of the converter
+     * @param cls  the class to find a converter for, not null
+     * @return the converter, not null
+     * @throws IllegalArgumentException if the input class is null
+     * @throws RuntimeException (or subclass) if there is a developer error in one of the converters
+     * @since 3.0
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Optional<TypedFromStringConverter<T>> fromStringConverterFor(Class<T> cls) {
+        var converter = findConverterQuiet(cls);
+        if (converter == null) {
+            var fromStringConverter = (TypedFromStringConverter<T>) fromStrings.get(cls);
+            return fromStringConverter == CACHED_NULL ? Optional.empty() : Optional.of(fromStringConverter);
+        }
+        return Optional.of(converter);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
+     * Finds a suitable converter for the type.
+     * <p>
      * This returns an instance of {@code StringConverter} for the specified class.
      * This is designed for user code where the {@code Class} object generics is known.
      * <p>
@@ -412,6 +473,7 @@ public final class StringConvert {
      * @since 1.7
      */
     public <T> TypedStringConverter<T> findTypedConverter(Class<T> cls) {
+        // NOTE: Not using converterFor() to avoid any kind of performance regression
         var conv = findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
@@ -446,6 +508,7 @@ public final class StringConvert {
      */
     @SuppressWarnings("unchecked")
     public TypedStringConverter<Object> findTypedConverterNoGenerics(Class<?> cls) {
+        // NOTE: Not using converterFor() to avoid any kind of performance regression
         var conv = (TypedStringConverter<Object>) findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
@@ -468,17 +531,11 @@ public final class StringConvert {
      */
     @SuppressWarnings("unchecked")
     public <T> FromStringConverter<T> findFromStringConverter(Class<T> cls) {
-        var converter = findConverterQuiet(cls);
-        if (converter == null) {
-            var fromStringConverter = (FromStringConverter<T>) fromStrings.get(cls);
-            if (fromStringConverter == CACHED_NULL) {
-                throw new IllegalStateException("No registered converter found: " + cls);
-            }
-            return fromStringConverter;
-        }
-        return converter;
+        return fromStringConverterFor(cls)
+                .orElseThrow(() -> new IllegalStateException("No registered converter found: " + cls));
     }
 
+    //-------------------------------------------------------------------------
     // low-level method to find a converter, returning null if not found, unless a factory threw an exception
     // the result is a full-featured converter
     // if the class only has a from-string converter, the fromStrings map is updated
