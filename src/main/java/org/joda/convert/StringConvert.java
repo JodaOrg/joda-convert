@@ -471,7 +471,7 @@ public final class StringConvert {
         var converter = findConverterQuiet(cls);
         if (converter == null) {
             var fromStringConverter = (FromStringConverter<T>) fromStrings.get(cls);
-            if (fromStringConverter == null) {
+            if (fromStringConverter == CACHED_NULL) {
                 throw new IllegalStateException("No registered converter found: " + cls);
             }
             return fromStringConverter;
@@ -479,6 +479,9 @@ public final class StringConvert {
         return converter;
     }
 
+    // low-level method to find a converter, returning null if not found, unless a factory threw an exception
+    // the result is a full-featured converter
+    // if the class only has a from-string converter, the fromStrings map is updated
     @SuppressWarnings("unchecked")
     private <T> TypedStringConverter<T> findConverterQuiet(final Class<T> cls) {
         if (cls == null) {
@@ -498,11 +501,13 @@ public final class StringConvert {
             if (conv == null) {
                 registered.putIfAbsent(cls, CACHED_NULL);
                 // search for from-string only converters now, so that our cache is accurate for all kinds of converter
-                var fromString = AnnotationStringConverterFactory.INSTANCE.findFromStringConverter(cls);
-                if (fromString != null) {
-                    fromStrings.put(cls, fromString);
-                }
-                return null;
+                fromStrings.computeIfAbsent(
+                        cls,
+                        key -> {
+                            var fromString = AnnotationStringConverterFactory.INSTANCE.findFromStringConverter(cls);
+                            return fromString != null ? fromString : CACHED_NULL;
+                        });
+                return null;  // caller must lookup fromStrings map
             }
             registered.putIfAbsent(cls, conv);
         }
