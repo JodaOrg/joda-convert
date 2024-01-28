@@ -15,65 +15,76 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test {@link RenameHandler}.
  */
-public class TestRenameHandler {
+class TestRenameHandler {
 
     static final AtomicBoolean BAD_INIT = new AtomicBoolean();
 
     @Test
-    public void test_matchRenamedType() throws ClassNotFoundException {
+    void test_matchRenamedType() throws ClassNotFoundException {
         var test = RenameHandler.create();
         test.renamedType("com.foo.Bar", TestRenameHandler.class);
         var renamed = test.lookupType("com.foo.Bar");
         assertEquals(TestRenameHandler.class, renamed);
     }
 
-    @Test(expected = ClassNotFoundException.class)
-    public void test_noMatchType() throws ClassNotFoundException {
-        var test = RenameHandler.create();
-        test.lookupType("com.foo.Foo");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_renameBlockedType1() {
-        var test = RenameHandler.create();
-        test.renamedType("java.lang.String", TestRenameHandler.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_renameBlockedType2() {
-        var test = RenameHandler.create();
-        test.renamedType("javax.foo.Bar", TestRenameHandler.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_renameBlockedType3() {
-        var test = RenameHandler.create();
-        test.renamedType("org.joda.foo.Bar", TestRenameHandler.class);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void test_locked() {
-        var test = RenameHandler.create();
-        test.renamedType("com.foo.Bar", TestRenameHandler.class);
-        test.lock();
-        test.renamedType("com.foo.Foo", TestRenameHandler.class);
+    @Test
+    void test_noMatchType() throws ClassNotFoundException {
+        assertThrows(ClassNotFoundException.class, () -> {
+            var test = RenameHandler.create();
+            test.lookupType("com.foo.Foo");
+        });
     }
 
     @Test
-    public void test_matchUsingConfigFile() throws Exception {
+    void test_renameBlockedType1() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            var test = RenameHandler.create();
+            test.renamedType("java.lang.String", TestRenameHandler.class);
+        });
+    }
+
+    @Test
+    void test_renameBlockedType2() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            var test = RenameHandler.create();
+            test.renamedType("javax.foo.Bar", TestRenameHandler.class);
+        });
+    }
+
+    @Test
+    void test_renameBlockedType3() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            var test = RenameHandler.create();
+            test.renamedType("org.joda.foo.Bar", TestRenameHandler.class);
+        });
+    }
+
+    @Test
+    void test_locked() {
+        assertThrows(IllegalStateException.class, () -> {
+            var test = RenameHandler.create();
+            test.renamedType("com.foo.Bar", TestRenameHandler.class);
+            test.lock();
+            test.renamedType("com.foo.Foo", TestRenameHandler.class);
+        });
+    }
+
+    @Test
+    void test_matchUsingConfigFile() throws Exception {
         var originalErr = System.err;
         try {
             var baos = new ByteArrayOutputStream();

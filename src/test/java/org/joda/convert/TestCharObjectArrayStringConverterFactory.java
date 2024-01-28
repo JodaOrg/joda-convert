@@ -15,21 +15,21 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
 import org.joda.convert.factory.CharObjectArrayStringConverterFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test CharObjectArrayStringConverterFactory.
  */
-public class TestCharObjectArrayStringConverterFactory {
+class TestCharObjectArrayStringConverterFactory {
 
     @Test
-    public void test_CharacterArray() {
+    void test_CharacterArray() {
         doTest(new Character[0], "");
         doTest(new Character[] {'T'}, "T");
         doTest(new Character[] {'-'}, "-");

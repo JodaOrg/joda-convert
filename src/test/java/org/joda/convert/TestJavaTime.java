@@ -15,7 +15,7 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,15 +25,15 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test java.time.*.
  */
-public class TestJavaTime {
+class TestJavaTime {
 
     @Test
-    public void test_basics() throws ClassNotFoundException {
+    void test_basics() throws ClassNotFoundException {
         var test = StringConvert.INSTANCE;
         assertEquals("2019-06-30", test.convertToString(LocalDate.of(2019, 6, 30)));
         assertEquals("11:45", test.convertToString(LocalTime.of(11, 45)));

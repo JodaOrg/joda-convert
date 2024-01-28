@@ -15,21 +15,21 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
 import org.joda.convert.factory.ByteObjectArrayStringConverterFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test ByteObjectArrayStringConverterFactory.
  */
-public class TestByteObjectArrayStringConverterFactory {
+class TestByteObjectArrayStringConverterFactory {
 
     @Test
-    public void test_ByteArray() {
+    void test_ByteArray() {
         doTest(new Byte[0], "");
         doTest(new Byte[] {(byte) 0}, "00");
         doTest(new Byte[] {null}, "--");

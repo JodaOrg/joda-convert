@@ -15,9 +15,9 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
@@ -29,10 +29,10 @@ import org.threeten.bp.ZonedDateTime;
 /**
  * Test org.threeten.bp.*.
  */
-public class TestThreeTenBackport {
+class TestThreeTenBackport {
 
     @Test
-    public void test_basics() throws ClassNotFoundException {
+    void test_basics() throws ClassNotFoundException {
         var test = StringConvert.INSTANCE;
         assertEquals("2019-06-30", test.convertToString(LocalDate.of(2019, 6, 30)));
         assertEquals("11:45", test.convertToString(LocalTime.of(11, 45)));

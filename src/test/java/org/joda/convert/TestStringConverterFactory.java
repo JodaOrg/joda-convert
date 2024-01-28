@@ -15,47 +15,56 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test StringConvert factory.
  */
-public class TestStringConverterFactory {
+class TestStringConverterFactory {
 
     @Test
-    public void test_constructor() {
+    void test_constructor() {
         var test = new StringConvert(true, new Factory1());
         assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_constructor_null() {
-        new StringConvert(true, (StringConverterFactory[]) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_constructor_nullInArray() {
-        new StringConvert(true, new StringConverterFactory[] {null});
+    @Test
+    void test_constructor_null() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new StringConvert(true, (StringConverterFactory[]) null);
+        });
     }
 
     @Test
-    public void test_registerFactory() {
+    void test_constructor_nullInArray() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new StringConvert(true, new StringConverterFactory[] {null});
+        });
+    }
+
+    @Test
+    void test_registerFactory() {
         var test = new StringConvert();
         test.registerFactory(new Factory1());
         assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_registerFactory_null() {
-        var test = new StringConvert();
-        test.registerFactory(null);
+    @Test
+    void test_registerFactory_null() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            var test = new StringConvert();
+            test.registerFactory(null);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void test_registerFactory_cannotChangeSingleton() {
-        StringConvert.INSTANCE.registerFactory(new Factory1());
+    @Test
+    void test_registerFactory_cannotChangeSingleton() {
+        assertThrows(IllegalStateException.class, () -> {
+            StringConvert.INSTANCE.registerFactory(new Factory1());
+        });
     }
 
     static class Factory1 implements StringConverterFactory {
@@ -66,7 +75,7 @@ public class TestStringConverterFactory {
             }
             return null;
         }
-        
+
     }
 
 }

@@ -15,21 +15,21 @@
  */
 package org.joda.convert;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
 import org.joda.convert.factory.BooleanArrayStringConverterFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test BooleanArrayStringConverterFactory.
  */
-public class TestBooleanArrayStringConverterFactory {
+class TestBooleanArrayStringConverterFactory {
 
     @Test
-    public void test_longArray() {
+    void test_longArray() {
         doTest(new boolean[0], "");
         doTest(new boolean[] {true}, "T");
         doTest(new boolean[] {false}, "F");
