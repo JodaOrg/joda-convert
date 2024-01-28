@@ -15,10 +15,7 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.convert.factory.NumericObjectArrayStringConverterFactory;
 import org.junit.jupiter.api.Test;
@@ -39,9 +36,9 @@ class TestNumericObjectArrayStringConverterFactory {
 
     private void doTest(Long[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
-        assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(Long[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(Long[].class, str)));
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat(test.convertToString(Long[].class, array)).isEqualTo(str);
+        assertThat(test.convertFromString(Long[].class, str)).isEqualTo(array);
     }
 
     //-----------------------------------------------------------------------
@@ -55,9 +52,9 @@ class TestNumericObjectArrayStringConverterFactory {
 
     private void doTest(Integer[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
-        assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(Integer[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(Integer[].class, str)));
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat(test.convertToString(Integer[].class, array)).isEqualTo(str);
+        assertThat(test.convertFromString(Integer[].class, str)).isEqualTo(array);
     }
 
     //-----------------------------------------------------------------------
@@ -71,9 +68,9 @@ class TestNumericObjectArrayStringConverterFactory {
 
     private void doTest(Short[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
-        assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(Short[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(Short[].class, str)));
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat(test.convertToString(Short[].class, array)).isEqualTo(str);
+        assertThat(test.convertFromString(Short[].class, str)).isEqualTo(array);
     }
 
     //-----------------------------------------------------------------------
@@ -92,9 +89,9 @@ class TestNumericObjectArrayStringConverterFactory {
 
     private void doTest(Double[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
-        assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(Double[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(Double[].class, str)));
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat(test.convertToString(Double[].class, array)).isEqualTo(str);
+        assertThat(test.convertFromString(Double[].class, str)).isEqualTo(array);
     }
 
     //-----------------------------------------------------------------------
@@ -113,9 +110,9 @@ class TestNumericObjectArrayStringConverterFactory {
 
     private void doTest(Float[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
-        assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(Float[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(Float[].class, str)));
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat(test.convertToString(Float[].class, array)).isEqualTo(str);
+        assertThat(test.convertFromString(Float[].class, str)).isEqualTo(array);
     }
 
 }

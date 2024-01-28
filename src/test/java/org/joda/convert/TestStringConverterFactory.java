@@ -15,9 +15,11 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
+import org.joda.convert.TestStringConverterFactory.Factory1;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,43 +30,39 @@ class TestStringConverterFactory {
     @Test
     void test_constructor() {
         var test = new StringConvert(true, new Factory1());
-        assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
+        assertThat(test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType()).isEqualTo(DistanceMethodMethod.class);
     }
 
     @Test
     void test_constructor_null() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new StringConvert(true, (StringConverterFactory[]) null);
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new StringConvert(true, (StringConverterFactory[]) null));
     }
 
     @Test
     void test_constructor_nullInArray() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new StringConvert(true, new StringConverterFactory[] {null});
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new StringConvert(true, new StringConverterFactory[] {null}));
     }
 
     @Test
     void test_registerFactory() {
         var test = new StringConvert();
         test.registerFactory(new Factory1());
-        assertEquals(DistanceMethodMethod.class, test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType());
+        assertThat(test.findTypedConverter(DistanceMethodMethod.class).getEffectiveType()).isEqualTo(DistanceMethodMethod.class);
     }
 
     @Test
     void test_registerFactory_null() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            var test = new StringConvert();
-            test.registerFactory(null);
-        });
+        var test = new StringConvert();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> test.registerFactory(null));
     }
 
     @Test
     void test_registerFactory_cannotChangeSingleton() {
-        assertThrows(IllegalStateException.class, () -> {
-            StringConvert.INSTANCE.registerFactory(new Factory1());
-        });
+        assertThatIllegalStateException()
+                .isThrownBy(() -> StringConvert.INSTANCE.registerFactory(new Factory1()));
     }
 
     static class Factory1 implements StringConverterFactory {

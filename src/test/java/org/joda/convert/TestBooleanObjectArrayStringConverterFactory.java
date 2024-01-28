@@ -15,10 +15,7 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.convert.factory.BooleanObjectArrayStringConverterFactory;
 import org.junit.jupiter.api.Test;
@@ -39,9 +36,9 @@ class TestBooleanObjectArrayStringConverterFactory {
 
     private void doTest(Boolean[] array, String str) {
         var test = new StringConvert(true, BooleanObjectArrayStringConverterFactory.INSTANCE);
-        assertEquals(str, test.convertToString(array));
-        assertEquals(str, test.convertToString(Boolean[].class, array));
-        assertTrue(Arrays.equals(array, test.convertFromString(Boolean[].class, str)));
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat(test.convertToString(Boolean[].class, array)).isEqualTo(str);
+        assertThat(test.convertFromString(Boolean[].class, str)).isEqualTo(array);
     }
 
 }

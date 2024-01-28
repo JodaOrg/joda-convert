@@ -15,11 +15,9 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -28,7 +26,6 @@ import java.math.RoundingMode;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -61,20 +58,20 @@ class TestJDKStringConverters {
     void test_StringBuffer() {
         JDKStringConverter test = JDKStringConverter.STRING_BUFFER;
         Object obj = new StringBuffer("Hello");
-        assertEquals(StringBuffer.class, test.getEffectiveType());
-        assertEquals("Hello", test.convertToString(obj));
+        assertThat(test.getEffectiveType()).isEqualTo(StringBuffer.class);
+        assertThat(test.convertToString(obj)).isEqualTo("Hello");
         StringBuffer back = (StringBuffer) test.convertFromString(StringBuffer.class, "Hello");
-        assertEquals("Hello", back.toString());
+        assertThat(back.toString()).isEqualTo("Hello");
     }
 
     @Test
     void test_StringBuilder() {
         JDKStringConverter test = JDKStringConverter.STRING_BUILDER;
         Object obj = new StringBuilder("Hello");
-        assertEquals(StringBuilder.class, test.getEffectiveType());
-        assertEquals("Hello", test.convertToString(obj));
+        assertThat(test.getEffectiveType()).isEqualTo(StringBuilder.class);
+        assertThat(test.convertToString(obj)).isEqualTo("Hello");
         StringBuilder back = (StringBuilder) test.convertFromString(StringBuilder.class, "Hello");
-        assertEquals("Hello", back.toString());
+        assertThat(back.toString()).isEqualTo("Hello");
     }
 
     @Test
@@ -112,9 +109,8 @@ class TestJDKStringConverters {
 
     @Test
     void test_Character_fail() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            JDKStringConverter.CHARACTER.convertFromString(Character.class, "RUBBISH");
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JDKStringConverter.CHARACTER.convertFromString(Character.class, "RUBBISH"));
     }
 
     @Test
@@ -122,9 +118,9 @@ class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.CHAR_ARRAY;
         char[] array = new char[] {'M', 'a', 'p'};
         String str = "Map";
-        assertEquals(char[].class, test.getEffectiveType());
-        assertEquals(str, test.convertToString(array));
-        assertTrue(Arrays.equals(array, (char[]) test.convertFromString(char[].class, str)));
+        assertThat(test.getEffectiveType()).isEqualTo(char[].class);
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat((char[]) test.convertFromString(char[].class, str)).isEqualTo(array);
     }
 
     @Test
@@ -138,9 +134,9 @@ class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {77, 97, 112};
         String str = "TWFw";
-        assertEquals(byte[].class, test.getEffectiveType());
-        assertEquals(str, test.convertToString(array));
-        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+        assertThat(test.getEffectiveType()).isEqualTo(byte[].class);
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat((byte[]) test.convertFromString(byte[].class, str)).isEqualTo(array);
     }
 
     @Test
@@ -148,9 +144,9 @@ class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {77, 97};
         String str = "TWE=";
-        assertEquals(byte[].class, test.getEffectiveType());
-        assertEquals(str, test.convertToString(array));
-        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+        assertThat(test.getEffectiveType()).isEqualTo(byte[].class);
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat((byte[]) test.convertFromString(byte[].class, str)).isEqualTo(array);
     }
 
     @Test
@@ -158,9 +154,9 @@ class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {77};
         String str = "TQ==";
-        assertEquals(byte[].class, test.getEffectiveType());
-        assertEquals(str, test.convertToString(array));
-        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+        assertThat(test.getEffectiveType()).isEqualTo(byte[].class);
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat((byte[]) test.convertFromString(byte[].class, str)).isEqualTo(array);
     }
 
     @Test
@@ -168,9 +164,9 @@ class TestJDKStringConverters {
         JDKStringConverter test = JDKStringConverter.BYTE_ARRAY;
         byte[] array = new byte[] {73, 97, 112, 77};
         String str = "SWFwTQ==";
-        assertEquals(byte[].class, test.getEffectiveType());
-        assertEquals(str, test.convertToString(array));
-        assertTrue(Arrays.equals(array, (byte[]) test.convertFromString(byte[].class, str)));
+        assertThat(test.getEffectiveType()).isEqualTo(byte[].class);
+        assertThat(test.convertToString(array)).isEqualTo(str);
+        assertThat((byte[]) test.convertFromString(byte[].class, str)).isEqualTo(array);
     }
 
     @Test
@@ -182,9 +178,8 @@ class TestJDKStringConverters {
 
     @Test
     void test_Boolean_fail() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            JDKStringConverter.BOOLEAN.convertFromString(Boolean.class, "RUBBISH");
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JDKStringConverter.BOOLEAN.convertFromString(Boolean.class, "RUBBISH"));
     }
 
     @Test
@@ -215,47 +210,46 @@ class TestJDKStringConverters {
     void test_AtomicLong() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_LONG;
         AtomicLong obj = new AtomicLong(12);
-        assertEquals(AtomicLong.class, test.getEffectiveType());
-        assertEquals("12", test.convertToString(obj));
+        assertThat(test.getEffectiveType()).isEqualTo(AtomicLong.class);
+        assertThat(test.convertToString(obj)).isEqualTo("12");
         AtomicLong back = (AtomicLong) test.convertFromString(AtomicLong.class, "12");
-        assertEquals(12, back.get());
+        assertThat(back.get()).isEqualTo(12);
     }
 
     @Test
     void test_AtomicInteger() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_INTEGER;
         AtomicInteger obj = new AtomicInteger(12);
-        assertEquals(AtomicInteger.class, test.getEffectiveType());
-        assertEquals("12", test.convertToString(obj));
+        assertThat(test.getEffectiveType()).isEqualTo(AtomicInteger.class);
+        assertThat(test.convertToString(obj)).isEqualTo("12");
         AtomicInteger back = (AtomicInteger) test.convertFromString(AtomicInteger.class, "12");
-        assertEquals(12, back.get());
+        assertThat(back.get()).isEqualTo(12);
     }
 
     @Test
     void test_AtomicBoolean_true() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
         AtomicBoolean obj = new AtomicBoolean(true);
-        assertEquals(AtomicBoolean.class, test.getEffectiveType());
-        assertEquals("true", test.convertToString(obj));
+        assertThat(test.getEffectiveType()).isEqualTo(AtomicBoolean.class);
+        assertThat(test.convertToString(obj)).isEqualTo("true");
         AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "true");
-        assertTrue(back.get());
+        assertThat(back.get()).isTrue();
     }
 
     @Test
     void test_AtomicBoolean_false() {
         JDKStringConverter test = JDKStringConverter.ATOMIC_BOOLEAN;
         AtomicBoolean obj = new AtomicBoolean(false);
-        assertEquals(AtomicBoolean.class, test.getEffectiveType());
-        assertEquals("false", test.convertToString(obj));
+        assertThat(test.getEffectiveType()).isEqualTo(AtomicBoolean.class);
+        assertThat(test.convertToString(obj)).isEqualTo("false");
         AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "false");
-        assertFalse(back.get());
+        assertThat(back.get()).isFalse();
     }
 
     @Test
     void test_AtomicBoolean_fail() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            JDKStringConverter.ATOMIC_BOOLEAN.convertFromString(AtomicBoolean.class, "RUBBISH");
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> JDKStringConverter.ATOMIC_BOOLEAN.convertFromString(AtomicBoolean.class, "RUBBISH"));
     }
 
     @Test
@@ -297,21 +291,16 @@ class TestJDKStringConverters {
 
     @Test
     void test_Class_fail() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.CLASS.convertFromString(Class.class, "RUBBISH");
-        });
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.CLASS.convertFromString(Class.class, "RUBBISH"));
     }
 
     @Test
     void test_Class_withRename() {
-        try {
-            JDKStringConverter.CLASS.convertFromString(Class.class, "org.foo.StringConvert");
-            fail();
-        } catch (RuntimeException ex) {
-            // expected
-        }
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.CLASS.convertFromString(Class.class, "org.foo.StringConvert"));
         RenameHandler.INSTANCE.renamedType("org.foo.StringConvert", StringConvert.class);
-        assertEquals(StringConvert.class, JDKStringConverter.CLASS.convertFromString(Class.class, "org.foo.StringConvert"));
+        assertThat(JDKStringConverter.CLASS.convertFromString(Class.class, "org.foo.StringConvert")).isEqualTo(StringConvert.class);
     }
 
     @Test
@@ -351,9 +340,8 @@ class TestJDKStringConverters {
 
     @Test
     void test_URL_invalidFormat() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.URL.convertFromString(URL.class, "RUBBISH:RUBBISH");
-        });
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.URL.convertFromString(URL.class, "RUBBISH:RUBBISH"));
     }
 
     @Test
@@ -372,10 +360,10 @@ class TestJDKStringConverters {
 
         InetAddress obj = InetAddress.getByName("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
         String str = test.convertToString(obj);
-        assertTrue(str.equals("2001:db8:85a3:0:0:8a2e:370:7334") || str.equals("2001:db8:85a3::8a2e:370:7334"));
-        assertEquals(obj, test.convertFromString(InetAddress.class, str));
-        assertEquals(obj, test.convertFromString(InetAddress.class, "2001:db8:85a3:0:0:8a2e:370:7334"));
-        assertEquals(obj, test.convertFromString(InetAddress.class, "2001:db8:85a3::8a2e:370:7334"));
+        assertThat(str.equals("2001:db8:85a3:0:0:8a2e:370:7334") || str.equals("2001:db8:85a3::8a2e:370:7334")).isTrue();
+        assertThat(test.convertFromString(InetAddress.class, str)).isEqualTo(obj);
+        assertThat(test.convertFromString(InetAddress.class, "2001:db8:85a3:0:0:8a2e:370:7334")).isEqualTo(obj);
+        assertThat(test.convertFromString(InetAddress.class, "2001:db8:85a3::8a2e:370:7334")).isEqualTo(obj);
     }
 
 //    @Test(expected=RuntimeException.class)
@@ -406,16 +394,14 @@ class TestJDKStringConverters {
 
     @Test
     void test_Date_invalidLength() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.DATE.convertFromString(Date.class, "2010-09-03");
-        });
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.DATE.convertFromString(Date.class, "2010-09-03"));
     }
 
     @Test
     void test_Date_invalidFormat() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.DATE.convertFromString(Date.class, "2010-09-03XXX:34:05.000+02:00");
-        });
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.DATE.convertFromString(Date.class, "2010-09-03XXX:34:05.000+02:00"));
     }
 
     @Test
@@ -434,88 +420,90 @@ class TestJDKStringConverters {
 
     @Test
     void test_Calendar_invalidLength() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.CALENDAR.convertFromString(GregorianCalendar.class, "2010-09-03");
-        });
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.CALENDAR.convertFromString(GregorianCalendar.class, "2010-09-03"));
     }
 
     @Test
     void test_Calendar_invalidFormat() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.CALENDAR.convertFromString(GregorianCalendar.class, "2010-09-03XXX:34:05.000+02:00[Europe/London]");
-        });
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.CALENDAR.convertFromString(
+                        GregorianCalendar.class, "2010-09-03XXX:34:05.000+02:00[Europe/London]"));
     }
 
     @Test
     void test_Calendar_notGregorian() {
-        assertThrows(RuntimeException.class, () -> {
-            JDKStringConverter.CALENDAR.convertToString(new Calendar() {
-                private static final long serialVersionUID = 1L;
-                @Override
-                public void roll(int field, boolean up) {
-                }
-                @Override
-                public int getMinimum(int field) {
-                    return 0;
-                }
-                @Override
-                public int getMaximum(int field) {
-                    return 0;
-                }
-                @Override
-                public int getLeastMaximum(int field) {
-                    return 0;
-                }
-                @Override
-                public int getGreatestMinimum(int field) {
-                    return 0;
-                }
-                @Override
-                protected void computeTime() {
-                }
-                @Override
-                protected void computeFields() {
-                }
-                @Override
-                public void add(int field, int amount) {
-                }
-            });
-        });
+        Calendar cal = new Calendar() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void roll(int field, boolean up) {
+            }
+
+            @Override
+            public int getMinimum(int field) {
+                return 0;
+            }
+
+            @Override
+            public int getMaximum(int field) {
+                return 0;
+            }
+
+            @Override
+            public int getLeastMaximum(int field) {
+                return 0;
+            }
+
+            @Override
+            public int getGreatestMinimum(int field) {
+                return 0;
+            }
+
+            @Override
+            protected void computeTime() {
+            }
+
+            @Override
+            protected void computeFields() {
+            }
+
+            @Override
+            public void add(int field, int amount) {
+            }
+        };
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> JDKStringConverter.CALENDAR.convertToString(cal));
     }
 
     @Test
     void test_Enum() {
         TypedStringConverter<RoundingMode> test = StringConvert.create().findTypedConverter(RoundingMode.class);
-        assertEquals(RoundingMode.class, test.getEffectiveType());
-        assertEquals("CEILING", test.convertToString(RoundingMode.CEILING));
-        assertEquals(RoundingMode.CEILING, test.convertFromString(RoundingMode.class, "CEILING"));
+        assertThat(test.getEffectiveType()).isEqualTo(RoundingMode.class);
+        assertThat(test.convertToString(RoundingMode.CEILING)).isEqualTo("CEILING");
+        assertThat(test.convertFromString(RoundingMode.class, "CEILING")).isEqualTo(RoundingMode.CEILING);
     }
 
     @Test
     void test_Enum_invalidConstant() {
-        assertThrows(RuntimeException.class, () -> {
-            TypedStringConverter<RoundingMode> test = StringConvert.create().findTypedConverter(RoundingMode.class);
-            test.convertFromString(RoundingMode.class, "RUBBISH");
-        });
+        TypedStringConverter<RoundingMode> test = StringConvert.create().findTypedConverter(RoundingMode.class);
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> test.convertFromString(RoundingMode.class, "RUBBISH"));
     }
 
     @Test
     void test_Enum_withRename() {
         TypedStringConverter<Status> test = StringConvert.create().findTypedConverter(Status.class);
-        assertEquals("VALID", test.convertToString(Status.VALID));
-        assertEquals("INVALID", test.convertToString(Status.INVALID));
-        assertEquals(Status.VALID, test.convertFromString(Status.class, "VALID"));
-        assertEquals(Status.INVALID, test.convertFromString(Status.class, "INVALID"));
-        try {
-            test.convertFromString(Status.class, "OK");
-            fail();
-        } catch (RuntimeException ex) {
-            // expected
-        }
+        assertThat(test.convertToString(Status.VALID)).isEqualTo("VALID");
+        assertThat(test.convertToString(Status.INVALID)).isEqualTo("INVALID");
+        assertThat(test.convertFromString(Status.class, "VALID")).isEqualTo(Status.VALID);
+        assertThat(test.convertFromString(Status.class, "INVALID")).isEqualTo(Status.INVALID);
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> test.convertFromString(Status.class, "OK"));
         RenameHandler.INSTANCE.renamedEnum("OK", Status.VALID);
-        assertEquals(Status.VALID, test.convertFromString(Status.class, "OK"));
-        assertEquals(Status.VALID, test.convertFromString(Status.class, "VALID"));
-        assertEquals(Status.INVALID, test.convertFromString(Status.class, "INVALID"));
+        assertThat(test.convertFromString(Status.class, "OK")).isEqualTo(Status.VALID);
+        assertThat(test.convertFromString(Status.class, "VALID")).isEqualTo(Status.VALID);
+        assertThat(test.convertFromString(Status.class, "INVALID")).isEqualTo(Status.INVALID);
     }
 
     @Test
@@ -545,9 +533,9 @@ class TestJDKStringConverters {
     }
 
     private void doTest(JDKStringConverter test, Class<?> cls, Object obj, String str, Object objFromStr) {
-        assertEquals(cls, test.getEffectiveType());
-        assertEquals(str, test.convertToString(obj));
-        assertEquals(objFromStr, test.convertFromString(cls, str));
+        assertThat(test.getEffectiveType()).isEqualTo(cls);
+        assertThat(test.convertToString(obj)).isEqualTo(str);
+        assertThat(test.convertFromString(cls, str)).isEqualTo(objFromStr);
     }
 
 }

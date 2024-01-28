@@ -15,15 +15,22 @@
  */
 package org.joda.convert;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * A class that spots bad initialization.
  */
-public class TestRenameHandlerBadInit {
+class TestRenameHandlerBadInit {
 
     static {
         if (RenameHandler.INSTANCE == null) {
             TestRenameHandler.BAD_INIT.set(true);
         }
+    }
+
+    @Test
+    void test() {
+        // do nothing
     }
 
 }

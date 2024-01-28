@@ -15,7 +15,7 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,21 +35,19 @@ class TestJavaTime {
     @Test
     void test_basics() throws ClassNotFoundException {
         var test = StringConvert.INSTANCE;
-        assertEquals("2019-06-30", test.convertToString(LocalDate.of(2019, 6, 30)));
-        assertEquals("11:45", test.convertToString(LocalTime.of(11, 45)));
-        assertEquals("2019-06-30T11:45", test.convertToString(LocalDateTime.of(2019, 6, 30, 11, 45)));
-        assertEquals("2019-06-30T11:45+02:00",
-                test.convertToString(OffsetDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneOffset.ofHours(2))));
-        assertEquals("2019-06-30T11:45+02:00[Europe/Paris]",
-                test.convertToString(ZonedDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneId.of("Europe/Paris"))));
-        assertEquals("+02:00", test.convertToString(ZoneOffset.ofHours(2)));
-        assertEquals("Europe/Paris", test.convertToString(ZoneId.of("Europe/Paris")));
-        assertEquals(ZoneId.of("Europe/Paris"), test.convertFromString(ZoneId.class, "Europe/Paris"));
+        assertThat(test.convertToString(LocalDate.of(2019, 6, 30))).isEqualTo("2019-06-30");
+        assertThat(test.convertToString(LocalTime.of(11, 45))).isEqualTo("11:45");
+        assertThat(test.convertToString(LocalDateTime.of(2019, 6, 30, 11, 45))).isEqualTo("2019-06-30T11:45");
+        assertThat(test.convertToString(OffsetDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneOffset.ofHours(2)))).isEqualTo("2019-06-30T11:45+02:00");
+        assertThat(test.convertToString(ZonedDateTime.of(2019, 6, 30, 11, 45, 0, 0, ZoneId.of("Europe/Paris")))).isEqualTo("2019-06-30T11:45+02:00[Europe/Paris]");
+        assertThat(test.convertToString(ZoneOffset.ofHours(2))).isEqualTo("+02:00");
+        assertThat(test.convertToString(ZoneId.of("Europe/Paris"))).isEqualTo("Europe/Paris");
+        assertThat(test.convertFromString(ZoneId.class, "Europe/Paris")).isEqualTo(ZoneId.of("Europe/Paris"));
 
-        assertEquals("Europe/Paris", test.convertFromString(ZoneId.class, "Europe/Paris").toString());
+        assertThat(test.convertFromString(ZoneId.class, "Europe/Paris").toString()).isEqualTo("Europe/Paris");
 
         var zoneRegionClass = ZoneId.of("Europe/Paris").getClass();  // ZoneRegion
-        assertEquals("Europe/Paris", test.convertFromString(zoneRegionClass, "Europe/Paris").toString());
+        assertThat(test.convertFromString(zoneRegionClass, "Europe/Paris").toString()).isEqualTo("Europe/Paris");
     }
 
 }

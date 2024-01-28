@@ -15,10 +15,10 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -38,49 +38,44 @@ class TestRenameHandler {
         var test = RenameHandler.create();
         test.renamedType("com.foo.Bar", TestRenameHandler.class);
         var renamed = test.lookupType("com.foo.Bar");
-        assertEquals(TestRenameHandler.class, renamed);
+        assertThat(renamed).isEqualTo(TestRenameHandler.class);
     }
 
     @Test
     void test_noMatchType() throws ClassNotFoundException {
-        assertThrows(ClassNotFoundException.class, () -> {
-            var test = RenameHandler.create();
-            test.lookupType("com.foo.Foo");
-        });
+        var test = RenameHandler.create();
+        assertThatExceptionOfType(ClassNotFoundException.class)
+                .isThrownBy(() -> test.lookupType("com.foo.Foo"));
     }
 
     @Test
     void test_renameBlockedType1() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            var test = RenameHandler.create();
-            test.renamedType("java.lang.String", TestRenameHandler.class);
-        });
+        var test = RenameHandler.create();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> test.renamedType("java.lang.String", TestRenameHandler.class));
     }
 
     @Test
     void test_renameBlockedType2() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            var test = RenameHandler.create();
-            test.renamedType("javax.foo.Bar", TestRenameHandler.class);
-        });
+        var test = RenameHandler.create();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> test.renamedType("javax.foo.Bar", TestRenameHandler.class));
     }
 
     @Test
     void test_renameBlockedType3() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            var test = RenameHandler.create();
-            test.renamedType("org.joda.foo.Bar", TestRenameHandler.class);
-        });
+        var test = RenameHandler.create();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> test.renamedType("org.joda.foo.Bar", TestRenameHandler.class));
     }
 
     @Test
     void test_locked() {
-        assertThrows(IllegalStateException.class, () -> {
-            var test = RenameHandler.create();
-            test.renamedType("com.foo.Bar", TestRenameHandler.class);
-            test.lock();
-            test.renamedType("com.foo.Foo", TestRenameHandler.class);
-        });
+        var test = RenameHandler.create();
+        test.renamedType("com.foo.Bar", TestRenameHandler.class);
+        test.lock();
+        assertThatIllegalStateException()
+                .isThrownBy(() -> test.renamedType("com.foo.Foo", TestRenameHandler.class));
     }
 
     @Test
@@ -92,17 +87,17 @@ class TestRenameHandler {
             System.setErr(ps);
             var test = RenameHandler.create(true);
             System.err.flush();
-            assertEquals(Status.class, test.lookupType("com.foo.Bar"));
-            assertEquals(Status.VALID, test.lookupEnum(Status.class, "YES"));
-            assertEquals(DistanceMethodMethod.class, test.lookupType("com.foo.Foo"));
-            assertEquals(Status.INVALID, test.lookupEnum(Status.class, "NO"));
+            assertThat(test.lookupType("com.foo.Bar")).isEqualTo(Status.class);
+            assertThat(test.lookupEnum(Status.class, "YES")).isEqualTo(Status.VALID);
+            assertThat(test.lookupType("com.foo.Foo")).isEqualTo(DistanceMethodMethod.class);
+            assertThat(test.lookupEnum(Status.class, "NO")).isEqualTo(Status.INVALID);
             var logged = baos.toString("UTF-8");
-            assertTrue(logged.startsWith("ERROR: Invalid Renamed.ini: "));
-            assertTrue(logged.contains("org.joda.convert.ClassDoesNotExist"));
+            assertThat(logged).startsWith("ERROR: Invalid Renamed.ini: ");
+            assertThat(logged).contains("org.joda.convert.ClassDoesNotExist");
             // ensure that the bad init class is loaded, and that it did not see a null RenameHandler
-            assertTrue(test.getTypeRenames().containsKey("com.foo.convert.TestRenameHandlerBadInit"));
-            assertTrue(Status.STRING_CONVERTIBLE);
-            assertFalse(BAD_INIT.get());
+            assertThat(test.getTypeRenames()).containsKey("com.foo.convert.TestRenameHandlerBadInit");
+            assertThat(Status.STRING_CONVERTIBLE).isTrue();
+            assertThat(BAD_INIT.get()).isFalse();
 
         } finally {
             System.setErr(originalErr);

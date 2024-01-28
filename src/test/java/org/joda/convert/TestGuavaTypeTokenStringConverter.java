@@ -15,7 +15,7 @@
  */
 package org.joda.convert;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -30,7 +30,7 @@ import com.google.common.reflect.TypeToken;
  * Test GuavaStringConverters.
  */
 @SuppressWarnings("serial")
-public class TestGuavaTypeTokenStringConverter {
+class TestGuavaTypeTokenStringConverter {
 
     @Test
     void test_simpleClass_String() {
@@ -84,7 +84,7 @@ public class TestGuavaTypeTokenStringConverter {
         var asStr = test.convertToString(token);
         var reverse1 = test.convertFromString(TypeToken.class, "java.util.List<java.lang.String[]>");
         var reverse2 = test.convertFromString(TypeToken.class, "java.util.List<[Ljava.lang.String;>");
-        assertEquals(reverse1, reverse2);
+        assertThat(reverse2).isEqualTo(reverse1);
         var expected = (asStr.equals("java.util.List<java.lang.String[]>") ?
                 "java.util.List<java.lang.String[]>" :
                 "java.util.List<[Ljava.lang.String;>");
@@ -151,30 +151,30 @@ public class TestGuavaTypeTokenStringConverter {
     @SuppressWarnings("unchecked")
     public void doTest(TypeToken<?> obj, String str) {
         var test = new TypeTokenStringConverter();
-        assertEquals(TypeToken.class, test.getEffectiveType());
-        assertEquals(str, test.convertToString(obj));
-        assertEquals(obj, test.convertFromString(TypeToken.class, str));
+        assertThat(test.getEffectiveType()).isEqualTo(TypeToken.class);
+        assertThat(test.convertToString(obj)).isEqualTo(str);
+        assertThat(test.convertFromString(TypeToken.class, str)).isEqualTo(obj);
 
         var test2 = StringConvert.INSTANCE.findTypedConverterNoGenerics(TypeToken.class);
-        assertEquals(TypeToken.class, test2.getEffectiveType());
-        assertEquals(str, test2.convertToString(obj));
-        assertEquals(obj, test2.convertFromString(TypeToken.class, str));
+        assertThat(test2.getEffectiveType()).isEqualTo(TypeToken.class);
+        assertThat(test2.convertToString(obj)).isEqualTo(str);
+        assertThat(test2.convertFromString(TypeToken.class, str)).isEqualTo(obj);
 
         var test3 = TypeStringConverterFactory.INSTANCE;
         var converter3 = (TypedStringConverter<Type>) test3.findConverter(Type.class);
-        assertEquals(Type.class, converter3.getEffectiveType());
-        assertEquals(str, converter3.convertToString(obj.getType()));
-        assertEquals(obj.getType(), converter3.convertFromString(Type.class, str));
+        assertThat(converter3.getEffectiveType()).isEqualTo(Type.class);
+        assertThat(converter3.convertToString(obj.getType())).isEqualTo(str);
+        assertThat(converter3.convertFromString(Type.class, str)).isEqualTo(obj.getType());
 
         var test4 = StringConvert.INSTANCE.findTypedConverterNoGenerics(Type.class);
-        assertEquals(Type.class, test4.getEffectiveType());
-        assertEquals(str, test4.convertToString(obj.getType()));
-        assertEquals(obj.getType(), test4.convertFromString(Type.class, str));
+        assertThat(test4.getEffectiveType()).isEqualTo(Type.class);
+        assertThat(test4.convertToString(obj.getType())).isEqualTo(str);
+        assertThat(test4.convertFromString(Type.class, str)).isEqualTo(obj.getType());
 
         var test5 = StringConvert.INSTANCE.findTypedConverterNoGenerics(ParameterizedType.class);
-        assertEquals(ParameterizedType.class, test5.getEffectiveType());
-        assertEquals(str, test5.convertToString(obj.getType()));
-        assertEquals(obj.getType(), test5.convertFromString(ParameterizedType.class, str));
+        assertThat(test5.getEffectiveType()).isEqualTo(ParameterizedType.class);
+        assertThat(test5.convertToString(obj.getType())).isEqualTo(str);
+        assertThat(test5.convertFromString(ParameterizedType.class, str)).isEqualTo(obj.getType());
     }
 
 }
