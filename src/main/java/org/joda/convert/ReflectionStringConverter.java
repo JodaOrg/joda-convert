@@ -35,7 +35,7 @@ final class ReflectionStringConverter<T> implements TypedStringConverter<T> {
     /** Conversion to a string. */
     private final Method toString;
     /** Conversion from a string, package-scoped for testing. */
-    final TypedFromStringConverter<T> fromString;
+    final TypedFromStringConverter<T> fromString;  // CSIGNORE
 
     /**
      * Creates an instance using two methods.
