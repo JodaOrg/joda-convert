@@ -9,7 +9,7 @@
   <artifactId>joda-convert</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Convert</name>
-  <version>3.0.0-RC1-SNAPSHOT</version>
+  <version>3.0.0-RC1</version>
   <description>Library to convert Objects to and from String, compatible with Java 21+</description>
   <url>https://www.joda.org/joda-convert/</url>
 
@@ -34,7 +34,7 @@
     <connection>scm:git:https://github.com/JodaOrg/joda-convert.git</connection>
     <developerConnection>scm:git:https://github.com/JodaOrg/joda-convert.git</developerConnection>
     <url>https://github.com/JodaOrg/joda-convert</url>
-    <tag>HEAD</tag>
+    <tag>v3.0.0-RC1</tag>
   </scm>
 
   <!-- ==================================================================== -->
