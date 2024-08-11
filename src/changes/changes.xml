@@ -7,12 +7,26 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="3.0.0" date="SNAPSHOT" description="Version 3.0.0">
+    <release version="3.0.0-RC1" date="2024-08-11" description="Version 3.0.0-RC1">
       <action dev="jodastephen" type="add">
         Major version based on Java SE 21.
         Intended to be effectively compatible with v2.x.
         Optional dependencies are now resolved via Maven and the Java Module System, not reflection.
+      </action>
+      <action dev="jodastephen" type="remove">
         The ancient `javax.time` package (used during development of JSR-310, note the 'x' suffix) is no longer supported.
+      </action>
+      <action dev="jodastephen" type="update">
+        `Locale` conversion now uses `Locale.of()` instead of `new Locale()`.
+      </action>
+      <action dev="jodastephen" type="update">
+        `URL` conversion now goes via a `URI`.
+      </action>
+      <action dev="jodastephen" type="update">
+        `Package` conversion now uses `ClassLoader.getDefinedPackage()` and `Package.getPackages()`.
+      </action>
+      <action dev="jodastephen" type="add">
+        New methods to find a converter returning `Optional`.
       </action>
     </release>
     <release version="2.2.3" date="2023-01-15" description="Version 2.2.3">
