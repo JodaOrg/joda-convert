@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ==================================================================== -->
-  <!-- Build requires Java SE 11 or later -->
+  <!-- Build requires Java SE 21 or later -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.joda</groupId>
   <artifactId>joda-convert</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Convert</name>
-  <version>3.0.0-SNAPSHOT</version>
-  <description>Library to convert Objects to and from String</description>
+  <version>3.0.0-RC1-SNAPSHOT</version>
+  <description>Library to convert Objects to and from String, compatible with Java 21+</description>
   <url>https://www.joda.org/joda-convert/</url>
 
   <!-- ==================================================================== -->
@@ -77,7 +77,7 @@
     </resources>
     <!-- define build -->
     <plugins>
-      <!-- Enforce Maven 3.6.0 and Java 11+ -->
+      <!-- Enforce Maven 3.8.0 and Java 21+ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -90,10 +90,10 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.6.0</version>
+                  <version>3.8.0</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[11,)</version>
+                  <version>[21,)</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -211,9 +211,9 @@
             </goals>
           </execution>
         </executions>
-        <!-- Javadoc uses source 11 to pickup the module settings -->
+        <!-- Javadoc uses source 21 to pickup the module settings -->
         <configuration>
-          <source>11</source>
+          <source>21</source>
         </configuration>
       </plugin>
       <!-- Setup source jar -->
@@ -568,7 +568,7 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <source>11</source>
+          <source>21</source>
         </configuration>
       </plugin>
       <!-- Setup Surefire report -->
@@ -777,7 +777,7 @@
     <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.2.3</maven-surefire-report-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
-    <github-api.version>1.318</github-api.version>
+    <github-api.version>1.323</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
@@ -786,10 +786,10 @@
     <spotbugs-maven-plugin.version>4.8.2.0</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.compilerVersion>11</maven.compiler.compilerVersion>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.compilerVersion>21</maven.compiler.compilerVersion>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
 
     <!-- Properties for maven-javadoc-plugin -->
@@ -798,7 +798,7 @@
     <doclint>none</doclint>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>10.12.7</checkstyle.version>
+    <checkstyle.version>10.17.0</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 

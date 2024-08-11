@@ -55,7 +55,7 @@ Various documentation is available:
 
 
 ### Releases
-The 3.x branch is compatible with Java SE 11 or later.
+The 3.x branch is compatible with Java SE 21 or later.
 
 The 2.x branch is compatible with Java SE 6 or later.
 

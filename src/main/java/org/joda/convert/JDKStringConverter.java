@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.ParseException;
@@ -146,7 +147,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     /**
      * Package converter.
      */
-    PACKAGE(Package.class, JDKStringConverter::printPackage, Package::getPackage),
+    PACKAGE(Package.class, JDKStringConverter::printPackage, JDKStringConverter::parsePackage),
     /**
      * Currency converter.
      */
@@ -162,7 +163,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     /**
      * URL converter.
      */
-    URL(URL.class, JDKStringConverter::parseURL),
+    URL(URL.class, JDKStringConverter::printURL, JDKStringConverter::parseURL),
     /**
      * URI converter.
      */
@@ -395,11 +396,11 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         var split = str.split("_", 3);
         switch (split.length) {
             case 1:
-                return new Locale(split[0]);
+                return Locale.of(split[0]);
             case 2:
-                return new Locale(split[0], split[1]);
+                return Locale.of(split[0], split[1]);
             case 3:
-                return new Locale(split[0], split[1], split[2]);
+                return Locale.of(split[0], split[1], split[2]);
         }
         throw new IllegalArgumentException("Unable to parse Locale: " + str);
     }
@@ -416,6 +417,24 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         }
     }
 
+    private static Package parsePackage(String str) {
+        var loader = JDKStringConverter.class.getClassLoader();
+        while (loader != null) {
+            var pkg = loader.getDefinedPackage(str);
+            if (pkg != null) {
+                return pkg;
+            }
+            loader = loader.getParent();
+        }
+        // boot class loader is represented as null, thus we need an alternate way to find the package
+        for (var pkg : Package.getPackages()) {
+            if (pkg.getName().equals(str)) {
+                return pkg;
+            }
+        }
+        return null;
+    }
+
     private static String printPackage(Object obj) {
         return ((Package) obj).getName();
     }
@@ -424,9 +443,17 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         return ((TimeZone) obj).getID();
     }
 
+    private static String printURL(Object url) {
+        try {
+            return ((URL) url).toURI().toString();
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
     private static URL parseURL(String str) {
         try {
-            return new URL(str);
+            return java.net.URI.create(str).toURL();
         } catch (MalformedURLException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }

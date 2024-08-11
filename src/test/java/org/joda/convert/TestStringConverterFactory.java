@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
-import org.joda.convert.TestStringConverterFactory.Factory1;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -43,7 +43,6 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -208,6 +207,7 @@ final class Types {
         /**
          * Visits the given types. Null types are ignored. This allows subclasses to call
          * {@code visit(parameterizedType.getOwnerType())} safely without having to check nulls.
+         * @param types the types
          */
         public final void visit(Type... types) {
             for (Type type : types) {
@@ -435,7 +435,7 @@ final class Types {
                 if (method.getDeclaringClass().equals(TypeVariableImpl.class)) {
                     try {
                         method.setAccessible(true);
-                    } catch (AccessControlException e) {
+                    } catch (SecurityException e) {
                         // OK: the method is accessible to us anyway. The setAccessible call is only for
                         // unusual execution environments where that might not be true.
                     }

@@ -255,9 +255,9 @@ class TestJDKStringConverters {
     @Test
     void test_Locale() {
         JDKStringConverter test = JDKStringConverter.LOCALE;
-        doTest(test, Locale.class, new Locale("en"), "en");
-        doTest(test, Locale.class, new Locale("en", "GB"), "en_GB");
-        doTest(test, Locale.class, new Locale("en", "GB", "VARIANT_B"), "en_GB_VARIANT_B");
+        doTest(test, Locale.class, Locale.of("en"), "en");
+        doTest(test, Locale.class, Locale.of("en", "GB"), "en_GB");
+        doTest(test, Locale.class, Locale.of("en", "GB", "VARIANT_B"), "en_GB_VARIANT_B");
     }
 
     @Test
@@ -331,11 +331,13 @@ class TestJDKStringConverters {
         doTest(test, UUID.class, uuid, uuid.toString());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     void test_URL() throws Exception {
         JDKStringConverter test = JDKStringConverter.URL;
         doTest(test, URL.class, new URL("http://localhost:8080/my/test"), "http://localhost:8080/my/test");
         doTest(test, URL.class, new URL(null, "ftp:world"), "ftp:world");
+        doTest(test, URL.class, URI.create("http://localhost:8080/my/test").toURL(), "http://localhost:8080/my/test");
     }
 
     @Test
