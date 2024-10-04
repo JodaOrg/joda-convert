@@ -815,7 +815,7 @@
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <github-api.version>1.318</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
-    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <revapi-maven-plugin.version>0.11.1</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
