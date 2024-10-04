@@ -75,9 +75,9 @@ then the annotations are checked. If they are found, then the methods are called
 
 ## <i></i> Releases
 
-The 3.x branch is compatible with Java SE 21 or later.
+The 3.x branch (v3.0.0) is compatible with Java SE 21 or later.
 
-The 2.x branch is compatible with Java SE 6 or later.
+The 2.x branch (v2.2.4) is compatible with Java SE 6 or later.
 
 v3.x releases are compatible with v2.x releases, however the `module-info.class` file is always present,
 and the oldest development pre-release of JSR-310 is not recognized.
@@ -92,7 +92,7 @@ Available in the [Maven Central repository](https://search.maven.org/search?q=g:
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-convert</artifactId>
-  <version>2.2.3</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 

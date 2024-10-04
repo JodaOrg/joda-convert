@@ -7,7 +7,7 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
-    <release version="3.0.0-RC1" date="2024-08-11" description="Version 3.0.0-RC1">
+    <release version="3.0.0" date="2024-10-04" description="Version 3.0.0">
       <action dev="jodastephen" type="add">
         Major version based on Java SE 21.
         Intended to be effectively compatible with v2.x.
@@ -27,6 +27,17 @@
       </action>
       <action dev="jodastephen" type="add">
         New methods to find a converter returning `Optional`.
+      </action>
+    </release>
+    <release version="2.2.4" date="2024-10-04" description="Version 2.2.4">
+      <action dev="jodastephen" type="update">
+        Update dependencies.
+        Setup build system to be a maintainance branch.
+      </action>
+    </release>
+    <release version="3.0.0-RC1" date="2024-08-11" description="Version 3.0.0-RC1">
+      <action dev="jodastephen" type="add">
+        See v3.0.0 above.
       </action>
     </release>
     <release version="2.2.3" date="2023-01-15" description="Version 2.2.3">
