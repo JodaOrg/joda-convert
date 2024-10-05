@@ -82,7 +82,7 @@
     <menu name="Development">
       <item name="GitHub" href="https://github.com/JodaOrg/joda-convert"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-convert/issues"/>
-      <item name="Test results" href="surefire-report.html"/>
+      <item name="Test results" href="surefire.html"/>
     </menu>
 
     <menu name="Joda">
