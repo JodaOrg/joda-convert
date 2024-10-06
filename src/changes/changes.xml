@@ -7,6 +7,11 @@
 
   <body>
     <!-- types are add, fix, remove, update -->
+    <release version="3.0.1" date="2024-10-06" description="Version 3.0.1">
+      <action dev="jodastephen" type="add">
+        Fix OSGi meta-data.
+      </action>
+    </release>
     <release version="3.0.0" date="2024-10-04" description="Version 3.0.0">
       <action dev="jodastephen" type="add">
         Major version based on Java SE 21.

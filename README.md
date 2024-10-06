@@ -94,7 +94,7 @@ Tidelift will coordinate the fix and disclosure.
 
 ### Release process
 
-* Update info (changes.xml)
+* Update info (index.md, changes.xml)
 * Commit and push
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`
