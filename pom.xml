@@ -736,12 +736,12 @@
     <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.5.0</maven-jxr-plugin.version>
     <maven-plugin-plugin.version>3.15.0</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.25.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.24.0</maven-pmd-plugin.version><!-- 3.25.0 throws NoSuchMethodException -->
     <maven-project-info-reports-plugin.version>3.6.2</maven-project-info-reports-plugin.version><!-- 3.7.0 has error -->
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-    <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
+    <maven-site-plugin.version>3.12.1</maven-site-plugin.version><!-- 3.20.0 throws ComponentLookupException -->
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.0</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.0</maven-surefire-report-plugin.version>
