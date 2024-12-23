@@ -712,7 +712,7 @@
     <!-- Dependencies -->
     <assertj.version>3.26.3</assertj.version>
     <guava.version>33.3.1-jre</guava.version>
-    <junit.version>5.11.2</junit.version>
+    <junit.version>5.11.4</junit.version>
     <threetenbp.version>1.7.0</threetenbp.version>
 
     <!-- Common control parameters -->
