@@ -55,9 +55,8 @@
       </action>
     </release>
     <release version="2.2.2" date="2021-12-15" description="Version 2.2.2">
-      <action dev="jodastephen" type="fix">
+      <action dev="jodastephen" type="fix" issue="30">
         Fix deserialization of array classes.
-        Fixes #30
       </action>
       <action dev="jodastephen" type="update">
         Switch master to main.
@@ -95,10 +94,9 @@
       </action>
     </release>
     <release version="2.1" date="2018-06-08" description="Version 2.1">
-      <action dev="jodastephen" type="add">
+      <action dev="jodastephen" type="add" issue="26">
         Register renames by configuration.
         Add `Renamed.ini` to configure renames more cleanly.
-        Fixes #26.
       </action>
     </release>
     <release version="2.0.2" date="2018-05-30" description="Version 2.0.2">
@@ -113,14 +111,13 @@
       </action>
     </release>
     <release version="2.0" date="2018-02-15" description="Version 2.0">
-      <action dev="jodastephen" type="add">
+      <action dev="jodastephen" type="add" issue="21">
         Add module-info for Java 9.
-        Fixes #21.
       </action>
       <action dev="jodastephen" type="add">
         Update and redesign build to support Java 9.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add">
         Remove direct dependency on Guava by copying code into Joda-Convert.
         The code previously used reflection setAccessible() which would not work on Java 9.
         The best alternative was to copy (shaded) the relevant part of Guava (same license).
@@ -130,44 +127,39 @@
         This adaptation will also work on Java 9, provided the modules are loaded in the same layer.
         Fixes #20, #22.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Enable build to work on Java 9.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix" issue="19">
         Dynamic Java 8 code must not extend Guava code.
         Incorrect setup of reflection-based converters.
-        Fixes #19.
       </action>
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix" issue="23">
         Avoid bridge and synthetic methods in reflection.
         If an annotation is copied to the bridge/synthetic method it causes trouble.
-        Fixes #23.
       </action>
     </release>
     <release version="1.9.2" date="2017-09-20" description="Version 1.9.2">
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix">
         Standard subclass of `TimeZone` must be explicitly registered.
       </action>
     </release>
     <release version="1.9.1" date="2017-09-20" description="Version 1.9.1">
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix" issue="17">
         Add `Automatic-Module-Name` into `MANIFEST.MF`.
         Locks in module name for Java SE 9.
-        Fixes #17.
       </action>
     </release>
     <release version="1.9" date="2017-09-18" description="Version 1.9">
-      <action dev="jodastephen" type="fix" >
+      <action dev="jodastephen" type="fix" issue="15">
         Change converter search to not look at superclasses and interfaces.
         Looking at these was fine for `convertToString`, but not for `convertFromString`.
         This change should be compatible for most use cases, but will be incompatible for others.
         If the new release is incompatible, you will need to register an additional converter for the supertype.
-        Fixes #15.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="add" issue="9">
         Add support for Java 8 primitive optional types - `OptionalInt`, `OptionalLong`, `OptionalDouble`.
         These are supported by reflection - Joda-Convert still supports Java 1.6.
-        Fixes #9.
       </action>
     </release>
     <release version="1.8.3" date="2017-08-21" description="Version 1.8.3">

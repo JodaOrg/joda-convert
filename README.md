@@ -94,8 +94,12 @@ Tidelift will coordinate the fix and disclosure.
 
 ### Release process
 
-* Update info (index.md, changes.xml)
+* Update version (index.md, changes.xml)
 * Commit and push
+* `git push origin HEAD:refs/tags/release`
+* Code and Website will be built and released by GitHub Actions
+
+Release from local:
+
+* Turn off gpg "bc" signer
 * `mvn clean release:clean release:prepare release:perform`
-* `git fetch`
-* Website will be built and released by GitHub Actions
