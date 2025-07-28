@@ -4,7 +4,7 @@
                           https://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>central</id>
+      <id>central-publish</id>
       <username>${env.MAVEN_CENTRAL_USERNAME}</username>
       <password>${env.MAVEN_CENTRAL_PASSWORD}</password>
     </server>

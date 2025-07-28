@@ -658,7 +658,7 @@
             <version>${central-publishing-maven-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-              <publishingServerId>central</publishingServerId>
+              <publishingServerId>central-publish</publishingServerId>
               <deploymentName>${project.name}</deploymentName>
               <autoPublish>${joda.publish.auto}</autoPublish>
               <waitUntil>${joda.publish.wait}</waitUntil>
