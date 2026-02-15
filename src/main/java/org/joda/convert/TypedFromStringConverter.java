@@ -24,7 +24,7 @@ package org.joda.convert;
  * @param <T>  the type of the converter
  * @since 2.3
  */
-interface TypedFromStringConverter<T> extends FromStringConverter<T> {
+public interface TypedFromStringConverter<T> extends FromStringConverter<T> {
 
     /**
      * Gets the effective type that the converter works on.
@@ -33,7 +33,7 @@ interface TypedFromStringConverter<T> extends FromStringConverter<T> {
      * then the effective type of the converter is that class. If a subclass is
      * queried for a converter, then the effective type is that of the superclass.
      * 
-     * @return the effective type
+     * @return the effective type, not null
      */
     public abstract Class<?> getEffectiveType();
 

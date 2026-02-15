@@ -18,6 +18,8 @@ package org.joda.convert;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Conversion from a string using a static method.
@@ -44,7 +46,7 @@ final class MethodFromStringConverter<T> implements TypedFromStringConverter<T> 
      * @throws RuntimeException (or subclass) if the method signatures are invalid
      */
     MethodFromStringConverter(Class<T> cls, Method fromString, Class<?> effectiveType) {
-        if (Modifier.isStatic(fromString.getModifiers()) == false) {
+        if (!Modifier.isStatic(fromString.getModifiers())) {
             throw new IllegalStateException("FromString method must be static: " + fromString);
         }
         if (fromString.getParameterTypes().length != 1) {
@@ -54,16 +56,17 @@ final class MethodFromStringConverter<T> implements TypedFromStringConverter<T> 
         if (param != String.class && param != CharSequence.class) {
             throw new IllegalStateException("FromString method must take a String or CharSequence: " + fromString);
         }
-        if (fromString.getReturnType().isAssignableFrom(cls) == false && cls.isAssignableFrom(fromString.getReturnType()) == false) {
+        if (!fromString.getReturnType().isAssignableFrom(cls) && !cls.isAssignableFrom(fromString.getReturnType())) {
             throw new IllegalStateException("FromString method must return specified class or a supertype: " + fromString);
         }
         this.fromString = fromString;
-        this.effectiveType = effectiveType;
+        this.effectiveType = Objects.requireNonNull(effectiveType);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public T convertFromString(Class<? extends T> cls, String str) {
+    @SuppressWarnings("DataFlowIssue")
+    public @Nullable T convertFromString(Class<? extends T> cls, String str) {
         try {
             return cls.cast(fromString.invoke(null, str));
         } catch (IllegalAccessException ex) {

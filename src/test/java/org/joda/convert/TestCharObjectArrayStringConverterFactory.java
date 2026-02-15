@@ -18,6 +18,7 @@ package org.joda.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.convert.factory.CharObjectArrayStringConverterFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,13 +31,13 @@ class TestCharObjectArrayStringConverterFactory {
         doTest(new Character[0], "");
         doTest(new Character[] {'T'}, "T");
         doTest(new Character[] {'-'}, "-");
-        doTest(new Character[] {null}, "\\-");
+        doTest(new @Nullable Character[] {null}, "\\-");
         doTest(new Character[] {'J', '-', 'T'}, "J-T");
-        doTest(new Character[] {'\\', '\\', null}, "\\\\\\\\\\-");
-        doTest(new Character[] {'-', 'H', 'e', null, null, 'o'}, "-He\\-\\-o");
+        doTest(new @Nullable Character[] {'\\', '\\', null}, "\\\\\\\\\\-");
+        doTest(new @Nullable Character[] {'-', 'H', 'e', null, null, 'o'}, "-He\\-\\-o");
     }
 
-    private void doTest(Character[] array, String str) {
+    private void doTest(@Nullable Character[] array, String str) {
         var test = new StringConvert(true, CharObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Character[].class, array)).isEqualTo(str);

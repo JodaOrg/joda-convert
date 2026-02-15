@@ -15,6 +15,8 @@
  */
 package org.joda.convert;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Factory for {@code StringConverter} that allows converters to be
  * created dynamically or easily initialised.
@@ -34,8 +36,8 @@ public interface StringConverterFactory {
      * 
      * @param cls  the type to lookup, not null
      * @return the converter, null if not found
-     * @throws RuntimeException (or subclass) if there a developer error is found during lookup
+     * @throws RuntimeException (or subclass) if there is a developer error is found during lookup
      */
-    public abstract StringConverter<?> findConverter(Class<?> cls);
+    public abstract @Nullable StringConverter<?> findConverter(Class<?> cls);
 
 }

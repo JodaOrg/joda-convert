@@ -18,6 +18,7 @@ package org.joda.convert.factory;
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
 import org.joda.convert.TypedStringConverter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} providing support for Byte object array
@@ -53,7 +54,7 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (cls == Byte[].class) {
             return ByteArrayStringConverter.INSTANCE;
         }
@@ -67,10 +68,10 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
     }
 
     //-----------------------------------------------------------------------
-    enum ByteArrayStringConverter implements TypedStringConverter<Byte[]> {
+    enum ByteArrayStringConverter implements TypedStringConverter<@Nullable Byte[]> {
         INSTANCE {
             @Override
-            public String convertToString(Byte[] array) {
+            public String convertToString(@Nullable Byte[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -79,6 +80,7 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
                     if (element == null) {
                         buf.append('-').append('-');
                     } else {
+                        @SuppressWarnings("UnnecessaryUnboxing")
                         int b = element.byteValue();
                         buf.append(HEX.charAt((b & 0xF0) >>> 4)).append(HEX.charAt(b & 0x0F));
                     }
@@ -87,7 +89,7 @@ public final class ByteObjectArrayStringConverterFactory implements StringConver
             }
             @Override
             public Byte[] convertFromString(Class<? extends Byte[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 if (str.length() % 2 == 1) {

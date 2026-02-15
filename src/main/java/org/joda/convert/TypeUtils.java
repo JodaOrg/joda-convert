@@ -117,7 +117,7 @@ final class TypeUtils {
             }
             types.add(argType);
         }
-        return newParameterizedType(base, types.toArray(new Type[types.size()]));
+        return newParameterizedType(base, types.toArray(new Type[0]));
     }
 
     // split by comma, handling nested generified types
@@ -140,17 +140,17 @@ final class TypeUtils {
     }
 
     // create a type representing "? extends X"
-    private static Type wildExtendsType(Type bound) throws Exception {
+    private static Type wildExtendsType(Type bound) {
         return Types.subtypeOf(bound);
     }
 
     // create a type representing "? super X"
-    private static Type wildSuperType(Type bound) throws Exception {
+    private static Type wildSuperType(Type bound) {
         return Types.supertypeOf(bound);
     }
 
     // create a type representing "base<args...>"
-    private static ParameterizedType newParameterizedType(final Class<?> base, Type... args) throws Exception {
+    private static ParameterizedType newParameterizedType(final Class<?> base, Type... args) {
         return Types.newParameterizedType(base, args);
     }
 

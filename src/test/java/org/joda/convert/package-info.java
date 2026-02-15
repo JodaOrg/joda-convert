@@ -13,25 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+@NullMarked
 package org.joda.convert;
 
-import org.junit.jupiter.api.Test;
-
-/**
- * A class that spots bad initialization.
- */
-@SuppressWarnings("ConstantValue")
-class TestRenameHandlerBadInit {
-
-    static {
-        if (RenameHandler.INSTANCE == null) {
-            TestRenameHandler.BAD_INIT.set(true);
-        }
-    }
-
-    @Test
-    void test() {
-        // do nothing
-    }
-
-}
+import org.jspecify.annotations.NullMarked;

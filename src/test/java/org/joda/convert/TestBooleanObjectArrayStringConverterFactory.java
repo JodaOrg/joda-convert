@@ -18,6 +18,7 @@ package org.joda.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.convert.factory.BooleanObjectArrayStringConverterFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,11 +31,11 @@ class TestBooleanObjectArrayStringConverterFactory {
         doTest(new Boolean[0], "");
         doTest(new Boolean[] {true}, "T");
         doTest(new Boolean[] {false}, "F");
-        doTest(new Boolean[] {null}, "-");
-        doTest(new Boolean[] {true, true, false, null, true, false, null, null, false}, "TTF-TF--F");
+        doTest(new @Nullable Boolean[] {null}, "-");
+        doTest(new @Nullable Boolean[] {true, true, false, null, true, false, null, null, false}, "TTF-TF--F");
     }
 
-    private void doTest(Boolean[] array, String str) {
+    private void doTest(@Nullable Boolean[] array, String str) {
         var test = new StringConvert(true, BooleanObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Boolean[].class, array)).isEqualTo(str);

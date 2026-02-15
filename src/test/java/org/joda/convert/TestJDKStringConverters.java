@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 import java.io.File;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test JDKStringConverters.
  */
+@SuppressWarnings("UnnecessaryBoxing")
 class TestJDKStringConverters {
     // avoid var in this class, as precise type checks are useful
 
@@ -61,7 +63,7 @@ class TestJDKStringConverters {
         assertThat(test.getEffectiveType()).isEqualTo(StringBuffer.class);
         assertThat(test.convertToString(obj)).isEqualTo("Hello");
         StringBuffer back = (StringBuffer) test.convertFromString(StringBuffer.class, "Hello");
-        assertThat(back.toString()).isEqualTo("Hello");
+        assertThat(back).hasToString("Hello");
     }
 
     @Test
@@ -71,7 +73,7 @@ class TestJDKStringConverters {
         assertThat(test.getEffectiveType()).isEqualTo(StringBuilder.class);
         assertThat(test.convertToString(obj)).isEqualTo("Hello");
         StringBuilder back = (StringBuilder) test.convertFromString(StringBuilder.class, "Hello");
-        assertThat(back.toString()).isEqualTo("Hello");
+        assertThat(back).hasToString("Hello");
     }
 
     @Test
@@ -213,7 +215,7 @@ class TestJDKStringConverters {
         assertThat(test.getEffectiveType()).isEqualTo(AtomicLong.class);
         assertThat(test.convertToString(obj)).isEqualTo("12");
         AtomicLong back = (AtomicLong) test.convertFromString(AtomicLong.class, "12");
-        assertThat(back.get()).isEqualTo(12);
+        assertThat(back).hasValue(12);
     }
 
     @Test
@@ -223,7 +225,7 @@ class TestJDKStringConverters {
         assertThat(test.getEffectiveType()).isEqualTo(AtomicInteger.class);
         assertThat(test.convertToString(obj)).isEqualTo("12");
         AtomicInteger back = (AtomicInteger) test.convertFromString(AtomicInteger.class, "12");
-        assertThat(back.get()).isEqualTo(12);
+        assertThat(back).hasValue(12);
     }
 
     @Test
@@ -233,7 +235,7 @@ class TestJDKStringConverters {
         assertThat(test.getEffectiveType()).isEqualTo(AtomicBoolean.class);
         assertThat(test.convertToString(obj)).isEqualTo("true");
         AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "true");
-        assertThat(back.get()).isTrue();
+        assertThat(back).isTrue();
     }
 
     @Test
@@ -243,7 +245,7 @@ class TestJDKStringConverters {
         assertThat(test.getEffectiveType()).isEqualTo(AtomicBoolean.class);
         assertThat(test.convertToString(obj)).isEqualTo("false");
         AtomicBoolean back = (AtomicBoolean) test.convertFromString(AtomicBoolean.class, "false");
-        assertThat(back.get()).isFalse();
+        assertThat(back).isFalse();
     }
 
     @Test
@@ -387,8 +389,8 @@ class TestJDKStringConverters {
         try {
             TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"));
             JDKStringConverter test = JDKStringConverter.DATE;
-            doTest(test, Date.class, new Date(2010 - 1900, 9 - 1, 3, 12, 34, 5), "2010-09-03T12:34:05.000+02:00");
-            doTest(test, Date.class, new Date(2011 - 1900, 1 - 1, 4, 12, 34, 5), "2011-01-04T12:34:05.000+01:00");
+            doTest(test, Date.class, new Date(2010 - 1900, Calendar.SEPTEMBER, 3, 12, 34, 5), "2010-09-03T12:34:05.000+02:00");
+            doTest(test, Date.class, new Date(2011 - 1900, Calendar.JANUARY, 4, 12, 34, 5), "2011-01-04T12:34:05.000+01:00");
         } finally {
             TimeZone.setDefault(zone);
         }
@@ -410,12 +412,12 @@ class TestJDKStringConverters {
     void test_Calendar() {
         JDKStringConverter test = JDKStringConverter.CALENDAR;
         GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("Europe/Paris"));
-        cal.set(2010, 9 - 1, 3, 12, 34, 5);
+        cal.set(2010, Calendar.SEPTEMBER, 3, 12, 34, 5);
         cal.set(Calendar.MILLISECOND, 0);
         doTest(test, Calendar.class, cal, "2010-09-03T12:34:05.000+02:00[Europe/Paris]");
 
         GregorianCalendar cal2 = new GregorianCalendar(TimeZone.getTimeZone("Europe/Paris"));
-        cal2.set(2011, 1 - 1, 4, 12, 34, 5);
+        cal2.set(2011, Calendar.JANUARY, 4, 12, 34, 5);
         cal2.set(Calendar.MILLISECOND, 0);
         doTest(test, Calendar.class, cal2, "2011-01-04T12:34:05.000+01:00[Europe/Paris]");
     }
@@ -436,6 +438,7 @@ class TestJDKStringConverters {
     @Test
     void test_Calendar_notGregorian() {
         Calendar cal = new Calendar() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

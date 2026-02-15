@@ -30,6 +30,7 @@
  */
 package org.joda.convert;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Array;
@@ -50,8 +51,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utilities for working with {@link Type}.
@@ -60,8 +63,7 @@ final class Types {
 
     /** Returns the array type of {@code componentType}. */
     static Type newArrayType(Type componentType) {
-        if (componentType instanceof WildcardType) {
-            WildcardType wildcard = (WildcardType) componentType;
+        if (componentType instanceof WildcardType wildcard) {
             Type[] lowerBounds = wildcard.getLowerBounds();
             checkArgument(lowerBounds.length <= 1, "Wildcard cannot have more than one lower bounds.");
             if (lowerBounds.length == 1) {
@@ -80,7 +82,7 @@ final class Types {
      * {@code ownerType}.
      */
     static ParameterizedType newParameterizedTypeWithOwner(
-            Type ownerType, Class<?> rawType, Type... arguments) {
+            @Nullable Type ownerType, Class<?> rawType, Type... arguments) {
         if (ownerType == null) {
             return newParameterizedType(rawType, arguments);
         }
@@ -103,14 +105,14 @@ final class Types {
         OWNED_BY_ENCLOSING_CLASS {
 
             @Override
-            Class<?> getOwnerType(Class<?> rawType) {
+            @Nullable Class<?> getOwnerType(Class<?> rawType) {
                 return rawType.getEnclosingClass();
             }
         },
         LOCAL_CLASS_HAS_NO_OWNER {
 
             @Override
-            Class<?> getOwnerType(Class<?> rawType) {
+            @Nullable Class<?> getOwnerType(Class<?> rawType) {
                 if (rawType.isLocalClass()) {
                     return null;
                 } else {
@@ -119,14 +121,14 @@ final class Types {
             }
         };
 
-        abstract Class<?> getOwnerType(Class<?> rawType);
+        abstract @Nullable Class<?> getOwnerType(Class<?> rawType);
 
         static final ClassOwnership JVM_BEHAVIOR = detectJvmBehavior();
 
         private static ClassOwnership detectJvmBehavior() {
             class LocalClass<T> {
             }
-            LocalClass<String> localClass = new LocalClass<String>() {};  // CSIGNORE
+            LocalClass<String> localClass = new LocalClass<>() {};  // CSIGNORE
             Class<?> subclass = localClass.getClass();
             ParameterizedType parameterizedType = (ParameterizedType) subclass.getGenericSuperclass();
             for (ClassOwnership behavior : ClassOwnership.values()) {
@@ -167,12 +169,12 @@ final class Types {
      * </ul>
      */
     static String toString(Type type) {
-        return (type instanceof Class) ? ((Class<?>) type).getName() : type.toString();
+        return (type instanceof Class<?> cls) ? cls.getName() : type.toString();
     }
 
-    static Type getComponentType(Type type) {
+    static @Nullable Type getComponentType(Type type) {
         checkNotNull(type);
-        final AtomicReference<Type> result = new AtomicReference<Type>();
+        final AtomicReference<@Nullable Type> result = new AtomicReference<>();
         new TypeVisitor() {
             @Override
             void visitTypeVariable(TypeVariable<?> t) {
@@ -202,14 +204,14 @@ final class Types {
      */
     private abstract static class TypeVisitor {
 
-        private final Set<Type> visited = new HashSet<Type>();
+        private final Set<Type> visited = new HashSet<>();
 
         /**
          * Visits the given types. Null types are ignored. This allows subclasses to call
          * {@code visit(parameterizedType.getOwnerType())} safely without having to check nulls.
          * @param types the types
          */
-        public final void visit(Type... types) {
+        public final void visit(@Nullable Type... types) {
             for (Type type : types) {
                 if (type == null || !visited.add(type)) {
                     // null owner type, or already visited;
@@ -217,18 +219,13 @@ final class Types {
                 }
                 boolean succeeded = false;
                 try {
-                    if (type instanceof TypeVariable) {
-                        visitTypeVariable((TypeVariable<?>) type);
-                    } else if (type instanceof WildcardType) {
-                        visitWildcardType((WildcardType) type);
-                    } else if (type instanceof ParameterizedType) {
-                        visitParameterizedType((ParameterizedType) type);
-                    } else if (type instanceof Class) {
-                        visitClass((Class<?>) type);
-                    } else if (type instanceof GenericArrayType) {
-                        visitGenericArrayType((GenericArrayType) type);
-                    } else {
-                        throw new AssertionError("Unknown type: " + type);
+                    switch (type) {
+                        case TypeVariable<?> typeVariable -> visitTypeVariable(typeVariable);
+                        case WildcardType wildcardType -> visitWildcardType(wildcardType);
+                        case ParameterizedType parameterizedType -> visitParameterizedType(parameterizedType);
+                        case Class<?> aClass -> visitClass(aClass);
+                        case GenericArrayType genericArrayType -> visitGenericArrayType(genericArrayType);
+                        default -> throw new AssertionError("Unknown type: " + type);
                     }
                     succeeded = true;
                 } finally {
@@ -260,17 +257,14 @@ final class Types {
      * otherwise.
      */
 
-    private static Type subtypeOfComponentType(Type[] bounds) {
+    private static @Nullable Type subtypeOfComponentType(Type[] bounds) {
         for (Type bound : bounds) {
             Type componentType = getComponentType(bound);
             if (componentType != null) {
                 // Only the first bound can be a class or array.
                 // Bounds after the first can only be interfaces.
-                if (componentType instanceof Class) {
-                    Class<?> componentClass = (Class<?>) componentType;
-                    if (componentClass.isPrimitive()) {
-                        return componentClass;
-                    }
+                if (componentType instanceof Class<?> componentClass && componentClass.isPrimitive()) {
+                    return componentClass;
                 }
                 return subtypeOf(componentType);
             }
@@ -303,23 +297,21 @@ final class Types {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof GenericArrayType) {
-                GenericArrayType that = (GenericArrayType) obj;
-                return equal(getGenericComponentType(), that.getGenericComponentType());
-            }
-            return false;
+            return obj instanceof GenericArrayType that &&
+                Objects.equals(getGenericComponentType(), that.getGenericComponentType());
         }
 
+        @Serial
         private static final long serialVersionUID = 0;
     }
 
     private static final class ParameterizedTypeImpl implements ParameterizedType, Serializable {
 
-        private final Type ownerType;
+        private final @Nullable Type ownerType;
         private final List<Type> argumentsList;
         private final Class<?> rawType;
 
-        ParameterizedTypeImpl(Type ownerType, Class<?> rawType, Type[] typeArguments) {
+        ParameterizedTypeImpl(@Nullable Type ownerType, Class<?> rawType, Type[] typeArguments) {
             checkNotNull(rawType);
             checkArgument(typeArguments.length == rawType.getTypeParameters().length);
             disallowPrimitiveType(typeArguments, "type parameter");
@@ -339,7 +331,7 @@ final class Types {
         }
 
         @Override
-        public Type getOwnerType() {
+        public @Nullable Type getOwnerType() {
             return ownerType;
         }
 
@@ -349,16 +341,12 @@ final class Types {
             if (ownerType != null && JavaVersion.CURRENT.jdkTypeDuplicatesOwnerName()) {
                 builder.append(JavaVersion.CURRENT.typeName(ownerType)).append('.');
             }
-            String str = "";
-            if (argumentsList == null) {
-                str = "null";
-            } else {
-                for (int i = 0; i < argumentsList.size(); i++) {
-                    if (i > 0) {
-                        str += ", ";
-                    }
-                    str += JavaVersion.CURRENT.typeName(argumentsList.get(i));
+            StringBuilder str = new StringBuilder();
+            for (int i = 0; i < argumentsList.size(); i++) {
+                if (i > 0) {
+                    str.append(", ");
                 }
+                str.append(JavaVersion.CURRENT.typeName(argumentsList.get(i)));
             }
 
             return builder
@@ -376,21 +364,19 @@ final class Types {
 
         @Override
         public boolean equals(Object other) {
-            if (!(other instanceof ParameterizedType)) {
-                return false;
-            }
-            ParameterizedType that = (ParameterizedType) other;
-            return getRawType().equals(that.getRawType()) && equal(getOwnerType(), that.getOwnerType()) &&
+            return other instanceof ParameterizedType that &&
+                    getRawType().equals(that.getRawType()) &&
+                    Objects.equals(getOwnerType(), that.getOwnerType()) &&
                     Arrays.equals(getActualTypeArguments(), that.getActualTypeArguments());
         }
 
+        @Serial
         private static final long serialVersionUID = 0;
     }
 
     private static <D extends GenericDeclaration> TypeVariable<D> newTypeVariableImpl(
             D genericDeclaration, String name, Type[] bounds) {
-        TypeVariableImpl<D> typeVariableImpl =
-                new TypeVariableImpl<D>(genericDeclaration, name, bounds);
+        TypeVariableImpl<D> typeVariableImpl = new TypeVariableImpl<>(genericDeclaration, name, bounds);
         @SuppressWarnings("unchecked")
         TypeVariable<D> typeVariable = newProxy(TypeVariable.class, new TypeVariableInvocationHandler(typeVariableImpl));
         return typeVariable;
@@ -430,7 +416,7 @@ final class Types {
         private static final Map<String, Method> typeVariableMethods;
 
         static {
-            Map<String, Method> builder = new LinkedHashMap<String, Method>();
+            Map<String, Method> builder = new LinkedHashMap<>();
             for (Method method : TypeVariableImpl.class.getMethods()) {
                 if (method.getDeclaringClass().equals(TypeVariableImpl.class)) {
                     try {
@@ -477,7 +463,7 @@ final class Types {
             disallowPrimitiveType(bounds, "bound for type variable");
             this.genericDeclaration = checkNotNull(genericDeclaration);
             this.name = checkNotNull(name);
-            this.bounds = new ArrayList<Type>(Arrays.asList(bounds));
+            this.bounds = new ArrayList<>(Arrays.asList(bounds));
         }
 
         public D getGenericDeclaration() {
@@ -503,9 +489,7 @@ final class Types {
             if (NativeTypeVariableEquals.NATIVE_TYPE_VARIABLE_ONLY) {
                 // equal only to our TypeVariable implementation with identical bounds
                 if (obj != null && Proxy.isProxyClass(obj.getClass()) &&
-                        Proxy.getInvocationHandler(obj) instanceof TypeVariableInvocationHandler) {
-                    TypeVariableInvocationHandler typeVariableInvocationHandler =
-                            (TypeVariableInvocationHandler) Proxy.getInvocationHandler(obj);
+                        Proxy.getInvocationHandler(obj) instanceof TypeVariableInvocationHandler typeVariableInvocationHandler) {
                     TypeVariableImpl<?> that = typeVariableInvocationHandler.typeVariableImpl;
                     return name.equals(that.getName()) && genericDeclaration.equals(that.getGenericDeclaration()) &&
                             bounds.equals(that.bounds);
@@ -513,11 +497,8 @@ final class Types {
                 return false;
             } else {
                 // equal to any TypeVariable implementation regardless of bounds
-                if (obj instanceof TypeVariable) {
-                    TypeVariable<?> that = (TypeVariable<?>) obj;
-                    return name.equals(that.getName()) && genericDeclaration.equals(that.getGenericDeclaration());
-                }
-                return false;
+                return obj instanceof TypeVariable<?> that &&
+                        name.equals(that.getName()) && genericDeclaration.equals(that.getGenericDeclaration());
             }
         }
     }
@@ -546,12 +527,9 @@ final class Types {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof WildcardType) {
-                WildcardType that = (WildcardType) obj;
-                return lowerBounds.equals(Arrays.asList(that.getLowerBounds())) &&
-                        upperBounds.equals(Arrays.asList(that.getUpperBounds()));
-            }
-            return false;
+            return obj instanceof WildcardType that &&
+                    lowerBounds.equals(Arrays.asList(that.getLowerBounds())) &&
+                    upperBounds.equals(Arrays.asList(that.getUpperBounds()));
         }
 
         @Override
@@ -571,15 +549,16 @@ final class Types {
             return builder.toString();
         }
 
+        @Serial
         private static final long serialVersionUID = 0;
     }
 
     private static Type[] toArray(Collection<Type> types) {
-        return types.toArray(new Type[types.size()]);
+        return types.toArray(new Type[0]);
     }
 
     private static List<Type> filterUpperBounds(List<Type> bounds) {
-        List<Type> filtered = new ArrayList<Type>();
+        List<Type> filtered = new ArrayList<>();
         for (Type type : bounds) {
             if (!type.equals(Object.class)) {
                 filtered.add(type);
@@ -590,8 +569,7 @@ final class Types {
 
     private static void disallowPrimitiveType(Type[] types, String usedAs) {
         for (Type type : types) {
-            if (type instanceof Class) {
-                Class<?> cls = (Class<?>) type;
+            if (type instanceof Class<?> cls) {
                 checkArgument(!cls.isPrimitive(), "Primitive type '%s' used as %s", cls, usedAs);
             }
         }
@@ -616,8 +594,7 @@ final class Types {
             @Override
             Type usedInGenericType(Type type) {
                 checkNotNull(type);
-                if (type instanceof Class) {
-                    Class<?> cls = (Class<?>) type;
+                if (type instanceof Class<?> cls) {
                     if (cls.isArray()) {
                         return new GenericArrayTypeImpl(cls.getComponentType());
                     }
@@ -658,9 +635,7 @@ final class Types {
                     return (String) getTypeName.invoke(type);
                 } catch (NoSuchMethodException e) {
                     throw new AssertionError("Type.getTypeName should be available in Java 8");
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
+                } catch (InvocationTargetException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -718,7 +693,7 @@ final class Types {
         }
 
         List<Type> usedInGenericType(Type[] types) {
-            List<Type> builder = new ArrayList<Type>();
+            List<Type> builder = new ArrayList<>();
             for (Type type : types) {
                 builder.add(usedInGenericType(type));
             }
@@ -736,6 +711,7 @@ final class Types {
      * however, it's fine for the synthetic TypeVariable to be unequal to any native TypeVariable
      * anyway.
      */
+    @SuppressWarnings("unused")
     static final class NativeTypeVariableEquals<X> {
         static final boolean NATIVE_TYPE_VARIABLE_ONLY =
                 !NativeTypeVariableEquals.class.getTypeParameters()[0]
@@ -804,10 +780,6 @@ final class Types {
         }
 
         return builder.toString();
-    }
-
-    private static boolean equal(Object obj1, Object obj2) {
-        return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
     }
 
     private Types() {

@@ -43,10 +43,10 @@ class TestThreeTenBackport {
         assertThat(test.convertToString(ZoneId.of("Europe/Paris"))).isEqualTo("Europe/Paris");
         assertThat(test.convertFromString(ZoneId.class, "Europe/Paris")).isEqualTo(ZoneId.of("Europe/Paris"));
 
-        assertThat(test.convertFromString(ZoneId.class, "Europe/Paris").toString()).isEqualTo("Europe/Paris");
+        assertThat(test.convertFromString(ZoneId.class, "Europe/Paris")).hasToString("Europe/Paris");
 
         var zoneRegionClass = ZoneId.of("Europe/Paris").getClass();  // ZoneRegion
-        assertThat(test.convertFromString(zoneRegionClass, "Europe/Paris").toString()).isEqualTo("Europe/Paris");
+        assertThat(test.convertFromString(zoneRegionClass, "Europe/Paris")).hasToString("Europe/Paris");
     }
 
 }

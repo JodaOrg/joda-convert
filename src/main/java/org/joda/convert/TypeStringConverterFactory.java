@@ -16,6 +16,7 @@
 package org.joda.convert;
 
 import java.lang.reflect.Type;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} looking up types.
@@ -53,7 +54,7 @@ final class TypeStringConverterFactory
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (Type.class.isAssignableFrom(cls) && cls != Class.class) {
             return new TypeStringConverter(cls);
         }

@@ -17,6 +17,7 @@ package org.joda.convert;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} looking up annotations.
@@ -47,7 +48,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         return findAnnotatedConverter(cls);  // capture generics
     }
 
@@ -59,7 +60,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the converter, not null
      * @throws RuntimeException if none found
      */
-    private <T> StringConverter<T> findAnnotatedConverter(Class<T> cls) {
+    private <T> @Nullable StringConverter<T> findAnnotatedConverter(Class<T> cls) {
         var toString = findToStringMethod(cls);  // checks superclasses
         if (toString == null) {
             return null;
@@ -79,7 +80,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the converter, null if not found
      * @throws RuntimeException (or subclass) if source code is invalid
      */
-    <T> TypedFromStringConverter<T> findFromStringConverter(Class<T> cls) {
+    <T> @Nullable TypedFromStringConverter<T> findFromStringConverter(Class<T> cls) {
         return findAnnotatedFromStringConverter(cls);  // capture generics
     }
 
@@ -91,7 +92,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the converter, null if not found
      * @throws RuntimeException if none found
      */
-    private <T> TypedFromStringConverter<T> findAnnotatedFromStringConverter(Class<T> cls) {
+    private <T> @Nullable TypedFromStringConverter<T> findAnnotatedFromStringConverter(Class<T> cls) {
         var con = findFromStringConstructor(cls);
         var mth = findFromStringMethod(cls, con == null);  // optionally checks superclasses
         if (con != null && mth != null) {
@@ -108,7 +109,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the method to call, null means use {@code toString}
      * @throws RuntimeException if invalid
      */
-    private Method findToStringMethod(Class<?> cls) {
+    private @Nullable Method findToStringMethod(Class<?> cls) {
         Method matched = null;
         // find in superclass hierarchy
         Class<?> loopCls = cls;
@@ -156,7 +157,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the method to call, null means none found
      * @throws RuntimeException if invalid
      */
-    private <T> TypedFromStringConverter<T> findFromStringConstructor(Class<T> cls) {
+    private <T> @Nullable TypedFromStringConverter<T> findFromStringConstructor(Class<T> cls) {
         Constructor<T> con;
         try {
             con = cls.getDeclaredConstructor(String.class);
@@ -182,7 +183,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @return the method to call, null means not found
      * @throws RuntimeException if invalid
      */
-    private <T> TypedFromStringConverter<T> findFromStringMethod(Class<T> cls, boolean searchSuperclasses) {
+    private <T> @Nullable TypedFromStringConverter<T> findFromStringMethod(Class<T> cls, boolean searchSuperclasses) {
         // find in superclass hierarchy
         Class<?> loopCls = cls;
         while (loopCls != null) {
@@ -190,7 +191,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
             if (fromString != null) {
                 return new MethodFromStringConverter<>(cls, fromString, loopCls);
             }
-            if (searchSuperclasses == false) {
+            if (!searchSuperclasses) {
                 break;
             }
             loopCls = loopCls.getSuperclass();
@@ -216,11 +217,10 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * Finds the conversion method.
      * 
      * @param cls  the class to find a method for, not null
-     * @param matched  the matched method, may be null
      * @return the method to call, null means not found
      * @throws RuntimeException if invalid
      */
-    private Method findFromString(Class<?> cls) {
+    private @Nullable Method findFromString(Class<?> cls) {
         // find in declared methods
         var methods = cls.getDeclaredMethods();
         Method matched = null;

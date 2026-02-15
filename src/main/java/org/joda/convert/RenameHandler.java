@@ -154,12 +154,8 @@ public final class RenameHandler {
      * @param currentValue  the current type, not null
      */
     public void renamedType(String oldName, Class<?> currentValue) {
-        if (oldName == null) {
-            throw new IllegalArgumentException("oldName must not be null");
-        }
-        if (currentValue == null) {
-            throw new IllegalArgumentException("currentValue must not be null");
-        }
+        StringConvert.notNull(oldName, "oldName");
+        StringConvert.notNull(currentValue, "currentValue");
         if (oldName.startsWith("java.") || oldName.startsWith("javax.") || oldName.startsWith("org.joda.")) {
             throw new IllegalArgumentException("oldName must not be a java.*, javax.* or org.joda.* type");
         }
@@ -186,9 +182,7 @@ public final class RenameHandler {
      * @throws ClassNotFoundException if the name is not a valid type
      */
     public Class<?> lookupType(String name) throws ClassNotFoundException {
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
-        }
+        StringConvert.notNull(name, "name");
         var type = typeRenames.get(name);
         if (type == null) {
             type = StringConvert.loadType(name);
@@ -206,12 +200,8 @@ public final class RenameHandler {
      * @param currentValue  the current enum constant, not null
      */
     public void renamedEnum(String oldName, Enum<?> currentValue) {
-        if (oldName == null) {
-            throw new IllegalArgumentException("oldName must not be null");
-        }
-        if (currentValue == null) {
-            throw new IllegalArgumentException("currentValue must not be null");
-        }
+        StringConvert.notNull(oldName, "oldName");
+        StringConvert.notNull(currentValue, "currentValue");
         checkNotLocked();
         var enumType = currentValue.getDeclaringClass();
         var perClass = enumRenames.get(enumType);
@@ -242,9 +232,7 @@ public final class RenameHandler {
      * @return a copy of the set of enum renames, not null
      */
     public Map<String, Enum<?>> getEnumRenames(Class<?> type) {
-        if (type == null) {
-            throw new IllegalArgumentException("type must not be null");
-        }
+        StringConvert.notNull(type, "type");
         var map = enumRenames.get(type);
         if (map == null) {
             return new HashMap<>();
@@ -262,12 +250,8 @@ public final class RenameHandler {
      * @throws IllegalArgumentException if the name is not a valid enum constant
      */
     public <T extends Enum<T>> T lookupEnum(Class<T> type, String name) {
-        if (type == null) {
-            throw new IllegalArgumentException("type must not be null");
-        }
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
-        }
+        StringConvert.notNull(type, "type");
+        StringConvert.notNull(name, "name");
         var map = getEnumRenames(type);
         var value = map.get(name);
         if (value != null) {
@@ -361,7 +345,7 @@ public final class RenameHandler {
                     }
                     var oldName = line.substring(0, equalsPos).trim();
                     var newName = line.substring(equalsPos + 1).trim();
-                    Class<?> newClass = null;
+                    Class<?> newClass;
                     try {
                         newClass = StringConvert.loadType(newName);
                     } catch (Throwable ex) {
@@ -382,7 +366,6 @@ public final class RenameHandler {
                     var oldName = line.substring(0, equalsPos).trim();
                     var enumClassName = line.substring(equalsPos + 1, lastDotPos).trim();
                     var enumConstantName = line.substring(lastDotPos + 1).trim();
-                    @SuppressWarnings("rawtypes")
                     var enumClass = Class.forName(enumClassName).asSubclass(Enum.class);
                     @SuppressWarnings("unchecked")
                     var newEnum = Enum.valueOf(enumClass, enumConstantName);

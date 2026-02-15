@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test StringConvert.
  */
+@SuppressWarnings("UnnecessaryBoxing")
 class TestStringConvert {
     // avoid var in this class, as precise type checks are useful
 
@@ -129,6 +130,7 @@ class TestStringConvert {
 
     @Test
     void test_convertToString_withType_nullClass() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> StringConvert.INSTANCE.convertToString(null, "6"));
     }
@@ -172,6 +174,7 @@ class TestStringConvert {
 
     @Test
     void test_convertFromString_nullClass() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> StringConvert.INSTANCE.convertFromString(null, "6"));
     }
@@ -187,6 +190,7 @@ class TestStringConvert {
 
     @Test
     void test_converterFor_null() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException().isThrownBy(() -> StringConvert.INSTANCE.converterFor(null));
     }
 
@@ -205,6 +209,7 @@ class TestStringConvert {
 
     @Test
     void test_fromStringConverterFor_null() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException().isThrownBy(() -> StringConvert.INSTANCE.fromStringConverterFor(null));
     }
 
@@ -224,6 +229,7 @@ class TestStringConvert {
 
     @Test
     void test_findConverter_null() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> StringConvert.INSTANCE.findConverter(null));
     }
@@ -245,6 +251,7 @@ class TestStringConvert {
 
     @Test
     void test_findConverterNoGenerics_null() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> StringConvert.INSTANCE.findConverterNoGenerics(null));
     }
@@ -601,12 +608,14 @@ class TestStringConvert {
     //-----------------------------------------------------------------------
     @Test
     void test_register_classNotNull() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> StringConvert.INSTANCE.register(null, MockIntegerStringConverter.INSTANCE));
     }
 
     @Test
     void test_register_converterNotNull() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> StringConvert.INSTANCE.register(Integer.class, null));
     }
@@ -620,12 +629,6 @@ class TestStringConvert {
     @Test
     void test_register_classAlreadyRegistered() {
         new StringConvert().register(Integer.class, MockIntegerStringConverter.INSTANCE);
-    }
-
-    public void test_register_distance() {
-        StringConvert test = new StringConvert();
-        test.register(DistanceMethodMethod.class, MockDistanceStringConverter.INSTANCE);
-        assertThat(test.findConverter(DistanceMethodMethod.class)).isSameAs(MockDistanceStringConverter.INSTANCE);
     }
 
     //-------------------------------------------------------------------------
@@ -657,6 +660,7 @@ class TestStringConvert {
     @Test
     void test_register_FunctionalInterfaces_nullClass() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.register(null, DISTANCE_TO_STRING_CONVERTER, DISTANCE_FROM_STRING_CONVERTER));
     }
@@ -664,6 +668,7 @@ class TestStringConvert {
     @Test
     void test_register_FunctionalInterfaces_nullToString() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.register(DistanceNoAnnotations.class, null, DISTANCE_FROM_STRING_CONVERTER));
     }
@@ -671,6 +676,7 @@ class TestStringConvert {
     @Test
     void test_register_FunctionalInterfaces_nullFromString() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.register(DistanceNoAnnotations.class, DISTANCE_TO_STRING_CONVERTER, null));
     }
@@ -710,6 +716,7 @@ class TestStringConvert {
     @Test
     void test_registerMethods_nullClass() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.registerMethods(null, "toString", "parse"));
     }
@@ -717,6 +724,7 @@ class TestStringConvert {
     @Test
     void test_registerMethods_nullToString() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.registerMethods(DistanceNoAnnotations.class, null, "parse"));
     }
@@ -724,6 +732,7 @@ class TestStringConvert {
     @Test
     void test_registerMethods_nullFromString() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.registerMethods(DistanceNoAnnotations.class, "toString", null));
     }
@@ -791,6 +800,7 @@ class TestStringConvert {
     @Test
     void test_registerMethodConstructor_nullClass() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.registerMethodConstructor(null, "toString"));
     }
@@ -798,6 +808,7 @@ class TestStringConvert {
     @Test
     void test_registerMethodConstructor_nullToString() {
         StringConvert test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.registerMethodConstructor(DistanceNoAnnotations.class, null));
     }

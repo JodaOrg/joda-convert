@@ -20,6 +20,7 @@ import java.util.Arrays;
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
 import org.joda.convert.TypedStringConverter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} providing support for Character object arrays
@@ -56,7 +57,7 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (cls == Character[].class) {
             return CharecterArrayStringConverter.INSTANCE;
         }
@@ -70,10 +71,10 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
     }
 
     //-----------------------------------------------------------------------
-    enum CharecterArrayStringConverter implements TypedStringConverter<Character[]> {
+    enum CharecterArrayStringConverter implements TypedStringConverter<@Nullable Character[]> {
         INSTANCE {
             @Override
-            public String convertToString(Character[] array) {
+            public String convertToString(@Nullable Character[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -82,6 +83,7 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
                     if (element == null) {
                         buf.append("\\-");
                     } else {
+                        @SuppressWarnings("UnnecessaryUnboxing")
                         var ch = element.charValue();
                         if (ch == '\\') {
                             buf.append("\\\\");
@@ -94,7 +96,7 @@ public final class CharObjectArrayStringConverterFactory implements StringConver
             }
             @Override
             public Character[] convertFromString(Class<? extends Character[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var adjusted = str;

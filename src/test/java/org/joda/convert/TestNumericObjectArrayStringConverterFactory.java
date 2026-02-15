@@ -18,6 +18,7 @@ package org.joda.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.convert.factory.NumericObjectArrayStringConverterFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,12 +30,12 @@ class TestNumericObjectArrayStringConverterFactory {
     void test_LongArray() {
         doTest(new Long[0], "");
         doTest(new Long[] {5L}, "5");
-        doTest(new Long[] {null}, "-");
-        doTest(new Long[] {-1234L, null, 56789L, null, null, 5L}, "-1234,-,56789,-,-,5");
+        doTest(new @Nullable Long[] {null}, "-");
+        doTest(new @Nullable Long[] {-1234L, null, 56789L, null, null, 5L}, "-1234,-,56789,-,-,5");
         doTest(new Long[] {12345678912345L, 12345678912345L}, "12345678912345,12345678912345");
     }
 
-    private void doTest(Long[] array, String str) {
+    private void doTest(@Nullable Long[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Long[].class, array)).isEqualTo(str);
@@ -46,11 +47,11 @@ class TestNumericObjectArrayStringConverterFactory {
     void test_IntegerArray() {
         doTest(new Integer[0], "");
         doTest(new Integer[] {5}, "5");
-        doTest(new Integer[] {null}, "-");
-        doTest(new Integer[] {-1234, null, 56789, null, null, 5}, "-1234,-,56789,-,-,5");
+        doTest(new @Nullable Integer[] {null}, "-");
+        doTest(new @Nullable Integer[] {-1234, null, 56789, null, null, 5}, "-1234,-,56789,-,-,5");
     }
 
-    private void doTest(Integer[] array, String str) {
+    private void doTest(@Nullable Integer[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Integer[].class, array)).isEqualTo(str);
@@ -62,11 +63,11 @@ class TestNumericObjectArrayStringConverterFactory {
     void test_ShortArray() {
         doTest(new Short[0], "");
         doTest(new Short[] {5}, "5");
-        doTest(new Short[] {null}, "-");
-        doTest(new Short[] {-1234, null, 5678, null, null, 5}, "-1234,-,5678,-,-,5");
+        doTest(new @Nullable Short[] {null}, "-");
+        doTest(new @Nullable Short[] {-1234, null, 5678, null, null, 5}, "-1234,-,5678,-,-,5");
     }
 
-    private void doTest(Short[] array, String str) {
+    private void doTest(@Nullable Short[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Short[].class, array)).isEqualTo(str);
@@ -78,16 +79,16 @@ class TestNumericObjectArrayStringConverterFactory {
     void test_DoubleArray() {
         doTest(new Double[0], "");
         doTest(new Double[] {5d}, "5.0");
-        doTest(new Double[] {null}, "-");
-        doTest(new Double[] {5.123456789d}, "5.123456789");
-        doTest(new Double[] {-1234d, null, 5678d, null, null, 5d}, "-1234.0,-,5678.0,-,-,5.0");
+        doTest(new @Nullable Double[] {null}, "-");
+        doTest(new @Nullable Double[] {5.123456789d}, "5.123456789");
+        doTest(new @Nullable Double[] {-1234d, null, 5678d, null, null, 5d}, "-1234.0,-,5678.0,-,-,5.0");
         doTest(
                 new Double[] {Double.NaN, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, -0.0d, +0.0d, 0d},
                 "NaN,-Infinity,Infinity,-0.0,0.0,0.0");
         doTest(new Double[] {0.0000006d, 6000000000d}, "6.0E-7,6.0E9");
     }
 
-    private void doTest(Double[] array, String str) {
+    private void doTest(@Nullable Double[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Double[].class, array)).isEqualTo(str);
@@ -99,16 +100,16 @@ class TestNumericObjectArrayStringConverterFactory {
     void test_FloatArray() {
         doTest(new Float[0], "");
         doTest(new Float[] {5f}, "5.0");
-        doTest(new Float[] {null}, "-");
+        doTest(new @Nullable Float[] {null}, "-");
         doTest(new Float[] {5.1234f}, "5.1234");
-        doTest(new Float[] {-1234f, null, 5678f, null, null, 5f}, "-1234.0,-,5678.0,-,-,5.0");
+        doTest(new @Nullable Float[] {-1234f, null, 5678f, null, null, 5f}, "-1234.0,-,5678.0,-,-,5.0");
         doTest(
                 new Float[] {Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, -0.0f, +0.0f, 0f},
                 "NaN,-Infinity,Infinity,-0.0,0.0,0.0");
         doTest(new Float[] {0.0000006f, 6000000000f}, "6.0E-7,6.0E9");
     }
 
-    private void doTest(Float[] array, String str) {
+    private void doTest(@Nullable Float[] array, String str) {
         var test = new StringConvert(true, NumericObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Float[].class, array)).isEqualTo(str);

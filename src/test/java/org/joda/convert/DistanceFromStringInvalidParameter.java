@@ -15,6 +15,8 @@
  */
 package org.joda.convert;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Example class with no annotations.
  */
@@ -24,7 +26,7 @@ public class DistanceFromStringInvalidParameter {
     final int amount;
 
     @FromString
-    public static DistanceFromStringInvalidParameter parse(Object amount) {
+    public static @Nullable DistanceFromStringInvalidParameter parse(Object amount) {
         return null;
     }
 

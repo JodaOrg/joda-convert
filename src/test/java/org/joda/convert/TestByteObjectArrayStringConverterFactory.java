@@ -18,6 +18,7 @@ package org.joda.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.joda.convert.factory.ByteObjectArrayStringConverterFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,11 +30,11 @@ class TestByteObjectArrayStringConverterFactory {
     void test_ByteArray() {
         doTest(new Byte[0], "");
         doTest(new Byte[] {(byte) 0}, "00");
-        doTest(new Byte[] {null}, "--");
-        doTest(new Byte[] {(byte) 0, (byte) 1, null, null, (byte) 15, (byte) 16, (byte) 127, (byte) -128, (byte) -1}, "0001----0F107F80FF");
+        doTest(new @Nullable Byte[] {null}, "--");
+        doTest(new @Nullable Byte[] {(byte) 0, (byte) 1, null, null, (byte) 15, (byte) 16, (byte) 127, (byte) -128, (byte) -1}, "0001----0F107F80FF");
     }
 
-    private void doTest(Byte[] array, String str) {
+    private void doTest(@Nullable Byte[] array, String str) {
         var test = new StringConvert(true, ByteObjectArrayStringConverterFactory.INSTANCE);
         assertThat(test.convertToString(array)).isEqualTo(str);
         assertThat(test.convertToString(Byte[].class, array)).isEqualTo(str);

@@ -26,7 +26,7 @@ public enum MockDistanceStringConverter implements StringConverter<DistanceMetho
     /**
      * Converts the {@code DistanceMethodMethod} to a {@code String}.
      * @param object  the object to convert, not null
-     * @return the converted string, may be null but generally not
+     * @return the converted string, not null
      */
     @Override
     public String convertToString(DistanceMethodMethod object) {
@@ -37,7 +37,7 @@ public enum MockDistanceStringConverter implements StringConverter<DistanceMetho
      * Converts the {@code String} to an {@code DistanceMethodMethod}.
      * @param cls  the class to convert to, not null
      * @param str  the string to convert, not null
-     * @return the converted integer, may be null but generally not
+     * @return the converted object, not null
      */
     @Override
     public DistanceMethodMethod convertFromString(Class<? extends DistanceMethodMethod> cls, String str) {

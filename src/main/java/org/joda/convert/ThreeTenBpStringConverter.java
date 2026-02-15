@@ -98,8 +98,8 @@ enum ThreeTenBpStringConverter implements TypedStringConverter<Object> {
     ZONE_ID(ZoneId.class, ZoneId::of),
     ;
 
-    private Class<?> type;
-    private Function<String, Object> fromStringFn;
+    private final Class<?> type;
+    private final Function<String, Object> fromStringFn;
 
     private ThreeTenBpStringConverter(Class<?> type, Function<String, Object> fromStringFn) {
         this.type = type;

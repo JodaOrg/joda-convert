@@ -22,6 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class TestRenameHandler {
     }
 
     @Test
-    void test_noMatchType() throws ClassNotFoundException {
+    void test_noMatchType() {
         var test = RenameHandler.create();
         assertThatExceptionOfType(ClassNotFoundException.class)
                 .isThrownBy(() -> test.lookupType("com.foo.Foo"));
@@ -83,7 +84,7 @@ class TestRenameHandler {
         var originalErr = System.err;
         try {
             var baos = new ByteArrayOutputStream();
-            var ps = new PrintStream(baos, false, "UTF-8");
+            var ps = new PrintStream(baos, false, StandardCharsets.UTF_8);
             System.setErr(ps);
             var test = RenameHandler.create(true);
             System.err.flush();
@@ -91,7 +92,7 @@ class TestRenameHandler {
             assertThat(test.lookupEnum(Status.class, "YES")).isEqualTo(Status.VALID);
             assertThat(test.lookupType("com.foo.Foo")).isEqualTo(DistanceMethodMethod.class);
             assertThat(test.lookupEnum(Status.class, "NO")).isEqualTo(Status.INVALID);
-            var logged = baos.toString("UTF-8");
+            var logged = baos.toString(StandardCharsets.UTF_8);
             assertThat(logged).startsWith("ERROR: Invalid Renamed.ini: ");
             assertThat(logged).contains("org.joda.convert.ClassDoesNotExist");
             // ensure that the bad init class is loaded, and that it did not see a null RenameHandler

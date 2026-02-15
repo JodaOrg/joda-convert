@@ -20,6 +20,7 @@ import java.util.Arrays;
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
 import org.joda.convert.TypedStringConverter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} providing support for numeric object arrays
@@ -53,7 +54,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (cls.isArray()) {
             if (cls == Long[].class) {
                 return LongArrayStringConverter.INSTANCE;
@@ -81,10 +82,10 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum LongArrayStringConverter implements TypedStringConverter<Long[]> {
+    enum LongArrayStringConverter implements TypedStringConverter<@Nullable Long[]> {
         INSTANCE {
             @Override
-            public String convertToString(Long[] array) {
+            public String convertToString(@Nullable Long[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -97,7 +98,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
             }
             @Override
             public Long[] convertFromString(Class<? extends Long[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -110,7 +111,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                var split = str.substring(base, str.length());
+                var split = str.substring(base);
                 array[count++] = split.equals("-") ? null : Long.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -123,10 +124,10 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum IntArrayStringConverter implements TypedStringConverter<Integer[]> {
+    enum IntArrayStringConverter implements TypedStringConverter<@Nullable Integer[]> {
         INSTANCE {
             @Override
-            public String convertToString(Integer[] array) {
+            public String convertToString(@Nullable Integer[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -139,7 +140,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
             }
             @Override
             public Integer[] convertFromString(Class<? extends Integer[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -152,7 +153,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                var split = str.substring(base, str.length());
+                var split = str.substring(base);
                 array[count++] = split.equals("-") ? null : Integer.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -165,10 +166,10 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum ShortArrayStringConverter implements TypedStringConverter<Short[]> {
+    enum ShortArrayStringConverter implements TypedStringConverter<@Nullable Short[]> {
         INSTANCE {
             @Override
-            public String convertToString(Short[] array) {
+            public String convertToString(@Nullable Short[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -181,7 +182,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
             }
             @Override
             public Short[] convertFromString(Class<? extends Short[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -194,7 +195,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                var split = str.substring(base, str.length());
+                var split = str.substring(base);
                 array[count++] = split.equals("-") ? null : Short.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -207,10 +208,10 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum DoubleArrayStringConverter implements TypedStringConverter<Double[]> {
+    enum DoubleArrayStringConverter implements TypedStringConverter<@Nullable Double[]> {
         INSTANCE {
             @Override
-            public String convertToString(Double[] array) {
+            public String convertToString(@Nullable Double[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -223,7 +224,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
             }
             @Override
             public Double[] convertFromString(Class<? extends Double[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -236,7 +237,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                var split = str.substring(base, str.length());
+                var split = str.substring(base);
                 array[count++] = split.equals("-") ? null : Double.valueOf(split);
                 return Arrays.copyOf(array, count);
             }
@@ -249,10 +250,10 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum FloatArrayStringConverter implements TypedStringConverter<Float[]> {
+    enum FloatArrayStringConverter implements TypedStringConverter<@Nullable Float[]> {
         INSTANCE {
             @Override
-            public String convertToString(Float[] array) {
+            public String convertToString(@Nullable Float[] array) {
                 if (array.length == 0) {
                     return "";
                 }
@@ -265,7 +266,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
             }
             @Override
             public Float[] convertFromString(Class<? extends Float[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -278,7 +279,7 @@ public final class NumericObjectArrayStringConverterFactory implements StringCon
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                var split = str.substring(base, str.length());
+                var split = str.substring(base);
                 array[count++] = split.equals("-") ? null : Float.valueOf(split);
                 return Arrays.copyOf(array, count);
             }

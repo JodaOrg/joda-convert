@@ -458,6 +458,12 @@
   <!-- ==================================================================== -->
   <dependencies>
     <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>${jspecify.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
@@ -704,8 +710,8 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
-    <assertj.version>3.27.0</assertj.version>
-    <guava.version>33.3.1-jre</guava.version>
+    <assertj.version>3.27.7</assertj.version>
+    <guava.version>33.5.0-jre</guava.version>
     <junit.version>5.11.4</junit.version>
     <threetenbp.version>1.7.0</threetenbp.version>
 
@@ -745,6 +751,7 @@
     <github-api.version>1.326</github-api.version>
     <github-release-plugin.version>1.6.0</github-release-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+    <jspecify.version>1.0.0</jspecify.version>
     <revapi-maven-plugin.version>0.11.1</revapi-maven-plugin.version>
     <revapi-java.version>0.15.1</revapi-java.version>
     <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>

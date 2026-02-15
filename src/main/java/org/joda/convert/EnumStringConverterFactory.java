@@ -15,6 +15,9 @@
  */
 package org.joda.convert;
 
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+
 /**
  * Factory for {@code StringConverter} looking up enums.
  * <p>
@@ -44,7 +47,7 @@ final class EnumStringConverterFactory implements StringConverterFactory {
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         var sup = cls.getSuperclass();
         if (sup == Enum.class) {
             return new EnumStringConverter(cls);
@@ -66,7 +69,7 @@ final class EnumStringConverterFactory implements StringConverterFactory {
         private final Class<?> effectiveType;
 
         EnumStringConverter(Class<?> effectiveType) {
-            this.effectiveType = effectiveType;
+            this.effectiveType = Objects.requireNonNull(effectiveType);
         }
 
         @Override

@@ -54,6 +54,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Conversion between JDK classes and a {@code String}.
@@ -254,11 +255,11 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     OPTIONAL_DOUBLE(OptionalDouble.class, JDKStringConverter::printOptionalDouble, JDKStringConverter::parseOptionalDouble),
     ;
 
-    private Class<?> type;
-    private Function<Object, String> toStringFn;
-    private Function<String, Object> fromStringFn;
+    private final Class<?> type;
+    private final Function<Object, String> toStringFn;
+    private final Function<String, @Nullable Object> fromStringFn;
 
-    private JDKStringConverter(Class<?> type, Function<String, Object> fromStringFn) {
+    private JDKStringConverter(Class<?> type, Function<String, @Nullable Object> fromStringFn) {
         this.type = type;
         this.toStringFn = Object::toString;
         this.fromStringFn = fromStringFn;
@@ -267,7 +268,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     private JDKStringConverter(
             Class<?> type,
             Function<Object, String> toStringFn,
-            Function<String, Object> fromStringFn) {
+            Function<String, @Nullable Object> fromStringFn) {
         this.type = type;
         this.toStringFn = toStringFn;
         this.fromStringFn = fromStringFn;
@@ -289,13 +290,13 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     }
 
     @Override
-    public Object convertFromString(Class<? extends Object> cls, String str) {
+    public @Nullable Object convertFromString(Class<?> cls, String str) {
         return fromStringFn.apply(str);
     }
 
     //-----------------------------------------------------------------------
-    private static String base64Str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    private static char[] base64Array = base64Str.toCharArray();
+    private static final String BASE64_STR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    private static final char[] BASE64_ARRAY = BASE64_STR.toCharArray();
     private static final int MASK_8BIT = 0xff;
     private static final int MASK_6BIT = 0x3f;
 
@@ -308,20 +309,20 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
             var remaining = len - i;
             if (remaining >= 3) {
                 var bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8 | (array[i + 2] & MASK_8BIT);
-                buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
-                buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
-                buf[pos++] = base64Array[(bits >>> 6) & MASK_6BIT];
-                buf[pos++] = base64Array[bits & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 18) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 12) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 6) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[bits & MASK_6BIT];
             } else if (remaining == 2) {
                 var bits = (array[i] & MASK_8BIT) << 16 | (array[i + 1] & MASK_8BIT) <<  8;
-                buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
-                buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
-                buf[pos++] = base64Array[(bits >>> 6) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 18) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 12) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 6) & MASK_6BIT];
                 buf[pos++] = '=';
             } else {
                 var bits = (array[i] & MASK_8BIT) << 16;
-                buf[pos++] = base64Array[(bits >>> 18) & MASK_6BIT];
-                buf[pos++] = base64Array[(bits >>> 12) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 18) & MASK_6BIT];
+                buf[pos++] = BASE64_ARRAY[(bits >>> 12) & MASK_6BIT];
                 buf[pos++] = '=';
                 buf[pos++] = '=';
             }
@@ -340,10 +341,10 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         var inChars = str.toCharArray();
         var pos = 0;
         for (var i = 0; i < inChars.length; ) {
-            var bits = (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 18 |
-                            (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 12 |
-                            (base64Str.indexOf(inChars[i++]) & MASK_6BIT) << 6 |
-                            (base64Str.indexOf(inChars[i++]) & MASK_6BIT);
+            var bits = (BASE64_STR.indexOf(inChars[i++]) & MASK_6BIT) << 18 |
+                            (BASE64_STR.indexOf(inChars[i++]) & MASK_6BIT) << 12 |
+                            (BASE64_STR.indexOf(inChars[i++]) & MASK_6BIT) << 6 |
+                            (BASE64_STR.indexOf(inChars[i++]) & MASK_6BIT);
             decoded[pos++] = (byte) ((bits >>> 16) & MASK_8BIT);
             decoded[pos++] = (byte) ((bits >>> 8) & MASK_8BIT);
             decoded[pos++] = (byte)  (bits & MASK_8BIT);
@@ -365,7 +366,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         if (str.length() != 1) {
             throw new IllegalArgumentException("Character value must be a string length 1");
         }
-        return Character.valueOf(str.charAt(0));
+        return str.charAt(0);
     }
 
     private static String printCharArray(Object obj) {
@@ -394,15 +395,12 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
 
     private static Locale parseLocale(String str) {
         var split = str.split("_", 3);
-        switch (split.length) {
-            case 1:
-                return Locale.of(split[0]);
-            case 2:
-                return Locale.of(split[0], split[1]);
-            case 3:
-                return Locale.of(split[0], split[1], split[2]);
-        }
-        throw new IllegalArgumentException("Unable to parse Locale: " + str);
+        return switch (split.length) {
+            case 1 -> Locale.of(split[0]);
+            case 2 -> Locale.of(split[0], split[1]);
+            case 3 -> Locale.of(split[0], split[1], split[2]);
+            default -> throw new IllegalArgumentException("Unable to parse Locale: " + str);
+        };
     }
 
     private static String printClass(Object obj) {
@@ -417,7 +415,7 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
         }
     }
 
-    private static Package parsePackage(String str) {
+    private static @Nullable Package parsePackage(String str) {
         var loader = JDKStringConverter.class.getClassLoader();
         while (loader != null) {
             var pkg = loader.getDefinedPackage(str);
@@ -491,10 +489,9 @@ enum JDKStringConverter implements TypedStringConverter<Object> {
     }
 
     private static String printCalendar(Object obj) {
-        if (obj instanceof GregorianCalendar == false) {
+        if (!(obj instanceof GregorianCalendar cal)) {
             throw new RuntimeException("Unable to convert calendar as it is not a GregorianCalendar");
         }
-        var cal = (GregorianCalendar) obj;
         var format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         format.setCalendar(cal);
         var str = format.format(cal.getTime());

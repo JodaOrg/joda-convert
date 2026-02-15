@@ -33,6 +33,8 @@ import org.joda.convert.factory.ByteObjectArrayStringConverterFactory;
 import org.joda.convert.factory.CharObjectArrayStringConverterFactory;
 import org.joda.convert.factory.NumericArrayStringConverterFactory;
 import org.joda.convert.factory.NumericObjectArrayStringConverterFactory;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Manager for conversion to and from a {@code String}, acting as the main client interface.
@@ -67,15 +69,15 @@ public final class StringConvert {
     private static final TypedStringConverter<?> CACHED_NULL = new TypedStringConverter<>() {
         @Override
         public String convertToString(Object object) {
-            return null;
+            throw new UnsupportedOperationException();
         }
         @Override
-        public Object convertFromString(Class<? extends Object> cls, String str) {
-            return null;
+        public Object convertFromString(Class<?> cls, String str) {
+            throw new UnsupportedOperationException();
         }
         @Override
         public Class<?> getEffectiveType() {
-            return null;
+            throw new UnsupportedOperationException();
         }
     };
     /**
@@ -159,13 +161,9 @@ public final class StringConvert {
      * @param factories  optional array of factories to use, not null
      */
     public StringConvert(boolean includeJdkConverters, StringConverterFactory... factories) {
-        if (factories == null) {
-            throw new IllegalArgumentException("StringConverterFactory array must not be null");
-        }
+        notNull(factories, "StringConverterFactory array");
         for (var factory : factories) {
-            if (factory == null) {
-                throw new IllegalArgumentException("StringConverterFactory array must not contain a null element");
-            }
+            notNull(factory, "StringConverterFactory array element");
         }
         if (includeJdkConverters) {
             for (var conv : JDKStringConverter.values()) {
@@ -278,7 +276,7 @@ public final class StringConvert {
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
      */
-    public String convertToString(Object object) {
+    public @Nullable String convertToString(@Nullable Object object) {
         if (object == null) {
             return null;
         }
@@ -298,7 +296,7 @@ public final class StringConvert {
      * @return the converted string, may be null
      * @throws RuntimeException (or subclass) if unable to convert
      */
-    public String convertToString(Class<?> cls, Object object) {
+    public @Nullable String convertToString(Class<?> cls, @Nullable Object object) {
         if (object == null) {
             return null;
         }
@@ -317,7 +315,8 @@ public final class StringConvert {
      * @return the converted object, may be null
      * @throws RuntimeException (or subclass) if unable to convert
      */
-    public <T> T convertFromString(Class<T> cls, String str) {
+    public <T> @Nullable T convertFromString(Class<T> cls, @Nullable String str) {
+        notNull(cls, "Class");
         if (str == null) {
             return null;
         }
@@ -338,7 +337,7 @@ public final class StringConvert {
      * @return true if convertible
      * @since 1.5
      */
-    public boolean isConvertible(Class<?> cls) {
+    public boolean isConvertible(@Nullable Class<?> cls) {
         try {
             return cls != null && findConverterQuiet(cls) != null;
         } catch (RuntimeException ex) {
@@ -509,7 +508,7 @@ public final class StringConvert {
     @SuppressWarnings("unchecked")
     public TypedStringConverter<Object> findTypedConverterNoGenerics(Class<?> cls) {
         // NOTE: Not using converterFor() to avoid any kind of performance regression
-        var conv = (TypedStringConverter<Object>) findConverterQuiet(cls);
+        var conv = (TypedStringConverter<@NonNull Object>) findConverterQuiet(cls);
         if (conv == null) {
             throw new IllegalStateException("No registered converter found: " + cls);
         }
@@ -529,7 +528,6 @@ public final class StringConvert {
      * @return the converter, not null
      * @throws RuntimeException (or subclass) if no converter found
      */
-    @SuppressWarnings("unchecked")
     public <T> FromStringConverter<T> findFromStringConverter(Class<T> cls) {
         return fromStringConverterFor(cls)
                 .orElseThrow(() -> new IllegalStateException("No registered converter found: " + cls));
@@ -540,10 +538,8 @@ public final class StringConvert {
     // the result is a full-featured converter
     // if the class only has a from-string converter, the fromStrings map is updated
     @SuppressWarnings("unchecked")
-    private <T> TypedStringConverter<T> findConverterQuiet(Class<T> cls) {
-        if (cls == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
+    private <T> @Nullable TypedStringConverter<T> findConverterQuiet(Class<T> cls) {
+        notNull(cls, "Class");
         var conv = (TypedStringConverter<T>) registered.get(cls);
         if (conv == CACHED_NULL) {
             return null;
@@ -576,11 +572,11 @@ public final class StringConvert {
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @return the converter, not null
+     * @return the converter, null if not found
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
-    private <T> TypedStringConverter<T> lookupConverter(Class<T> cls) {
+    private <T> @Nullable TypedStringConverter<T> lookupConverter(Class<T> cls) {
         // check factories
         for (var factory : factories) {
             var factoryConv = (StringConverter<T>) factory.findConverter(cls);
@@ -604,9 +600,7 @@ public final class StringConvert {
      * @since 1.5
      */
     public void registerFactory(StringConverterFactory factory) {
-        if (factory == null) {
-            throw new IllegalArgumentException("Factory must not be null");
-        }
+        notNull(factory, "Factory");
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
@@ -628,12 +622,8 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void register(Class<T> cls, StringConverter<T> converter) {
-        if (cls == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
-        if (converter == null) {
-            throw new IllegalArgumentException("StringConverter must not be null");
-        }
+        notNull(cls, "Class");
+        notNull(converter, "StringConverter");
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
@@ -661,9 +651,9 @@ public final class StringConvert {
      * @since 1.3
      */
     public <T> void register(Class<T> cls, ToStringConverter<T> toString, FromStringConverter<T> fromString) {
-        if (fromString == null || toString == null) {
-            throw new IllegalArgumentException("Converters must not be null");
-        }
+        notNull(cls, "Class");
+        notNull(toString, "ToString converter");
+        notNull(fromString, "FromString converter");
         register(cls, new TypedStringConverter<T>() {
             @Override
             public String convertToString(T object) {
@@ -700,12 +690,9 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethods(Class<T> cls, String toStringMethodName, String fromStringMethodName) {
-        if (cls == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
-        if (toStringMethodName == null || fromStringMethodName == null) {
-            throw new IllegalArgumentException("Method names must not be null");
-        }
+        notNull(cls, "Class");
+        notNull(toStringMethodName, "ToString method name");
+        notNull(fromStringMethodName, "FromString method name");
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
@@ -735,12 +722,8 @@ public final class StringConvert {
      * @throws IllegalStateException if trying to alter the global singleton
      */
     public <T> void registerMethodConstructor(Class<T> cls, String toStringMethodName) {
-        if (cls == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
-        if (toStringMethodName == null) {
-            throw new IllegalArgumentException("Method name must not be null");
-        }
+        notNull(cls, "Class");
+        notNull(toStringMethodName, "Method name");
         if (this == INSTANCE) {
             throw new IllegalStateException("Global singleton cannot be extended");
         }
@@ -756,7 +739,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a method for, not null
      * @param methodName  the name of the method to find, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the method to call, not null
      */
     private Method findToStringMethod(Class<?> cls, String methodName) {
         try {
@@ -775,7 +758,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a method for, not null
      * @param methodName  the name of the method to find, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the method to call, not null
      */
     private Method findFromStringMethod(Class<?> cls, String methodName) {
         Method m;
@@ -788,7 +771,7 @@ public final class StringConvert {
                 throw new IllegalArgumentException("Method not found", ex2);
             }
         }
-        if (Modifier.isStatic(m.getModifiers()) == false) {
+        if (!Modifier.isStatic(m.getModifiers())) {
             throw new IllegalArgumentException("Method must be static: " + methodName);
         }
         return m;
@@ -799,7 +782,7 @@ public final class StringConvert {
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the constructor to call, not null
      */
     private <T> Constructor<T> findFromStringConstructorByType(Class<T> cls) {
         try {
@@ -826,26 +809,18 @@ public final class StringConvert {
 
     // handle primitive types
     private static Class<?> loadPrimitiveType(String fullName, ClassNotFoundException ex) throws ClassNotFoundException {
-        if (fullName.equals("int")) {
-            return int.class;
-        } else if (fullName.equals("long")) {
-            return long.class;
-        } else if (fullName.equals("double")) {
-            return double.class;
-        } else if (fullName.equals("boolean")) {
-            return boolean.class;
-        } else if (fullName.equals("short")) {
-            return short.class;
-        } else if (fullName.equals("byte")) {
-            return byte.class;
-        } else if (fullName.equals("char")) {
-            return char.class;
-        } else if (fullName.equals("float")) {
-            return float.class;
-        } else if (fullName.equals("void")) {
-            return void.class;
-        }
-        throw ex;
+        return switch (fullName) {
+            case "int" -> int.class;
+            case "long" -> long.class;
+            case "double" -> double.class;
+            case "boolean" -> boolean.class;
+            case "short" -> short.class;
+            case "byte" -> byte.class;
+            case "char" -> char.class;
+            case "float" -> float.class;
+            case "void" -> void.class;
+            default -> throw ex;
+        };
     }
 
     //-----------------------------------------------------------------------
@@ -857,6 +832,12 @@ public final class StringConvert {
     @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    static void notNull(@Nullable Object type, String paramName) {
+        if (type == null) {
+            throw new IllegalArgumentException(paramName + " must not be null");
+        }
     }
 
 }

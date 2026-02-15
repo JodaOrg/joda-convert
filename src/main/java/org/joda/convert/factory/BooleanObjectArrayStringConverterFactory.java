@@ -18,6 +18,7 @@ package org.joda.convert.factory;
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
 import org.joda.convert.TypedStringConverter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} providing support for Boolean object array
@@ -53,7 +54,7 @@ public final class BooleanObjectArrayStringConverterFactory implements StringCon
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (cls == Boolean[].class) {
             return BooleanArrayStringConverter.INSTANCE;
         }
@@ -67,22 +68,22 @@ public final class BooleanObjectArrayStringConverterFactory implements StringCon
     }
 
     //-----------------------------------------------------------------------
-    enum BooleanArrayStringConverter implements TypedStringConverter<Boolean[]> {
+    enum BooleanArrayStringConverter implements TypedStringConverter<@Nullable Boolean[]> {
         INSTANCE {
             @Override
-            public String convertToString(Boolean[] array) {
+            public String convertToString(@Nullable Boolean[] array) {
                 if (array.length == 0) {
                     return "";
                 }
                 var buf = new StringBuilder(array.length);
                 for (var element : array) {
-                    buf.append(element == null ? '-' : (element.booleanValue() ? 'T' : 'F'));
+                    buf.append(element == null ? '-' : (element ? 'T' : 'F'));
                 }
                 return buf.toString();
             }
             @Override
             public Boolean[] convertFromString(Class<? extends Boolean[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var array = new Boolean[str.length()];

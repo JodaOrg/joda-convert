@@ -26,7 +26,7 @@ public enum MockIntegerStringConverter implements StringConverter<Integer> {
     /**
      * Converts the {@code Integer} to a {@code String}.
      * @param object  the object to convert, not null
-     * @return the converted string, may be null but generally not
+     * @return the converted string, not null
      */
     @Override
     public String convertToString(Integer object) {
@@ -37,7 +37,7 @@ public enum MockIntegerStringConverter implements StringConverter<Integer> {
      * Converts the {@code String} to an {@code Integer}.
      * @param cls  the class to convert to, not null
      * @param str  the string to convert, not null
-     * @return the converted integer, may be null but generally not
+     * @return the converted integer, not null
      */
     @Override
     public Integer convertFromString(Class<? extends Integer> cls, String str) {

@@ -17,6 +17,8 @@ package org.joda.convert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Conversion to and from a string using reflection.
@@ -52,14 +54,14 @@ final class ReflectionStringConverter<T> implements TypedStringConverter<T> {
         if (toString.getReturnType() != String.class) {
             throw new IllegalStateException("ToString method must return a String: " + toString);
         }
-        this.cls = cls;
+        this.cls = Objects.requireNonNull(cls);
         this.toString = toString;
-        this.fromString = fromString;
+        this.fromString = Objects.requireNonNull(fromString);
     }
 
     //-----------------------------------------------------------------------
     @Override
-    public String convertToString(T object) {
+    public @Nullable String convertToString(T object) {
         try {
             return (String) toString.invoke(object);
         } catch (IllegalAccessException ex) {
@@ -73,7 +75,7 @@ final class ReflectionStringConverter<T> implements TypedStringConverter<T> {
     }
 
     @Override
-    public T convertFromString(Class<? extends T> cls, String str) {
+    public @Nullable T convertFromString(Class<? extends T> cls, String str) {
         return fromString.convertFromString(cls, str);
     }
 

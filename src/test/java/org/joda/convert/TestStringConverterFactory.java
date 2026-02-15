@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -34,12 +35,14 @@ class TestStringConverterFactory {
 
     @Test
     void test_constructor_null() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new StringConvert(true, (StringConverterFactory[]) null));
     }
 
     @Test
     void test_constructor_nullInArray() {
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new StringConvert(true, new StringConverterFactory[] {null}));
     }
@@ -54,6 +57,7 @@ class TestStringConverterFactory {
     @Test
     void test_registerFactory_null() {
         var test = new StringConvert();
+        //noinspection DataFlowIssue
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> test.registerFactory(null));
     }
@@ -66,7 +70,7 @@ class TestStringConverterFactory {
 
     static class Factory1 implements StringConverterFactory {
         @Override
-        public StringConverter<?> findConverter(Class<?> cls) {
+        public @Nullable StringConverter<?> findConverter(Class<?> cls) {
             if (cls == DistanceMethodMethod.class) {
                 return MockDistanceStringConverter.INSTANCE;
             }

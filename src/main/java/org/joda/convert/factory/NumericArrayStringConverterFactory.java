@@ -20,6 +20,7 @@ import java.util.Arrays;
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
 import org.joda.convert.TypedStringConverter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} providing support for primitive arrays
@@ -53,7 +54,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (cls.isArray() && cls.getComponentType().isPrimitive()) {
             if (cls == long[].class) {
                 return LongArrayStringConverter.INSTANCE;
@@ -97,7 +98,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
             }
             @Override
             public long[] convertFromString(Class<? extends long[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -109,7 +110,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                array[count++] = Long.parseLong(str.substring(base, str.length()));
+                array[count++] = Long.parseLong(str.substring(base));
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -137,7 +138,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
             }
             @Override
             public int[] convertFromString(Class<? extends int[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -149,7 +150,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                array[count++] = Integer.parseInt(str.substring(base, str.length()));
+                array[count++] = Integer.parseInt(str.substring(base));
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -177,7 +178,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
             }
             @Override
             public short[] convertFromString(Class<? extends short[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -189,7 +190,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                array[count++] = Short.parseShort(str.substring(base, str.length()));
+                array[count++] = Short.parseShort(str.substring(base));
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -217,7 +218,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
             }
             @Override
             public double[] convertFromString(Class<? extends double[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -229,7 +230,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                array[count++] = Double.parseDouble(str.substring(base, str.length()));
+                array[count++] = Double.parseDouble(str.substring(base));
                 return Arrays.copyOf(array, count);
             }
             @Override
@@ -257,7 +258,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
             }
             @Override
             public float[] convertFromString(Class<? extends float[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var count = 0;
@@ -269,7 +270,7 @@ public final class NumericArrayStringConverterFactory implements StringConverter
                     base = sep + 1;
                     sep = str.indexOf(',', sep + 1);
                 }
-                array[count++] = Float.parseFloat(str.substring(base, str.length()));
+                array[count++] = Float.parseFloat(str.substring(base));
                 return Arrays.copyOf(array, count);
             }
             @Override

@@ -15,6 +15,8 @@
  */
 package org.joda.convert;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Interface defining conversion from a {@code String}.
  * <p>
@@ -32,6 +34,6 @@ public interface FromStringConverter<T> {
      * @param str  the string to convert, not null
      * @return the converted object, may be null but generally not
      */
-    public abstract T convertFromString(Class<? extends T> cls, String str);
+    public abstract @Nullable T convertFromString(Class<? extends T> cls, String str);
 
 }

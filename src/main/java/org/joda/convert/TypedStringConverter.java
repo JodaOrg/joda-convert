@@ -15,6 +15,8 @@
  */
 package org.joda.convert;
 
+import org.jspecify.annotations.NonNull;
+
 /**
  * Interface defining conversion to and from a {@code String} together with the type.
  * <p>
@@ -49,7 +51,7 @@ public interface TypedStringConverter<T> extends StringConverter<T>, TypedFromSt
      */
     @SuppressWarnings("unchecked")
     public default TypedStringConverter<Object> withoutGenerics() {
-        return (TypedStringConverter<Object>) this;
+        return (TypedStringConverter<@NonNull Object>) this;
     }
 
 }

@@ -18,6 +18,7 @@ package org.joda.convert.factory;
 import org.joda.convert.StringConverter;
 import org.joda.convert.StringConverterFactory;
 import org.joda.convert.TypedStringConverter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Factory for {@code StringConverter} providing support for primitive boolean array
@@ -53,7 +54,7 @@ public final class BooleanArrayStringConverterFactory implements StringConverter
      * @throws RuntimeException (or subclass) if source code is invalid
      */
     @Override
-    public StringConverter<?> findConverter(Class<?> cls) {
+    public @Nullable StringConverter<?> findConverter(Class<?> cls) {
         if (cls == boolean[].class) {
             return BooleanArrayStringConverter.INSTANCE;
         }
@@ -82,7 +83,7 @@ public final class BooleanArrayStringConverterFactory implements StringConverter
             }
             @Override
             public boolean[] convertFromString(Class<? extends boolean[]> cls, String str) {
-                if (str.length() == 0) {
+                if (str.isEmpty()) {
                     return EMPTY;
                 }
                 var array = new boolean[str.length()];

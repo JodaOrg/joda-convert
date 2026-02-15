@@ -29,7 +29,6 @@ import com.google.common.reflect.TypeToken;
 /**
  * Test GuavaStringConverters.
  */
-@SuppressWarnings("serial")
 class TestGuavaTypeTokenStringConverter {
 
     @Test
@@ -162,6 +161,7 @@ class TestGuavaTypeTokenStringConverter {
 
         var test3 = TypeStringConverterFactory.INSTANCE;
         var converter3 = (TypedStringConverter<Type>) test3.findConverter(Type.class);
+        assertThat(converter3).isNotNull();
         assertThat(converter3.getEffectiveType()).isEqualTo(Type.class);
         assertThat(converter3.convertToString(obj.getType())).isEqualTo(str);
         assertThat(converter3.convertFromString(Type.class, str)).isEqualTo(obj.getType());

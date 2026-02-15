@@ -29,6 +29,7 @@
 module org.joda.convert {
 
     // optional dependencies
+    requires static org.jspecify;
     requires static com.google.common;
     requires static org.threeten.bp;
 
