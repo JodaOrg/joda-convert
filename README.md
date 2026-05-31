@@ -63,7 +63,7 @@ v2.x releases are compatible with v1.x releases, with the exception that the dir
 v3.x releases are compatible with v2.x releases, however the `module-info.class` file is always present,
 and the oldest development pre-release of JSR-310 is not recognized.
 
-Joda-Convert has [no dependencies](https://www.joda.org/joda-convert/dependency-info.html).
+Joda-Convert has [no dependencies](https://www.joda.org/joda-convert/dependencies.html).
 
 Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-convert&core=gav).
 [GitHub release bundles](https://github.com/JodaOrg/joda-convert/releases).
