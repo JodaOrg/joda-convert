@@ -56,7 +56,7 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @return the converter, not null
+     * @return the converter, null if not found
      * @throws RuntimeException if none found
      */
     private <T> StringConverter<T> findAnnotatedConverter(Class<T> cls) {
