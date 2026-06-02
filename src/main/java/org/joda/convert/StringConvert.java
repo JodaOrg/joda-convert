@@ -576,7 +576,7 @@ public final class StringConvert {
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @return the converter, not null
+     * @return the converter, null if not found
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
@@ -756,7 +756,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a method for, not null
      * @param methodName  the name of the method to find, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the method to call, not null
      */
     private Method findToStringMethod(Class<?> cls, String methodName) {
         try {
@@ -775,7 +775,7 @@ public final class StringConvert {
      * 
      * @param cls  the class to find a method for, not null
      * @param methodName  the name of the method to find, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the method to call, not null
      */
     private Method findFromStringMethod(Class<?> cls, String methodName) {
         Method m;
@@ -799,7 +799,7 @@ public final class StringConvert {
      * 
      * @param <T>  the type of the converter
      * @param cls  the class to find a method for, not null
-     * @return the method to call, null means use {@code toString}
+     * @return the method to call, not null
      */
     private <T> Constructor<T> findFromStringConstructorByType(Class<T> cls) {
         try {
