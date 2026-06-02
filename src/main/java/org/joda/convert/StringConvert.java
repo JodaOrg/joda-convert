@@ -575,8 +575,8 @@ public final class StringConvert {
      * Lookup a converter searching registered and annotated.
      * 
      * @param <T>  the type of the converter
-     * @param cls  the class to find a method for, null if not found
-     * @return the converter, not null
+     * @param cls  the class to find a method for, not null
+     * @return the converter, null if not found
      * @throws RuntimeException if invalid
      */
     @SuppressWarnings("unchecked")
