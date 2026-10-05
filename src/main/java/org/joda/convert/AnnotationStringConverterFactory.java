@@ -157,21 +157,17 @@ final class AnnotationStringConverterFactory implements StringConverterFactory {
      * @throws RuntimeException if invalid
      */
     private <T> TypedFromStringConverter<T> findFromStringConstructor(Class<T> cls) {
-        Constructor<T> con;
-        try {
-            con = cls.getDeclaredConstructor(String.class);
-        } catch (NoSuchMethodException ex) {
+        for (var parameterType : new Class<?>[] {String.class, CharSequence.class}) {
             try {
-                con = cls.getDeclaredConstructor(CharSequence.class);
-            } catch (NoSuchMethodException ex2) {
-                return null;
+                Constructor<T> con = cls.getDeclaredConstructor(parameterType);
+                if (con.getAnnotation(FromString.class) != null) {
+                    return new ConstructorFromStringConverter<>(cls, con);
+                }
+            } catch (NoSuchMethodException ex) {
+                // Try the next supported parameter type.
             }
         }
-        var fromString = con.getAnnotation(FromString.class);
-        if (fromString == null) {
-            return null;
-        }
-        return new ConstructorFromStringConverter<>(cls, con);
+        return null;
     }
 
     /**

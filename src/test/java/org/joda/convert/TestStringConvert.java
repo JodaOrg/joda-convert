@@ -296,6 +296,15 @@ class TestStringConvert {
     }
 
     @Test
+    void test_convert_annotationCharSequenceConstructorWithUnannotatedStringOverload() {
+        StringConvert test = new StringConvert();
+        DistanceWithUnannotatedStringConstructor result =
+                test.convertFromString(DistanceWithUnannotatedStringConstructor.class, "25m");
+        assertThat(result.amount).isEqualTo(25);
+        assertThat(test.convertToString(result)).isEqualTo("25m");
+    }
+
+    @Test
     void test_convert_annotationMethodConstructorCharSequence() {
         StringConvert test = new StringConvert();
         DistanceMethodConstructorCharSequence d = new DistanceMethodConstructorCharSequence(25);
